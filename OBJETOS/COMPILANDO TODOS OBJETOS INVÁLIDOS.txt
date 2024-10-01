@@ -1,0 +1,212 @@
+REM ###############################################################
+REM PURPOSE: 
+REM 	    COMPILES ALL INVALID OBJECTS UNTIL THERE ARE NO
+REM          OBJECTS LEFT THAT MIGHT BE COMPILED SUCCESSFULLY.
+REM          THIS IS MUCH SMARTER THAN DBMS_UTILITY.COMPILE_SCHEMA,
+REM          BECAUSE THE LATTER COMPILES ALL OBJECTS, VALID OR NOT.
+REM          YOU CAN USE THIS SCRIPT AFTER AN IMPORT.
+REM          THE SCRIPT CAN BE USED BY BOTH DBA's and normal users.
+rem 
+rem ###############################################################
+
+SET FEEDBACK OFF
+SET SERVEROUTPUT ON
+EXEC DBMS_OUTPUT.ENABLE( 1000000)
+DECLARE
+
+  TYPE BLACKLIST_TYPE IS TABLE OF CHAR(1) INDEX BY BINARY_INTEGER;
+
+  BLACKLIST BLACKLIST_TYPE;
+
+  CURSOR C_INV IS SELECT O.OWNER
+    ,      	   	  		 O.OBJECT_NAME
+    ,      				 O.OBJECT_TYPE
+    ,      O.OBJECT_ID
+    FROM ALL_OBJECTS O
+    WHERE O.STATUS = 'INVALID'
+    ;
+  R_INV C_INV%ROWTYPE;
+
+  V_CHANCES_LEFT BOOLEAN := TRUE;
+  V_FOUND        BOOLEAN;
+  V_SQLERRM      VARCHAR2( 2000);
+
+  PROCEDURE P
+  ( LINE_IN IN VARCHAR2 DEFAULT CHR( 10)
+  ) AS
+  BEGIN
+    DBMS_OUTPUT.PUT_LINE( LINE_IN);
+  EXCEPTION
+    WHEN OTHERS THEN
+      DBMS_OUTPUT.PUT_LINE( SUBSTR( LINE_IN, 1, 255));
+  END P;
+  FUNCTION COMPILE
+  /*
+  || EXECUTES DYNAMIC SQL
+  */
+  ( OWNER_IN       IN  VARCHAR2
+  , OBJECT_NAME_IN IN  VARCHAR2
+  , OBJECT_TYPE_IN IN  VARCHAR2
+  , SQLERRM_OUT    OUT VARCHAR2
+  ) RETURN BOOLEAN
+    AS
+    V_STMT   VARCHAR2( 1000);
+    V_CURSOR BINARY_INTEGER;
+    V_RETVAL BINARY_INTEGER;
+    V_STATUS VARCHAR2( 7);
+    CURSOR C_OBJ IS
+      SELECT STATUS
+      FROM ALL_OBJECTS
+      WHERE OWNER       = OWNER_IN
+      AND   OBJECT_NAME = OBJECT_NAME_IN
+      AND   OBJECT_TYPE = OBJECT_TYPE_IN
+      ;
+  BEGIN
+    IF OBJECT_TYPE_IN = 'PACKAGE BODY'
+    THEN
+      V_STMT := 'ALTER PACKAGE ' ||
+                OWNER_IN||'.'||OBJECT_NAME_IN||' COMPILE BODY';
+    ELSE
+      V_STMT := 'ALTER '||OBJECT_TYPE_IN||' '||
+                OWNER_IN||'.'||OBJECT_NAME_IN||' COMPILE';
+    END IF;
+    V_CURSOR := DBMS_SQL.OPEN_CURSOR;
+    DBMS_SQL.PARSE( V_CURSOR, V_STMT, DBMS_SQL.V7);
+    V_RETVAL := DBMS_SQL.EXECUTE( V_CURSOR);
+    DBMS_SQL.CLOSE_CURSOR( V_CURSOR);
+    OPEN C_OBJ;
+    FETCH C_OBJ INTO V_STATUS;
+    CLOSE C_OBJ;
+    IF V_STATUS = 'VALID'
+    THEN
+      RETURN TRUE;
+    ELSE
+      RETURN FALSE;
+    END IF;
+  EXCEPTION
+    WHEN OTHERS THEN
+      IF DBMS_SQL.IS_OPEN( V_CURSOR)
+      THEN
+        DBMS_SQL.CLOSE_CURSOR( V_CURSOR);
+      END IF;
+      SQLERRM_OUT := SQLERRM;
+      RETURN FALSE;
+  END COMPILE;
+BEGIN
+  P( 'START ALL_COMPILE: ' || TO_CHAR( SYSDATE, 'HH24:MI:SS'));
+  BLACKLIST.DELETE;
+  WHILE V_CHANCES_LEFT
+  LOOP
+    V_CHANCES_LEFT := FALSE;
+
+    OPEN C_INV;
+    FETCH C_INV INTO R_INV;
+    V_FOUND := C_INV%FOUND;
+    WHILE BLACKLIST.EXISTS( R_INV.OBJECT_ID) AND C_INV%FOUND
+    LOOP
+      FETCH C_INV INTO R_INV;
+      V_FOUND := C_INV%FOUND;
+    END LOOP;
+    CLOSE C_INV;
+    IF V_FOUND
+    THEN
+      V_CHANCES_LEFT := TRUE;
+      P( LPAD( '=', 79, '='));
+      IF COMPILE( OWNER_IN       => R_INV.OWNER
+                , OBJECT_NAME_IN => R_INV.OBJECT_NAME
+                , OBJECT_TYPE_IN => R_INV.OBJECT_TYPE
+                , SQLERRM_OUT    => V_SQLERRM
+                )
+      THEN
+        P( RPAD( R_INV.OBJECT_TYPE, 12) || ' ' || R_INV.OWNER || '.' || 
+           R_INV.OBJECT_NAME || ': OK.'
+         );
+      ELSE
+        P( RPAD( R_INV.OBJECT_TYPE, 12) || ' ' || R_INV.OWNER || '.' || 
+           R_INV.OBJECT_NAME || ': ERRORS.'
+         );
+        IF V_SQLERRM IS NULL
+        THEN
+          FOR J IN ( SELECT LINE, POSITION, TEXT
+                     FROM ALL_ERRORS
+                     WHERE OWNER = R_INV.OWNER
+                     AND   NAME  = R_INV.OBJECT_NAME
+                     AND   TYPE  = R_INV.OBJECT_TYPE
+                     ORDER BY SEQUENCE
+                   )
+          LOOP
+            P( 'LINE ' || TO_CHAR( J.LINE) ||
+               ', POSITION ' || TO_CHAR( J.POSITION) || ':');
+            P( J.TEXT);
+          END LOOP;
+        ELSE
+          P( V_SQLERRM);
+        END IF;
+        BLACKLIST( R_INV.OBJECT_ID) := '';
+      END IF;
+    END IF;
+  END LOOP;
+
+  DECLARE
+    V_FIRST BOOLEAN := TRUE;
+    CURSOR C IS
+      SELECT O.OWNER
+      ,      O.OBJECT_NAME
+      ,      O.OBJECT_TYPE
+      ,      O.OBJECT_ID
+      FROM ALL_OBJECTS O
+      WHERE O.STATUS = 'INVALID'
+      AND   NOT EXISTS
+      ( SELECT NULL
+        FROM ALL_DEPENDENCIES D
+        ,    ALL_OBJECTS O2
+        WHERE D.OWNER            = O.OWNER
+        AND   D.NAME             = O.OBJECT_NAME
+        AND   D.TYPE             = O.OBJECT_TYPE
+        AND   D.REFERENCED_OWNER = O2.OWNER
+        AND   D.REFERENCED_NAME  = O2.OBJECT_NAME
+        AND   D.REFERENCED_TYPE  = O2.OBJECT_TYPE
+        AND   O2.STATUS          = 'INVALID'
+      );
+
+    PROCEDURE SHOW_INVALIDS
+    ( OWNER_IN IN VARCHAR2
+    , NAME_IN  IN VARCHAR2
+    , TYPE_IN  IN VARCHAR2
+    , INDEX_IN IN BINARY_INTEGER DEFAULT 1
+    ) AS
+      CURSOR C_DEP IS
+        SELECT OWNER, TYPE, NAME
+        FROM ALL_DEPENDENCIES
+        WHERE REFERENCED_OWNER = OWNER_IN
+        AND   REFERENCED_NAME  = NAME_IN
+        AND   REFERENCED_TYPE  = TYPE_IN
+        ;
+    BEGIN
+      FOR R IN C_DEP
+      LOOP
+        P( LPAD( '.', 2*INDEX_IN, '.') || 
+           LOWER( R.TYPE || ' ' || R.OWNER || '.' || R.NAME)
+         );
+        SHOW_INVALIDS( R.OWNER, R.NAME, R.TYPE, INDEX_IN + 1);
+      END LOOP;
+    END SHOW_INVALIDS;
+  BEGIN
+    FOR R IN C
+    LOOP
+      IF V_FIRST
+      THEN
+        P( LPAD( '=', 79, '='));
+        P( 'STILL INVALID: (DEPENDING OBJECTS INCLUDED)');
+        V_FIRST := FALSE;
+      END IF;
+      P( RPAD( R.OBJECT_TYPE, 12) || ' ' || R.OWNER || '.' || R.OBJECT_NAME);
+      SHOW_INVALIDS( R.OWNER, R.OBJECT_NAME, R.OBJECT_TYPE);
+    END LOOP;
+  END;
+
+  P( LPAD( '=', 79, '='));
+  P( 'FINISH ALL_COMPILE: ' || TO_CHAR( SYSDATE, 'HH24:MI:SS'));
+END;
+/
+SET FEEDBACK ON

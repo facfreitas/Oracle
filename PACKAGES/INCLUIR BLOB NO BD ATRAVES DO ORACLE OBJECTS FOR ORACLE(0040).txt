@@ -1,0 +1,59 @@
+Colocação de BLOB em BD Oracle Sem ODBC 
+A Oracle disponibilizou um pacote chamado OO4O (Oracle Objects For OLE) para que possa-se trabalhar de forma mais eficiente com os BLOBs. 
+
+Mas existem alguns pontos a considerar. 
+
+1) Até a versão que estou usando atualmente a 817313, existe uma falha no instalador, sendo necessario se instalar o produto em um Oracle Home separado e tb deve-se colocar a pasta admin do NET80 ou NETWORK do seu oracle home Client, dentro do novo OracleHome\NETWORK para que ele funcione normalmente. 
+
+2) O exemplo dado pela documentação Oracle eh muito fraco, tendo que fazer um trabalho muito grande para se colocar o BLOB dentro do banco, então segue abaixo uma forma mais simples e muito eficiente: 
+
+O Blob deve ser colocado em UPDATE, não sendo possivel quardalo em uma sessão ADDNEW, por isso guarde bem a chave primaria do Registro que está sendo incluido. Dim PassUser As String 
+
+Conecção com o OO4O, retirado de uma classe feita por mim 
+
+'em um modulo Publico
+Public dynAux As OraDynaset
+Public OraSession As OraSession
+Public dbBase As OraDatabase
+
+'na classe
+
+Set vSessao = CreateObject("OracleInProcServer.XOraSession")
+PassUser = vUsuario & "/" & vSenha
+
+On Error Resume Next
+Set vDatabase = vSessao.OpenDatabase(vBanco_Dados, PassUser, 0&)
+
+If Err.Number <> 0 Then
+If Err.Number = -2147417848 Then
+vMsg_Erro = "Usuario/Senha Invalido."
+vConectado = False
+Else
+vMsg_Erro = Err.Number & vbCrLf & Err.Description
+vConectado = False
+End If
+Else
+vMsg_Erro = ""
+vConectado = True
+End If
+
+On Error GoTo 0
+
+Agora a forma de colocar em banco o BLOB 
+
+Dim oraBlob As oraBlob
+
+'Apos a inclusão do registro faça um select na chave primaria 
+'do mesmo
+
+sSql = "select * from Table_name where 
+
+Set dynAux = dbBase.CreateDynaset(sSql, ORADYN_DEFAULT)
+
+Set oraBlob = dynAux.Fields("").Value
+
+dynAux.Edit
+oraBlob.CopyFromFile "" & Ret
+dynAux.Update
+
+'e a recuperação deste da base se da com o oraBlob.CopyToFile 

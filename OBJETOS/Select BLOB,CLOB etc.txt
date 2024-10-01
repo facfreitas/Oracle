@@ -1,0 +1,15 @@
+Select owner, segment_name, partition_name, segment_type,
+        tablespace_name, round(bytes/1024/1024) MB, extents
+from dba_segments
+where 1 = 1
+and owner not in ('SYS','SYSTEM')
+and tablespace_name not like 'TS%'
+and segment_type = 'TABLE'
+and (owner, segment_name) in 
+    (select distinct owner, table_name
+    from dba_tab_columns
+    where 1 = 1
+    and owner not in ('SYS','SYSTEM')
+    and data_type in ('BLOB','CLOB','LONG',
+    'LONG RAW','RAW','SDD_ACC_PRIV_LIST','SDD_SYS_PRIV_LIST','UNDEFINED'))
+order by owner

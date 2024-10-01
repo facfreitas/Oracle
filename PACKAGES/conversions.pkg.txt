@@ -1,0 +1,134 @@
+CREATE OR REPLACE PACKAGE conversions AS
+
+  /* 
+  || BINARY TO INTEGER CONVERSION
+  ||
+  || In: a binary value as a string, e.g. '100101'
+  || Out: an integer value
+  */
+  FUNCTION bin2int(bin VARCHAR2) RETURN PLS_INTEGER;
+  PRAGMA RESTRICT_REFERENCES (bin2int,WNDS,WNPS,RNDS);
+
+  /* 
+  || INTEGER TO BINARY CONVERSION
+  ||
+  || In: an integer value
+  || Out: a binary value as a string
+  */
+  FUNCTION int2bin(int PLS_INTEGER) RETURN VARCHAR2;
+  PRAGMA RESTRICT_REFERENCES (int2bin,WNDS,WNPS,RNDS);
+
+  /* 
+  || HEXADECIMAL TO INTEGER CONVERSION
+  ||
+  || In: a hexadecimal value as a string, e.g. 'AE0'
+  || Out: an integer value
+  */
+  FUNCTION hex2int(hex VARCHAR2) RETURN PLS_INTEGER;
+  PRAGMA RESTRICT_REFERENCES (hex2int,WNDS,WNPS,RNDS);
+
+  /* 
+  || INTEGER TO HEXADECIMAL CONVERSION
+  ||
+  || In: an integer value
+  || Out: a hexadecimal value as a string
+  */
+  FUNCTION int2hex(n PLS_INTEGER) RETURN VARCHAR2;
+  PRAGMA RESTRICT_REFERENCES (int2hex,WNDS,WNPS,RNDS);
+
+  /* 
+  || INTEGER TO ANY BASE CONVERSION
+  ||
+  || In: an integer value, 
+  ||     the base to convert to (up to 16)
+  || Out: the value in the specified base as a string
+  */
+  FUNCTION int2base(int PLS_INTEGER,base PLS_INTEGER) RETURN VARCHAR2;
+  PRAGMA RESTRICT_REFERENCES (int2base,WNDS,WNPS,RNDS);
+
+  /* 
+  || ANY BASE TO INTEGER CONVERSION
+  ||
+  || In: a number in any base (up to 16) as a string, 
+  ||     the base to convert from
+  || Out: an integer value
+  */
+  FUNCTION base2int(num VARCHAR2,base PLS_INTEGER) RETURN PLS_INTEGER;
+  PRAGMA RESTRICT_REFERENCES (base2int,WNDS,WNPS,RNDS);
+
+END conversions;
+/
+
+CREATE OR REPLACE PACKAGE BODY conversions AS
+
+  FUNCTION bin2int (bin VARCHAR2)
+  RETURN PLS_INTEGER IS
+  len PLS_INTEGER := LENGTH(bin);
+  BEGIN
+    IF NVL(len,1) = 1 THEN
+      RETURN bin;
+    ELSE RETURN
+      2 * bin2int(SUBSTR(bin,1,len-1)) + SUBSTR(bin,-1);
+    END IF;
+  END bin2int;
+
+  FUNCTION int2bin(int PLS_INTEGER)
+  RETURN VARCHAR2 IS
+  BEGIN
+  IF int > 0 THEN
+    RETURN int2bin(TRUNC(int/2))||
+      SUBSTR('01',MOD(int,2)+1,1);
+  ELSE
+    RETURN NULL;
+  END IF;
+  END int2bin;
+
+  FUNCTION hex2int(hex VARCHAR2)
+  RETURN PLS_INTEGER IS
+  len PLS_INTEGER := LENGTH(hex);
+  BEGIN
+    IF NVL(len,1) = 1 THEN
+      RETURN INSTR('0123456789ABCDEF',hex) - 1;
+    ELSE
+      RETURN 16 * hex2int(SUBSTR(hex,1,len-1)) +
+        INSTR('0123456789ABCDEF',SUBSTR(hex,-1)) - 1;
+  END IF;
+  END hex2int;
+
+  FUNCTION int2hex(n PLS_INTEGER)
+  RETURN VARCHAR2 IS
+  BEGIN
+  IF n > 0 THEN
+    RETURN int2hex(TRUNC(n/16))||
+      SUBSTR('0123456789ABCDEF',MOD(n,16)+1,1);
+  ELSE
+    RETURN NULL;
+  END IF;
+  END int2hex;
+
+  FUNCTION int2base(int PLS_INTEGER,base PLS_INTEGER)
+  RETURN VARCHAR2 IS
+  BEGIN
+    IF int > 0 THEN
+      RETURN int2base(TRUNC(int/base),base)||
+	   SUBSTR('0123456789ABCDEF',MOD(int,base)+1,1);
+    ELSE
+      RETURN NULL;
+  END IF;
+  END int2base;
+  
+  FUNCTION base2int(num VARCHAR2,base PLS_INTEGER)
+  RETURN PLS_INTEGER IS
+  len PLS_INTEGER := LENGTH(num);
+  BEGIN
+    IF NVL(len,1) = 1 THEN
+      RETURN INSTR('0123456789ABCDEF',num) - 1;
+    ELSE
+      RETURN base * base2int(SUBSTR(num,1,len-1),base) +
+        INSTR('0123456789ABCDEF',SUBSTR(num,-1)) - 1;
+  END IF;
+  END base2int;
+
+END conversions;
+/
+

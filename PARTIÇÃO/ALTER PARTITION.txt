@@ -1,0 +1,19 @@
+ALTER TABLE <TABLE_NAME>
+ADD PARTITION BY RANGE (CAMPO) 
+(  PARTITION DH200209 VALUES LESS THAN (TO_DATE(' 2002-10-01 00:00:00', 'SYYYY-MM-DD HH24:MI:SS', 'NLS_CALENDAR=GREGORIAN'))
+    LOGGING
+    TABLESPACE TS$SLBLPD
+    PCTUSED    80
+    PCTFREE    10
+    INITRANS   1
+    MAXTRANS   255
+    STORAGE    (
+                INITIAL          200M
+                NEXT             20M
+                MINEXTENTS       1
+                MAXEXTENTS       2147483645
+                PCTINCREASE      0
+                FREELISTS        1
+                FREELIST GROUPS  1
+                BUFFER_POOL      DEFAULT
+               )  

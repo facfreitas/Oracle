@@ -1,0 +1,13 @@
+--* Description  : Lists all objects being accessed in the schema.
+
+
+SELECT SUBSTR(A.OBJECT,1,30) OBJECT,
+       A.TYPE,
+       A.SID,
+       B.USERNAME,
+       B.OSUSER,
+       B.PROGRAM
+FROM   V$ACCESS A,
+       V$SESSION B
+WHERE  A.SID   = B.SID
+AND    A.OWNER = UPPER('&1');

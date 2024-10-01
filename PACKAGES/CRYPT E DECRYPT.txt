@@ -1,0 +1,87 @@
+
+rem Script Description: This script creates a database procedure which is used
+rem                     for data encryption and decryption
+rem
+rem Output file:        datacryption.sql
+rem
+rem Prepared By:        Oracle Resource Stop
+rem
+rem Usage Information:  SQLPLUS SYS/pswd
+rem                     @datacryption.sql
+rem
+rem
+create or replace package data_cryption(mask char, data char) as
+function BinaryConvert(mask char) return char;
+function cryption(mask char,data char) return char;
+end data_cryption;
+/
+create package body data_cryption AS
+
+function BinaryConvert(mask char) return char is  
+  outer_loop  number;  
+  value number;  
+  divisor number;  
+  r1    varchar2(30);  
+begin  
+  r1 := '';  
+  value := ascii(mask);   
+  divisor := 128;  
+  for outer_loop in 0..7 loop  
+    if trunc(value/divisor) = 1 then   
+      r1 := r1 || '1';  
+    else  
+      r1 := r1 || '0';  
+    end if;  
+    value := value mod divisor;  
+    divisor := divisor / 2;  
+  end loop;  
+  return r1;  
+end;  
+
+function cryption(mask char,data char) return char is  
+  outer_loop   number;  
+  inner_loop  number;  
+  r1     varchar2(8);  
+  r2     varchar2(8);  
+  r3     number;       
+  result varchar2(40);  
+  divisor  number;  
+begin  
+  result := '';  
+  for outer_loop in 1..length(mask) loop  
+    r1 := BinaryConvert(substr(mask,outer_loop,1));  
+    r2 := BinaryConvert(substr(data,outer_loop,1));  
+    divisor := 128;  
+    r3    := 0;  
+    for inner_loop in 1..8 loop  
+      if to_number(substr(r1,inner_loop,1))+to_number(substr(r2,inner_loop,1))=1 then  
+        r3 := r3 + divisor;  
+      end if;  
+      divisor := divisor / 2;  
+    end loop;  
+    result := result || chr(r3);  
+  end loop;  
+  return(result);  
+end;  
+End data_cryption;
+/  
+
+/* ____________  Sample  ________________ */  
+
+set serveroutput on  
+declare  
+  result  varchar2(30);  
+  mask    varchar2(30);  
+begin  
+  mask    := 'abc'; /* Must be greater or equal to the value that  
+                       will be "Encrypted" */  
+  
+  result := cryption('ABD',mask);  /* "Encrypt" */  
+  dbms_output.put_line(result);  
+  
+  result := cryption(result,mask); /* "Decrypt" */  
+  dbms_output.put_line(result);  
+  
+end;  
+/ 
+

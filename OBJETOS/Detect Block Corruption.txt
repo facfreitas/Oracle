@@ -1,0 +1,262 @@
+Proactive Measures to Detect Block Corruption
+
+This tip comes from Bipra Chatterjee, a Project Leader in Sunnyvale California.
+
+Oracle provides different methods for detecting and correcting data block corruption. This tip gives details on the different techniques available.
+
+All the scripts are recommended to run againt 'SYS' user.
+
+
+USING DBMS_REPAIR 
+1. Create a repair table. 
+Execute the following from SQL prompt as 'SYS' to create repair table (run only once). Tablespace should be an existing tablespace in the SQL statement.
+
+BEGIN
+DBMS_REPAIR.ADMIN_TABLES (
+TABLE_NAME => 'REPAIR_TABLE',
+TABLE_TYPE => dbms_repair.repair_table,
+ACTION => dbms_repair.create_action,
+TABLESPACE => 'OFDTBL');
+END;
+/
+
+2. Check to see that the repair table was created properly. 
+
+
+DESC REPAIR_TABLE;
+
+
+3. Detect corrupt blocks for tables.
+Set this up as a cron job to check for corruptions regularly with a specified interval, if required.
+
+set serveroutput on;
+Spool repair.log
+
+Declare
+num_corrupt INT;
+p_username dba_users.username%type;
+p_table_name dba_tables.table_name%type;
+
+Begin
+
+dbms_output.enable(200000000000);
+
+for c_1 in ( select username from dba_users)
+loop
+	DBMS_OUTPUT.PUT_LINE('Started Checking for '
+                              ||c_1.username
+                            );
+
+	for c_2 in ( select table_name from dba_tables
+            where owner = c_1.username 
+            and owner not in ('SYS','SYSTEM') 
+and table_name not in
+            (
+             select table_name from dba_tables
+             where tablespace_name is null
+            )
+            )
+      loop
+                p_username := c_1.username;
+                p_table_name := c_2.table_name;
+
+	DBMS_OUTPUT.PUT_LINE('Started Checking for '
+                              ||c_2.table_name
+                            );
+
+		DBMS_REPAIR.CHECK_OBJECT (
+		p_username,
+		p_table_name,
+                NULL,
+                dbms_repair.TABLE_OBJECT,
+		'REPAIR_TABLE',
+                NULL,
+                NULL,
+                NULL,
+                NULL,
+		num_corrupt);
+
+		DBMS_OUTPUT.PUT_LINE('For table '
+                                 ||c_1.username
+                                 ||'.'
+                                 ||c_2.table_name
+                                 ||' Number corrupt: '
+                                 ||TO_CHAR (num_corrupt)
+                                );
+	end loop;
+
+	DBMS_OUTPUT.PUT_LINE('Finished Checking for '
+                              ||c_1.username
+                            );
+end loop;
+End;
+/
+
+
+4. Fix corrupt block procedure for tables.
+This step fixes the corrupt blocks reported earlier in the 'check_object' procedure which is captured in the repair table. You can also use the 'skip_corrupt_blocks' procedure, described in Step 5, to skip the corrupted blocks.
+
+set serveroutput on;
+Spool fix.log
+
+Declare
+num_fix INT;
+
+Begin
+
+dbms_output.enable(200000000000);
+
+for c_1 in ( select schema_name,object_name from repair_table )
+loop
+	num_fix := 0;
+
+	DBMS_REPAIR.FIX_CORRUPT_BLOCKS (
+	c_1.schema_name,
+	c_1.OBJECT_NAME,
+        null,
+	dbms_repair.table_object,
+	'REPAIR_TABLE',
+        null,
+	num_fix);
+End loop;
+
+End;
+/
+
+
+5. Skip corrupt block procedure for tables.
+This step skips the corrupt blocks reported earlier in the 'check_ object' procedure which is captured in the repair table. You can also use the 'fix_corrupt_blocks' procedure in Step 4 to fix the corrupted blocks.
+
+set serveroutput on;                                                      
+Spool fix.log                                                             
+                                                                          
+Declare                                                                   
+num_fix INT;                                                              
+                                                                          
+Begin                                                                     
+                                                                          
+dbms_output.enable(200000000000);                                         
+                                                                          
+for c_1 in ( select schema_name,object_name from repair_table )           
+loop                                                                      
+        num_fix := 0;                                                     
+                                                                          
+        DBMS_REPAIR.SKIP_CORRUPT_BLOCKS (                                 
+        c_1.schema_name,                                                  
+        c_1.OBJECT_NAME,                                                  
+        dbms_repair.table_object,                                         
+        dbms_repair.skip_flag                                             
+        );                                                                
+End loop;                                                                 
+                                                                          
+End;                                                                      
+
+6. Create the orphan table to report problems for corrupted indexes. 
+
+
+BEGIN
+DBMS_REPAIR.ADMIN_TABLES (
+TABLE_NAME => 'ORPHAN_KEY_TABLE',
+TABLE_TYPE => dbms_repair.orphan_table,
+ACTION => dbms_repair.create_action,
+TABLESPACE => 'OFDTBL');
+END;
+/
+
+7. Populate the 'orphan key_table' for the corrupted indexes for the tables reported in repair table. 
+
+
+set serveroutput on;                                                       
+DECLARE                                                                    
+num_orphans INT;                                                           
+BEGIN                                                                      
+dbms_output.enable(200000000000);                                          
+        for c_1 in ( select schema_name,object_name from repair_table )    
+        loop                                                               
+        num_orphans := 0;                                                  
+                DBMS_REPAIR.DUMP_ORPHAN_KEYS (                             
+                SCHEMA_NAME => c_1.schema_name,                            
+                OBJECT_NAME => c_1.object_name,                            
+                OBJECT_TYPE => dbms_repair.index_object,                   
+                REPAIR_TABLE_NAME => 'REPAIR_TABLE',                       
+                ORPHAN_TABLE_NAME=> 'ORPHAN_KEY_TABLE',                    
+                KEY_COUNT => num_orphans);                                 
+                                                                           
+        DBMS_OUTPUT.PUT_LINE('orphan key count: ' || to_char(num_orphans));
+        end loop;                                                          
+END;                                                                       
+/ 
+
+8. Fixing the orphan keys using 'index rebuild'. 
+
+
+set serveroutput on;
+set echo off;
+set head off;
+set pages 0
+
+Spool fix_orphan_key.sql
+
+select 'spool fix_orphan_key.log' from dual;
+
+select 'Alter index '||schema_name||'.'||index_name||' rebuild online;'
+  from orphan_key_table
+;
+
+select 'spool off; ' from dual;
+
+spool off;
+
+start fix_orphan_key.sql
+USING ANALYZE TABLE
+The 'ANALYZE TABLE...VALIDATE STRUCTURE' statement validates the structure of the analyzed object. If Oracle successfully validates the structure, a message confirming its validation is returned to you, or, if Oracle encounters corruption in the structure of the object, an error message is returned to you. In the case of the latter, you would drop and re-create the object or use the above method to fix the problems.
+The following script can be used to identify block corruptions. 
+
+
+set serveroutput on;                                                     
+set echo off;                                                            
+set head off;                                                            
+set pages 0                                                              
+                                                                         
+Spool detect_block_cor.sql                                               
+                                                                         
+select 'spool detect_block_cor.log' from dual;                           
+                                                                         
+select 'Analyze table '||owner||'.'||table_name||' validate structure;'  
+  from dba_tables                                                        
+ where tablespace_name is not null                                       
+   and owner not in ('SYS','SYSTEM')                                     
+;                                                                        
+                                                                         
+select 'spool off; ' from dual;                   
+
+spool off;                       
+                                                                         
+start detect_block_cor.sql 
+USING DB VERIFY
+'DB VERIFY' is an external utility which checks the integrity of a data file and reports any problems encountered for those files.
+1. Start the DATABASE and run the following script to create the shell file, 'dbv.sh'. 
+
+
+set serveroutput on;                                                         
+set echo off;                                                                
+set head off;                                                                
+set pages 0                                                                  
+set feedback off;                                                            
+                                                                             
+spool dbv.sh                                                                 
+                                                                             
+                                                                             
+select 'dbv '||' file ='||file_name||' feedback=100'||' BLOCKSIZE ='||value  
+  from dba_data_files, v$parameter                                           
+  where v$parameter.name = 'db_block_size'                                   
+;                                                                            
+                                                                             
+spool off;
+2. Shut down the database and run the shell file in command prompt to detect any errors. 
+
+$chmod 777 dbv.sh
+$dbv.sh
+
+Note: These scripts are not yet fully tested. Use at your own risk.
+

@@ -1,0 +1,27 @@
+
+/* Script Description: This script will identify objects granted directly to users and will dynamically
+                       generate a script for duplication.
+
+   Output file:        privdup.sql
+
+   Prepared By:        TheOracleResourceStop Script Archive
+                       www.orsweb.com
+
+   Usage Information:  SQLPLUS SYS/pswd
+                       @duplicateprivs.sql
+*/
+
+set lines 132 pages 0 echo on ver off;
+ 
+spool privdup.sql
+
+select 'grant '||privilege||' on '||grantor||'.'||table_name||' to '||grantee||';'
+from dba_tab_privs
+where grantor not in ('PUBLIC','SYS','SYSTEM')
+  and grantor = upper('&&grantor_id')
+  and grantee not in (select role from dba_roles)
+order by grantee, table_name;
+
+spool off;
+undefine grantor_id;
+

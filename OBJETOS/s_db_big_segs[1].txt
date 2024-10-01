@@ -1,0 +1,25 @@
+-- ===================================================================================
+-- PROGRAM NAME  : N/A
+-- SOURCE NAME   : s_db_big_segs.sql
+-- AUTHOR        : Vitaliy Mogilevskiy / vit100gain@earthlink.net
+-- DATE CREATED  : 09/09/1999
+-- APPLICATION   : N/A
+-- VERSION       : N/A
+-- DESCRIPTION   : Reports Segments Which are > 20MB
+-- EXAMPLE       : N/A
+-- ===================================================================================
+-- MODIFICATION HISTORY
+-- ===================================================================================
+-- DATE      NAME          DESCRIPTION
+-- -----------------------------------------------------------------------------------
+-- -----------------------------------------------------------------------------------
+
+
+col segment_name format a45 heading "Segment Name"
+
+select owner||'.'||segment_name Segment_Name
+,      segment_type             "Segment Type"
+,      bytes/1024/1024     "Size In MB"
+from dba_segments
+where bytes > 20*1024*1024
+/

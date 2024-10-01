@@ -1,0 +1,47 @@
+This script was posted by to the list and I found it very useful:
+
+
+rem ***************************************************************
+rem * file: comp_all.sql  created: 06/10/96    by: Robert Cordingley
+rem * purpose: compile all database stored objects. 
+rem * to use:  log in using a the appropriate account then execute
+rem *          this script using the following syntax:
+rem *
+rem *            SQL> @comp_all
+rem *
+rem * NOTE:    You should not have to run this script more than
+rem *          once since it uses the order_object_by_dependency
+rem *          table to compile objects in the proper order.  Any
+rem *          compilation errors generated should be investigated.
+rem ***************************************************************
+ 
+set heading off 
+set pagesize 0 
+set lines 79 
+set verify off 
+set echo off 
+set feedback off
+
+ 
+spool comp_all.tmp
+ 
+select
+    decode( OBJECT_TYPE, 'PACKAGE BODY',
+    'alter package ' || OWNER||'.'||OBJECT_NAME || ' compile body;',
+    'alter ' || OBJECT_TYPE || ' ' || OWNER||'.'||OBJECT_NAME || ' compile;' )
+from
+    dba_objects a,
+    sys.order_object_by_dependency b
+where
+    A.OBJECT_ID = B.OBJECT_ID(+) and
+    STATUS = 'INVALID' and
+    OBJECT_TYPE in ( 'PACKAGE BODY', 'PACKAGE', 'FUNCTION', 'PROCEDURE',
+                      'TRIGGER', 'VIEW' )
+order by
+    DLEVEL DESC,
+    OBJECT_TYPE,
+    OBJECT_NAME;
+ 
+spool off
+ 
+@comp_all.tmp

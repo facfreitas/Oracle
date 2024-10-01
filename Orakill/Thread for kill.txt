@@ -1,0 +1,3 @@
+SELECT spid, osuser, s.program 
+FROM v$process p, v$session s 
+WHERE p.addr=s.paddr;

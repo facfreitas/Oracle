@@ -1,0 +1,1015 @@
+
+
+***********************************************************************
+Fatal NI connect error 12523, connecting to:
+ (DESCRIPTION=(LOAD_BALANCE=ON)(ADDRESS=(PROTOCOL=TCP)(Host=GARIBALDI)(Port=2118)(PROTOCOL=TCP)(Host=GARIBALDI)(Port=2119)(PROTOCOL=TCP)(Host=GARIBALDI)(Port=2120))(CONNECT_DATA=(SERVER=SHARED)(SERVICE_NAME=NFSE)(CID=(PROGRAM=C:\Arquivos?de?programas\Quest?Software\Toad?for?Oracle\toad.exe)(HOST=P2578)(USER=ffreitas))))
+
+  VERSION INFORMATION:
+	TNS for 32-bit Windows: Version 9.2.0.8.0 - Production
+	Windows NT TCP/IP NT Protocol Adapter for 32-bit Windows: Version 9.2.0.8.0 - Production
+  Time: 22-NOV-2010 14:26:45
+  Tracing not turned on.
+  Tns error struct:
+    ns main err code: 12564
+    TNS-12564: TNS:conexão recusada
+    ns secondary err code: 0
+    nt main err code: 0
+    nt secondary err code: 0
+    nt OS err code: 0
+
+
+***********************************************************************
+Fatal NI connect error 12519, connecting to:
+ (DESCRIPTION=(ADDRESS=(PROTOCOL=TCP)(Host=GARIBALDI)(Port=2119))(CONNECT_DATA=(SID=NFSE)(SERVER=SHARED)(CID=(PROGRAM=C:\Arquivos?de?programas\Quest?Software\Toad?for?Oracle\toad.exe)(HOST=P2578)(USER=ffreitas))))
+
+  VERSION INFORMATION:
+	TNS for 32-bit Windows: Version 9.2.0.8.0 - Production
+	Windows NT TCP/IP NT Protocol Adapter for 32-bit Windows: Version 9.2.0.8.0 - Production
+  Time: 22-NOV-2010 14:38:59
+  Tracing not turned on.
+  Tns error struct:
+    ns main err code: 12564
+    TNS-12564: TNS:conexão recusada
+    ns secondary err code: 0
+    nt main err code: 0
+    nt secondary err code: 0
+    nt OS err code: 0
+
+
+***********************************************************************
+Fatal NI connect error 12519, connecting to:
+ (DESCRIPTION=(ADDRESS=(PROTOCOL=TCP)(Host=GARIBALDI)(Port=2119))(CONNECT_DATA=(SID=NFSE)(SERVER=SHARED)(CID=(PROGRAM=C:\Arquivos?de?programas\Quest?Software\Toad?for?Oracle\toad.exe)(HOST=P2578)(USER=ffreitas))))
+
+  VERSION INFORMATION:
+	TNS for 32-bit Windows: Version 9.2.0.8.0 - Production
+	Windows NT TCP/IP NT Protocol Adapter for 32-bit Windows: Version 9.2.0.8.0 - Production
+  Time: 22-NOV-2010 14:47:47
+  Tracing not turned on.
+  Tns error struct:
+    ns main err code: 12564
+    TNS-12564: TNS:conexão recusada
+    ns secondary err code: 0
+    nt main err code: 0
+    nt secondary err code: 0
+    nt OS err code: 0
+
+
+***********************************************************************
+Fatal NI connect error 12519, connecting to:
+ (DESCRIPTION=(ADDRESS=(PROTOCOL=TCP)(Host=GARIBALDI)(Port=2119))(CONNECT_DATA=(SID=NFSE)(SERVER=SHARED)(CID=(PROGRAM=C:\Arquivos?de?programas\Quest?Software\Toad?for?Oracle\toad.exe)(HOST=P2578)(USER=ffreitas))))
+
+  VERSION INFORMATION:
+	TNS for 32-bit Windows: Version 9.2.0.8.0 - Production
+	Windows NT TCP/IP NT Protocol Adapter for 32-bit Windows: Version 9.2.0.8.0 - Production
+  Time: 22-NOV-2010 15:07:40
+  Tracing not turned on.
+  Tns error struct:
+    ns main err code: 12564
+    TNS-12564: TNS:conexão recusada
+    ns secondary err code: 0
+    nt main err code: 0
+    nt secondary err code: 0
+    nt OS err code: 0
+
+
+***********************************************************************
+Fatal NI connect error 12523, connecting to:
+ (DESCRIPTION=(ADDRESS=(PROTOCOL=TCP)(Host=GARIBALDI)(Port=2118))(CONNECT_DATA=(SERVICE_NAME=NFSE)(SERVER=SHARED)(CID=(PROGRAM=C:\Arquivos?de?programas\Quest?Software\Toad?for?Oracle\toad.exe)(HOST=P2578)(USER=ffreitas))))
+
+  VERSION INFORMATION:
+	TNS for 32-bit Windows: Version 9.2.0.8.0 - Production
+	Windows NT TCP/IP NT Protocol Adapter for 32-bit Windows: Version 9.2.0.8.0 - Production
+  Time: 22-NOV-2010 15:08:08
+  Tracing not turned on.
+  Tns error struct:
+    ns main err code: 12564
+    TNS-12564: TNS:conexão recusada
+    ns secondary err code: 0
+    nt main err code: 0
+    nt secondary err code: 0
+    nt OS err code: 0
+
+
+***********************************************************************
+Fatal NI connect error 12519, connecting to:
+ (DESCRIPTION=(ADDRESS=(PROTOCOL=TCP)(Host=GARIBALDI)(Port=2120))(CONNECT_DATA=(SID=NFSE)(SERVER=SHARED)(CID=(PROGRAM=C:\Arquivos?de?programas\Quest?Software\Toad?for?Oracle\toad.exe)(HOST=P2578)(USER=ffreitas))))
+
+  VERSION INFORMATION:
+	TNS for 32-bit Windows: Version 9.2.0.8.0 - Production
+	Windows NT TCP/IP NT Protocol Adapter for 32-bit Windows: Version 9.2.0.8.0 - Production
+  Time: 22-NOV-2010 15:08:30
+  Tracing not turned on.
+  Tns error struct:
+    ns main err code: 12564
+    TNS-12564: TNS:conexão recusada
+    ns secondary err code: 0
+    nt main err code: 0
+    nt secondary err code: 0
+    nt OS err code: 0
+
+
+***********************************************************************
+Fatal NI connect error 12519, connecting to:
+ (DESCRIPTION=(ADDRESS=(PROTOCOL=TCP)(Host=GARIBALDI)(Port=2119))(CONNECT_DATA=(SID=NFSE)(SERVER=SHARED)(CID=(PROGRAM=C:\Arquivos?de?programas\Quest?Software\Toad?for?Oracle\toad.exe)(HOST=P2578)(USER=ffreitas))))
+
+  VERSION INFORMATION:
+	TNS for 32-bit Windows: Version 9.2.0.8.0 - Production
+	Windows NT TCP/IP NT Protocol Adapter for 32-bit Windows: Version 9.2.0.8.0 - Production
+  Time: 22-NOV-2010 15:08:32
+  Tracing not turned on.
+  Tns error struct:
+    ns main err code: 12564
+    TNS-12564: TNS:conexão recusada
+    ns secondary err code: 0
+    nt main err code: 0
+    nt secondary err code: 0
+    nt OS err code: 0
+
+
+***********************************************************************
+Fatal NI connect error 12519, connecting to:
+ (DESCRIPTION=(ADDRESS=(PROTOCOL=TCP)(Host=GARIBALDI)(Port=2119))(CONNECT_DATA=(SID=NFSE)(SERVER=SHARED)(CID=(PROGRAM=C:\Arquivos?de?programas\Quest?Software\Toad?for?Oracle\toad.exe)(HOST=P2578)(USER=ffreitas))))
+
+  VERSION INFORMATION:
+	TNS for 32-bit Windows: Version 9.2.0.8.0 - Production
+	Windows NT TCP/IP NT Protocol Adapter for 32-bit Windows: Version 9.2.0.8.0 - Production
+  Time: 22-NOV-2010 15:10:00
+  Tracing not turned on.
+  Tns error struct:
+    ns main err code: 12564
+    TNS-12564: TNS:conexão recusada
+    ns secondary err code: 0
+    nt main err code: 0
+    nt secondary err code: 0
+    nt OS err code: 0
+
+
+***********************************************************************
+Fatal NI connect error 12519, connecting to:
+ (DESCRIPTION=(ADDRESS=(PROTOCOL=TCP)(Host=GARIBALDI)(Port=2120))(CONNECT_DATA=(SID=NFSE)(SERVER=SHARED)(CID=(PROGRAM=C:\Arquivos?de?programas\Quest?Software\Toad?for?Oracle\toad.exe)(HOST=P2578)(USER=ffreitas))))
+
+  VERSION INFORMATION:
+	TNS for 32-bit Windows: Version 9.2.0.8.0 - Production
+	Windows NT TCP/IP NT Protocol Adapter for 32-bit Windows: Version 9.2.0.8.0 - Production
+  Time: 22-NOV-2010 15:10:01
+  Tracing not turned on.
+  Tns error struct:
+    ns main err code: 12564
+    TNS-12564: TNS:conexão recusada
+    ns secondary err code: 0
+    nt main err code: 0
+    nt secondary err code: 0
+    nt OS err code: 0
+
+
+***********************************************************************
+Fatal NI connect error 12523, connecting to:
+ (DESCRIPTION=(LOAD_BALANCE=ON)(ADDRESS=(PROTOCOL=TCP)(Host=GARIBALDI)(Port=2118)(PROTOCOL=TCP)(Host=GARIBALDI)(Port=2119)(PROTOCOL=TCP)(Host=GARIBALDI)(Port=2120))(CONNECT_DATA=(SERVER=SHARED)(SERVICE_NAME=NFSE)(CID=(PROGRAM=C:\Arquivos?de?programas\Quest?Software\Toad?for?Oracle\toad.exe)(HOST=P2578)(USER=ffreitas))))
+
+  VERSION INFORMATION:
+	TNS for 32-bit Windows: Version 9.2.0.8.0 - Production
+	Windows NT TCP/IP NT Protocol Adapter for 32-bit Windows: Version 9.2.0.8.0 - Production
+  Time: 22-NOV-2010 15:17:39
+  Tracing not turned on.
+  Tns error struct:
+    ns main err code: 12564
+    TNS-12564: TNS:conexão recusada
+    ns secondary err code: 0
+    nt main err code: 0
+    nt secondary err code: 0
+    nt OS err code: 0
+
+
+***********************************************************************
+Fatal NI connect error 12519, connecting to:
+ (DESCRIPTION=(ADDRESS=(PROTOCOL=TCP)(Host=GARIBALDI)(Port=2119))(CONNECT_DATA=(SID=NFSE)(SERVER=SHARED)(CID=(PROGRAM=C:\Arquivos?de?programas\Quest?Software\Toad?for?Oracle\toad.exe)(HOST=P2578)(USER=ffreitas))))
+
+  VERSION INFORMATION:
+	TNS for 32-bit Windows: Version 9.2.0.8.0 - Production
+	Windows NT TCP/IP NT Protocol Adapter for 32-bit Windows: Version 9.2.0.8.0 - Production
+  Time: 22-NOV-2010 15:36:24
+  Tracing not turned on.
+  Tns error struct:
+    ns main err code: 12564
+    TNS-12564: TNS:conexão recusada
+    ns secondary err code: 0
+    nt main err code: 0
+    nt secondary err code: 0
+    nt OS err code: 0
+
+
+***********************************************************************
+Fatal NI connect error 12523, connecting to:
+ (DESCRIPTION=(LOAD_BALANCE=ON)(ADDRESS=(PROTOCOL=TCP)(Host=GARIBALDI)(Port=2118)(PROTOCOL=TCP)(Host=GARIBALDI)(Port=2119)(PROTOCOL=TCP)(Host=GARIBALDI)(Port=2120))(CONNECT_DATA=(SERVER=SHARED)(SERVICE_NAME=NFSE)(CID=(PROGRAM=C:\Arquivos?de?programas\Quest?Software\Toad?for?Oracle\toad.exe)(HOST=P2578)(USER=ffreitas))))
+
+  VERSION INFORMATION:
+	TNS for 32-bit Windows: Version 9.2.0.8.0 - Production
+	Windows NT TCP/IP NT Protocol Adapter for 32-bit Windows: Version 9.2.0.8.0 - Production
+  Time: 22-NOV-2010 15:36:31
+  Tracing not turned on.
+  Tns error struct:
+    ns main err code: 12564
+    TNS-12564: TNS:conexão recusada
+    ns secondary err code: 0
+    nt main err code: 0
+    nt secondary err code: 0
+    nt OS err code: 0
+
+
+***********************************************************************
+Fatal NI connect error 12523, connecting to:
+ (DESCRIPTION=(LOAD_BALANCE=ON)(ADDRESS=(PROTOCOL=TCP)(Host=AMARALINA)(Port=2118)(PROTOCOL=TCP)(Host=AMARALINA)(Port=2119)(PROTOCOL=TCP)(Host=AMARALINA)(Port=2120))(CONNECT_DATA=(SERVER=SHARED)(SERVICE_NAME=SCA)(CID=(PROGRAM=C:\Arquivos?de?programas\Quest?Software\Toad?for?Oracle\toad.exe)(HOST=P2578)(USER=ffreitas))))
+
+  VERSION INFORMATION:
+	TNS for 32-bit Windows: Version 9.2.0.8.0 - Production
+	Windows NT TCP/IP NT Protocol Adapter for 32-bit Windows: Version 9.2.0.8.0 - Production
+  Time: 22-NOV-2010 15:41:50
+  Tracing not turned on.
+  Tns error struct:
+    ns main err code: 12564
+    TNS-12564: TNS:conexão recusada
+    ns secondary err code: 0
+    nt main err code: 0
+    nt secondary err code: 0
+    nt OS err code: 0
+
+
+***********************************************************************
+Fatal NI connect error 12523, connecting to:
+ (DESCRIPTION=(LOAD_BALANCE=ON)(ADDRESS=(PROTOCOL=TCP)(Host=AMARALINA)(Port=2118)(PROTOCOL=TCP)(Host=AMARALINA)(Port=2119)(PROTOCOL=TCP)(Host=AMARALINA)(Port=2120))(CONNECT_DATA=(SERVER=SHARED)(SERVICE_NAME=SCA)(CID=(PROGRAM=C:\Arquivos?de?programas\Quest?Software\Toad?for?Oracle\toad.exe)(HOST=P2578)(USER=ffreitas))))
+
+  VERSION INFORMATION:
+	TNS for 32-bit Windows: Version 9.2.0.8.0 - Production
+	Windows NT TCP/IP NT Protocol Adapter for 32-bit Windows: Version 9.2.0.8.0 - Production
+  Time: 22-NOV-2010 15:42:14
+  Tracing not turned on.
+  Tns error struct:
+    ns main err code: 12564
+    TNS-12564: TNS:conexão recusada
+    ns secondary err code: 0
+    nt main err code: 0
+    nt secondary err code: 0
+    nt OS err code: 0
+
+
+***********************************************************************
+Fatal NI connect error 12523, connecting to:
+ (DESCRIPTION=(LOAD_BALANCE=ON)(ADDRESS=(PROTOCOL=TCP)(Host=AMARALINA)(Port=2118)(PROTOCOL=TCP)(Host=AMARALINA)(Port=2119)(PROTOCOL=TCP)(Host=AMARALINA)(Port=2120))(CONNECT_DATA=(SERVER=SHARED)(SERVICE_NAME=SCA)(CID=(PROGRAM=C:\Arquivos?de?programas\Quest?Software\Toad?for?Oracle\toad.exe)(HOST=P2578)(USER=ffreitas))))
+
+  VERSION INFORMATION:
+	TNS for 32-bit Windows: Version 9.2.0.8.0 - Production
+	Windows NT TCP/IP NT Protocol Adapter for 32-bit Windows: Version 9.2.0.8.0 - Production
+  Time: 22-NOV-2010 15:42:18
+  Tracing not turned on.
+  Tns error struct:
+    ns main err code: 12564
+    TNS-12564: TNS:conexão recusada
+    ns secondary err code: 0
+    nt main err code: 0
+    nt secondary err code: 0
+    nt OS err code: 0
+
+
+***********************************************************************
+Fatal NI connect error 12523, connecting to:
+ (DESCRIPTION=(LOAD_BALANCE=ON)(ADDRESS=(PROTOCOL=TCP)(Host=AMARALINA)(Port=2118)(PROTOCOL=TCP)(Host=AMARALINA)(Port=2119)(PROTOCOL=TCP)(Host=AMARALINA)(Port=2120))(CONNECT_DATA=(SERVER=SHARED)(SERVICE_NAME=SCA)(CID=(PROGRAM=C:\Arquivos?de?programas\Quest?Software\Toad?for?Oracle\toad.exe)(HOST=P2578)(USER=ffreitas))))
+
+  VERSION INFORMATION:
+	TNS for 32-bit Windows: Version 9.2.0.8.0 - Production
+	Windows NT TCP/IP NT Protocol Adapter for 32-bit Windows: Version 9.2.0.8.0 - Production
+  Time: 22-NOV-2010 15:53:02
+  Tracing not turned on.
+  Tns error struct:
+    ns main err code: 12564
+    TNS-12564: TNS:conexão recusada
+    ns secondary err code: 0
+    nt main err code: 0
+    nt secondary err code: 0
+    nt OS err code: 0
+
+
+***********************************************************************
+Fatal NI connect error 12519, connecting to:
+ (DESCRIPTION=(ADDRESS=(PROTOCOL=TCP)(Host=GARIBALDI)(Port=2119))(CONNECT_DATA=(SID=NFSE)(SERVER=SHARED)(CID=(PROGRAM=C:\Arquivos?de?programas\Quest?Software\Toad?for?Oracle\toad.exe)(HOST=P2578)(USER=ffreitas))))
+
+  VERSION INFORMATION:
+	TNS for 32-bit Windows: Version 9.2.0.8.0 - Production
+	Windows NT TCP/IP NT Protocol Adapter for 32-bit Windows: Version 9.2.0.8.0 - Production
+  Time: 22-NOV-2010 15:54:35
+  Tracing not turned on.
+  Tns error struct:
+    ns main err code: 12564
+    TNS-12564: TNS:conexão recusada
+    ns secondary err code: 0
+    nt main err code: 0
+    nt secondary err code: 0
+    nt OS err code: 0
+
+
+***********************************************************************
+Fatal NI connect error 12519, connecting to:
+ (DESCRIPTION=(ADDRESS=(PROTOCOL=TCP)(Host=GARIBALDI)(Port=2120))(CONNECT_DATA=(SID=NFSE)(SERVER=SHARED)(CID=(PROGRAM=C:\Arquivos?de?programas\Quest?Software\Toad?for?Oracle\toad.exe)(HOST=P2578)(USER=ffreitas))))
+
+  VERSION INFORMATION:
+	TNS for 32-bit Windows: Version 9.2.0.8.0 - Production
+	Windows NT TCP/IP NT Protocol Adapter for 32-bit Windows: Version 9.2.0.8.0 - Production
+  Time: 22-NOV-2010 15:54:37
+  Tracing not turned on.
+  Tns error struct:
+    ns main err code: 12564
+    TNS-12564: TNS:conexão recusada
+    ns secondary err code: 0
+    nt main err code: 0
+    nt secondary err code: 0
+    nt OS err code: 0
+
+
+***********************************************************************
+Fatal NI connect error 12519, connecting to:
+ (DESCRIPTION=(ADDRESS=(PROTOCOL=TCP)(Host=GARIBALDI)(Port=2120))(CONNECT_DATA=(SID=NFSE)(SERVER=SHARED)(CID=(PROGRAM=C:\Arquivos?de?programas\Quest?Software\Toad?for?Oracle\toad.exe)(HOST=P2578)(USER=ffreitas))))
+
+  VERSION INFORMATION:
+	TNS for 32-bit Windows: Version 9.2.0.8.0 - Production
+	Windows NT TCP/IP NT Protocol Adapter for 32-bit Windows: Version 9.2.0.8.0 - Production
+  Time: 22-NOV-2010 15:55:13
+  Tracing not turned on.
+  Tns error struct:
+    ns main err code: 12564
+    TNS-12564: TNS:conexão recusada
+    ns secondary err code: 0
+    nt main err code: 0
+    nt secondary err code: 0
+    nt OS err code: 0
+
+
+***********************************************************************
+Fatal NI connect error 12519, connecting to:
+ (DESCRIPTION=(ADDRESS=(PROTOCOL=TCP)(Host=GARIBALDI)(Port=2120))(CONNECT_DATA=(SID=NFSE)(SERVER=SHARED)(CID=(PROGRAM=C:\Arquivos?de?programas\Quest?Software\Toad?for?Oracle\toad.exe)(HOST=P2578)(USER=ffreitas))))
+
+  VERSION INFORMATION:
+	TNS for 32-bit Windows: Version 9.2.0.8.0 - Production
+	Windows NT TCP/IP NT Protocol Adapter for 32-bit Windows: Version 9.2.0.8.0 - Production
+  Time: 22-NOV-2010 15:56:44
+  Tracing not turned on.
+  Tns error struct:
+    ns main err code: 12564
+    TNS-12564: TNS:conexão recusada
+    ns secondary err code: 0
+    nt main err code: 0
+    nt secondary err code: 0
+    nt OS err code: 0
+
+
+***********************************************************************
+Fatal NI connect error 12519, connecting to:
+ (DESCRIPTION=(ADDRESS=(PROTOCOL=TCP)(Host=GARIBALDI)(Port=2119))(CONNECT_DATA=(SID=NFSE)(SERVER=SHARED)(CID=(PROGRAM=C:\Arquivos?de?programas\Quest?Software\Toad?for?Oracle\toad.exe)(HOST=P2578)(USER=ffreitas))))
+
+  VERSION INFORMATION:
+	TNS for 32-bit Windows: Version 9.2.0.8.0 - Production
+	Windows NT TCP/IP NT Protocol Adapter for 32-bit Windows: Version 9.2.0.8.0 - Production
+  Time: 22-NOV-2010 15:59:00
+  Tracing not turned on.
+  Tns error struct:
+    ns main err code: 12564
+    TNS-12564: TNS:conexão recusada
+    ns secondary err code: 0
+    nt main err code: 0
+    nt secondary err code: 0
+    nt OS err code: 0
+
+
+***********************************************************************
+Fatal NI connect error 12519, connecting to:
+ (DESCRIPTION=(ADDRESS=(PROTOCOL=TCP)(Host=GARIBALDI)(Port=2119))(CONNECT_DATA=(SID=NFSE)(SERVER=SHARED)(CID=(PROGRAM=C:\Arquivos?de?programas\Quest?Software\Toad?for?Oracle\toad.exe)(HOST=P2578)(USER=ffreitas))))
+
+  VERSION INFORMATION:
+	TNS for 32-bit Windows: Version 9.2.0.8.0 - Production
+	Windows NT TCP/IP NT Protocol Adapter for 32-bit Windows: Version 9.2.0.8.0 - Production
+  Time: 22-NOV-2010 15:59:40
+  Tracing not turned on.
+  Tns error struct:
+    ns main err code: 12564
+    TNS-12564: TNS:conexão recusada
+    ns secondary err code: 0
+    nt main err code: 0
+    nt secondary err code: 0
+    nt OS err code: 0
+
+
+***********************************************************************
+Fatal NI connect error 12519, connecting to:
+ (DESCRIPTION=(ADDRESS=(PROTOCOL=TCP)(Host=GARIBALDI)(Port=2120))(CONNECT_DATA=(SID=NFSE)(SERVER=SHARED)(CID=(PROGRAM=C:\Arquivos?de?programas\Quest?Software\Toad?for?Oracle\toad.exe)(HOST=P2578)(USER=ffreitas))))
+
+  VERSION INFORMATION:
+	TNS for 32-bit Windows: Version 9.2.0.8.0 - Production
+	Windows NT TCP/IP NT Protocol Adapter for 32-bit Windows: Version 9.2.0.8.0 - Production
+  Time: 22-NOV-2010 15:59:41
+  Tracing not turned on.
+  Tns error struct:
+    ns main err code: 12564
+    TNS-12564: TNS:conexão recusada
+    ns secondary err code: 0
+    nt main err code: 0
+    nt secondary err code: 0
+    nt OS err code: 0
+
+
+***********************************************************************
+Fatal NI connect error 12523, connecting to:
+ (DESCRIPTION=(LOAD_BALANCE=ON)(ADDRESS=(PROTOCOL=TCP)(Host=GARIBALDI)(Port=2118)(PROTOCOL=TCP)(Host=GARIBALDI)(Port=2119)(PROTOCOL=TCP)(Host=GARIBALDI)(Port=2120))(CONNECT_DATA=(SERVER=SHARED)(SERVICE_NAME=NFSE)(CID=(PROGRAM=C:\Arquivos?de?programas\Quest?Software\Toad?for?Oracle\toad.exe)(HOST=P2578)(USER=ffreitas))))
+
+  VERSION INFORMATION:
+	TNS for 32-bit Windows: Version 9.2.0.8.0 - Production
+	Windows NT TCP/IP NT Protocol Adapter for 32-bit Windows: Version 9.2.0.8.0 - Production
+  Time: 22-NOV-2010 15:59:44
+  Tracing not turned on.
+  Tns error struct:
+    ns main err code: 12564
+    TNS-12564: TNS:conexão recusada
+    ns secondary err code: 0
+    nt main err code: 0
+    nt secondary err code: 0
+    nt OS err code: 0
+
+
+***********************************************************************
+Fatal NI connect error 12519, connecting to:
+ (DESCRIPTION=(ADDRESS=(PROTOCOL=TCP)(Host=GARIBALDI)(Port=2119))(CONNECT_DATA=(SID=NFSE)(SERVER=SHARED)(CID=(PROGRAM=C:\Arquivos?de?programas\Quest?Software\Toad?for?Oracle\toad.exe)(HOST=P2578)(USER=ffreitas))))
+
+  VERSION INFORMATION:
+	TNS for 32-bit Windows: Version 9.2.0.8.0 - Production
+	Windows NT TCP/IP NT Protocol Adapter for 32-bit Windows: Version 9.2.0.8.0 - Production
+  Time: 22-NOV-2010 16:01:49
+  Tracing not turned on.
+  Tns error struct:
+    ns main err code: 12564
+    TNS-12564: TNS:conexão recusada
+    ns secondary err code: 0
+    nt main err code: 0
+    nt secondary err code: 0
+    nt OS err code: 0
+
+
+***********************************************************************
+Fatal NI connect error 12519, connecting to:
+ (DESCRIPTION=(ADDRESS=(PROTOCOL=TCP)(Host=GARIBALDI)(Port=2120))(CONNECT_DATA=(SID=NFSE)(SERVER=SHARED)(CID=(PROGRAM=C:\Arquivos?de?programas\Quest?Software\Toad?for?Oracle\toad.exe)(HOST=P2578)(USER=ffreitas))))
+
+  VERSION INFORMATION:
+	TNS for 32-bit Windows: Version 9.2.0.8.0 - Production
+	Windows NT TCP/IP NT Protocol Adapter for 32-bit Windows: Version 9.2.0.8.0 - Production
+  Time: 22-NOV-2010 16:01:52
+  Tracing not turned on.
+  Tns error struct:
+    ns main err code: 12564
+    TNS-12564: TNS:conexão recusada
+    ns secondary err code: 0
+    nt main err code: 0
+    nt secondary err code: 0
+    nt OS err code: 0
+
+
+***********************************************************************
+Fatal NI connect error 12519, connecting to:
+ (DESCRIPTION=(ADDRESS=(PROTOCOL=TCP)(Host=GARIBALDI)(Port=2119))(CONNECT_DATA=(SID=NFSE)(SERVER=SHARED)(CID=(PROGRAM=C:\Arquivos?de?programas\Quest?Software\Toad?for?Oracle\toad.exe)(HOST=P2578)(USER=ffreitas))))
+
+  VERSION INFORMATION:
+	TNS for 32-bit Windows: Version 9.2.0.8.0 - Production
+	Windows NT TCP/IP NT Protocol Adapter for 32-bit Windows: Version 9.2.0.8.0 - Production
+  Time: 22-NOV-2010 16:02:37
+  Tracing not turned on.
+  Tns error struct:
+    ns main err code: 12564
+    TNS-12564: TNS:conexão recusada
+    ns secondary err code: 0
+    nt main err code: 0
+    nt secondary err code: 0
+    nt OS err code: 0
+
+
+***********************************************************************
+Fatal NI connect error 12519, connecting to:
+ (DESCRIPTION=(ADDRESS=(PROTOCOL=TCP)(Host=GARIBALDI)(Port=2119))(CONNECT_DATA=(SID=NFSE)(SERVER=SHARED)(CID=(PROGRAM=C:\Arquivos?de?programas\Quest?Software\Toad?for?Oracle\toad.exe)(HOST=P2578)(USER=ffreitas))))
+
+  VERSION INFORMATION:
+	TNS for 32-bit Windows: Version 9.2.0.8.0 - Production
+	Windows NT TCP/IP NT Protocol Adapter for 32-bit Windows: Version 9.2.0.8.0 - Production
+  Time: 22-NOV-2010 16:03:39
+  Tracing not turned on.
+  Tns error struct:
+    ns main err code: 12564
+    TNS-12564: TNS:conexão recusada
+    ns secondary err code: 0
+    nt main err code: 0
+    nt secondary err code: 0
+    nt OS err code: 0
+
+
+***********************************************************************
+Fatal NI connect error 12519, connecting to:
+ (DESCRIPTION=(ADDRESS=(PROTOCOL=TCP)(Host=GARIBALDI)(Port=2119))(CONNECT_DATA=(SID=NFSE)(SERVER=SHARED)(CID=(PROGRAM=C:\Arquivos?de?programas\Quest?Software\Toad?for?Oracle\toad.exe)(HOST=P2578)(USER=ffreitas))))
+
+  VERSION INFORMATION:
+	TNS for 32-bit Windows: Version 9.2.0.8.0 - Production
+	Windows NT TCP/IP NT Protocol Adapter for 32-bit Windows: Version 9.2.0.8.0 - Production
+  Time: 22-NOV-2010 16:05:11
+  Tracing not turned on.
+  Tns error struct:
+    ns main err code: 12564
+    TNS-12564: TNS:conexão recusada
+    ns secondary err code: 0
+    nt main err code: 0
+    nt secondary err code: 0
+    nt OS err code: 0
+
+
+***********************************************************************
+Fatal NI connect error 12520, connecting to:
+ (DESCRIPTION=(LOAD_BALANCE=ON)(ADDRESS=(PROTOCOL=TCP)(Host=GARIBALDI)(Port=2118)(PROTOCOL=TCP)(Host=GARIBALDI)(Port=2119)(PROTOCOL=TCP)(Host=GARIBALDI)(Port=2120))(CONNECT_DATA=(SERVER=SHARED)(SERVICE_NAME=NFSE)(CID=(PROGRAM=C:\Arquivos?de?programas\Quest?Software\Toad?for?Oracle\toad.exe)(HOST=P2578)(USER=ffreitas))))
+
+  VERSION INFORMATION:
+	TNS for 32-bit Windows: Version 9.2.0.8.0 - Production
+	Windows NT TCP/IP NT Protocol Adapter for 32-bit Windows: Version 9.2.0.8.0 - Production
+  Time: 22-NOV-2010 16:05:12
+  Tracing not turned on.
+  Tns error struct:
+    ns main err code: 12564
+    TNS-12564: TNS:conexão recusada
+    ns secondary err code: 0
+    nt main err code: 0
+    nt secondary err code: 0
+    nt OS err code: 0
+
+
+***********************************************************************
+Fatal NI connect error 12523, connecting to:
+ (DESCRIPTION=(LOAD_BALANCE=ON)(ADDRESS=(PROTOCOL=TCP)(Host=AMARALINA)(Port=2118)(PROTOCOL=TCP)(Host=AMARALINA)(Port=2119)(PROTOCOL=TCP)(Host=AMARALINA)(Port=2120))(CONNECT_DATA=(SERVER=SHARED)(SERVICE_NAME=SCA)(CID=(PROGRAM=C:\Arquivos?de?programas\Quest?Software\Toad?for?Oracle\toad.exe)(HOST=P2578)(USER=ffreitas))))
+
+  VERSION INFORMATION:
+	TNS for 32-bit Windows: Version 9.2.0.8.0 - Production
+	Windows NT TCP/IP NT Protocol Adapter for 32-bit Windows: Version 9.2.0.8.0 - Production
+  Time: 22-NOV-2010 16:06:45
+  Tracing not turned on.
+  Tns error struct:
+    ns main err code: 12564
+    TNS-12564: TNS:conexão recusada
+    ns secondary err code: 0
+    nt main err code: 0
+    nt secondary err code: 0
+    nt OS err code: 0
+
+
+***********************************************************************
+Fatal NI connect error 12520, connecting to:
+ (DESCRIPTION=(LOAD_BALANCE=ON)(ADDRESS=(PROTOCOL=TCP)(Host=GARIBALDI)(Port=2118)(PROTOCOL=TCP)(Host=GARIBALDI)(Port=2119)(PROTOCOL=TCP)(Host=GARIBALDI)(Port=2120))(CONNECT_DATA=(SERVER=SHARED)(SERVICE_NAME=NFSE)(CID=(PROGRAM=C:\Arquivos?de?programas\Quest?Software\Toad?for?Oracle\toad.exe)(HOST=P2578)(USER=ffreitas))))
+
+  VERSION INFORMATION:
+	TNS for 32-bit Windows: Version 9.2.0.8.0 - Production
+	Windows NT TCP/IP NT Protocol Adapter for 32-bit Windows: Version 9.2.0.8.0 - Production
+  Time: 22-NOV-2010 16:07:11
+  Tracing not turned on.
+  Tns error struct:
+    ns main err code: 12564
+    TNS-12564: TNS:conexão recusada
+    ns secondary err code: 0
+    nt main err code: 0
+    nt secondary err code: 0
+    nt OS err code: 0
+
+
+***********************************************************************
+Fatal NI connect error 12519, connecting to:
+ (DESCRIPTION=(LOAD_BALANCE=ON)(ADDRESS=(PROTOCOL=TCP)(Host=GARIBALDI)(Port=2118)(PROTOCOL=TCP)(Host=GARIBALDI)(Port=2119)(PROTOCOL=TCP)(Host=GARIBALDI)(Port=2120))(CONNECT_DATA=(SERVER=SHARED)(SID=NFSE)(CID=(PROGRAM=C:\Arquivos?de?programas\Quest?Software\Toad?for?Oracle\toad.exe)(HOST=P2578)(USER=ffreitas))))
+
+  VERSION INFORMATION:
+	TNS for 32-bit Windows: Version 9.2.0.8.0 - Production
+	Windows NT TCP/IP NT Protocol Adapter for 32-bit Windows: Version 9.2.0.8.0 - Production
+  Time: 22-NOV-2010 16:07:22
+  Tracing not turned on.
+  Tns error struct:
+    ns main err code: 12564
+    TNS-12564: TNS:conexão recusada
+    ns secondary err code: 0
+    nt main err code: 0
+    nt secondary err code: 0
+    nt OS err code: 0
+
+
+***********************************************************************
+Fatal NI connect error 12519, connecting to:
+ (DESCRIPTION=(LOAD_BALANCE=ON)(ADDRESS=(PROTOCOL=TCP)(Host=GARIBALDI)(Port=2118)(PROTOCOL=TCP)(Host=GARIBALDI)(Port=2119)(PROTOCOL=TCP)(Host=GARIBALDI)(Port=2120))(CONNECT_DATA=(SERVER=SHARED)(SID=NFSE)(CID=(PROGRAM=C:\Arquivos?de?programas\Quest?Software\Toad?for?Oracle\toad.exe)(HOST=P2578)(USER=ffreitas))))
+
+  VERSION INFORMATION:
+	TNS for 32-bit Windows: Version 9.2.0.8.0 - Production
+	Windows NT TCP/IP NT Protocol Adapter for 32-bit Windows: Version 9.2.0.8.0 - Production
+  Time: 22-NOV-2010 16:07:45
+  Tracing not turned on.
+  Tns error struct:
+    ns main err code: 12564
+    TNS-12564: TNS:conexão recusada
+    ns secondary err code: 0
+    nt main err code: 0
+    nt secondary err code: 0
+    nt OS err code: 0
+
+
+***********************************************************************
+Fatal NI connect error 12519, connecting to:
+ (DESCRIPTION=(ADDRESS=(PROTOCOL=TCP)(Host=GARIBALDI)(Port=2119))(CONNECT_DATA=(SID=NFSE)(SERVER=SHARED)(CID=(PROGRAM=C:\Arquivos?de?programas\Quest?Software\Toad?for?Oracle\toad.exe)(HOST=P2578)(USER=ffreitas))))
+
+  VERSION INFORMATION:
+	TNS for 32-bit Windows: Version 9.2.0.8.0 - Production
+	Windows NT TCP/IP NT Protocol Adapter for 32-bit Windows: Version 9.2.0.8.0 - Production
+  Time: 22-NOV-2010 16:07:46
+  Tracing not turned on.
+  Tns error struct:
+    ns main err code: 12564
+    TNS-12564: TNS:conexão recusada
+    ns secondary err code: 0
+    nt main err code: 0
+    nt secondary err code: 0
+    nt OS err code: 0
+
+
+***********************************************************************
+Fatal NI connect error 12520, connecting to:
+ (DESCRIPTION=(ADDRESS=(PROTOCOL=TCP)(Host=GARIBALDI)(Port=2119))(CONNECT_DATA=(SERVICE_NAME=NFSE)(SERVER=SHARED)(CID=(PROGRAM=C:\Arquivos?de?programas\Quest?Software\Toad?for?Oracle\toad.exe)(HOST=P2578)(USER=ffreitas))))
+
+  VERSION INFORMATION:
+	TNS for 32-bit Windows: Version 9.2.0.8.0 - Production
+	Windows NT TCP/IP NT Protocol Adapter for 32-bit Windows: Version 9.2.0.8.0 - Production
+  Time: 22-NOV-2010 16:09:09
+  Tracing not turned on.
+  Tns error struct:
+    ns main err code: 12564
+    TNS-12564: TNS:conexão recusada
+    ns secondary err code: 0
+    nt main err code: 0
+    nt secondary err code: 0
+    nt OS err code: 0
+
+
+***********************************************************************
+Fatal NI connect error 12541, connecting to:
+ (DESCRIPTION=(LOAD_BALANCE=ON)(ADDRESS=(PROTOCOL=TCP)(Host=CANDEAL)(Port=2118)(PROTOCOL=TCP)(Host=CANDEAL)(Port=2119))(CONNECT_DATA=(SERVER=dedicated)(SERVICE_NAME=seg)(CID=(PROGRAM=C:\Arquivos?de?programas\Quest?Software\Toad?for?Oracle\toad.exe)(HOST=P2578)(USER=ffreitas))))
+
+  VERSION INFORMATION:
+	TNS for 32-bit Windows: Version 9.2.0.8.0 - Production
+	Windows NT TCP/IP NT Protocol Adapter for 32-bit Windows: Version 9.2.0.8.0 - Production
+  Time: 22-NOV-2010 16:12:44
+  Tracing not turned on.
+  Tns error struct:
+    ns main err code: 12541
+    TNS-12541: TNS:não há listener
+    ns secondary err code: 12560
+    nt main err code: 511
+    TNS-00511: Não há listener
+    nt secondary err code: 61
+    nt OS err code: 0
+
+
+***********************************************************************
+Fatal NI connect error 12541, connecting to:
+ (DESCRIPTION=(LOAD_BALANCE=ON)(ADDRESS=(PROTOCOL=TCP)(Host=CANDEAL)(Port=2118)(PROTOCOL=TCP)(Host=CANDEAL)(Port=2119))(CONNECT_DATA=(SERVER=dedicated)(SERVICE_NAME=seg)(CID=(PROGRAM=C:\Arquivos?de?programas\Quest?Software\Toad?for?Oracle\toad.exe)(HOST=P2578)(USER=ffreitas))))
+
+  VERSION INFORMATION:
+	TNS for 32-bit Windows: Version 9.2.0.8.0 - Production
+	Windows NT TCP/IP NT Protocol Adapter for 32-bit Windows: Version 9.2.0.8.0 - Production
+  Time: 22-NOV-2010 16:12:48
+  Tracing not turned on.
+  Tns error struct:
+    ns main err code: 12541
+    TNS-12541: TNS:não há listener
+    ns secondary err code: 12560
+    nt main err code: 511
+    TNS-00511: Não há listener
+    nt secondary err code: 61
+    nt OS err code: 0
+
+
+***********************************************************************
+Fatal NI connect error 12541, connecting to:
+ (DESCRIPTION=(ADDRESS=(PROTOCOL=TCP)(Host=CANDEAL)(Port=2119))(CONNECT_DATA=(SERVICE_NAME=SEG)(SERVER=SHARED)(CID=(PROGRAM=C:\Arquivos?de?programas\Quest?Software\Toad?for?Oracle\toad.exe)(HOST=P2578)(USER=ffreitas))))
+
+  VERSION INFORMATION:
+	TNS for 32-bit Windows: Version 9.2.0.8.0 - Production
+	Windows NT TCP/IP NT Protocol Adapter for 32-bit Windows: Version 9.2.0.8.0 - Production
+  Time: 22-NOV-2010 16:14:46
+  Tracing not turned on.
+  Tns error struct:
+    ns main err code: 12541
+    TNS-12541: TNS:não há listener
+    ns secondary err code: 12560
+    nt main err code: 511
+    TNS-00511: Não há listener
+    nt secondary err code: 61
+    nt OS err code: 0
+
+
+***********************************************************************
+Fatal NI connect error 12541, connecting to:
+ (DESCRIPTION=(ADDRESS=(PROTOCOL=TCP)(Host=CANDEAL)(Port=2119))(CONNECT_DATA=(SERVICE_NAME=SEG)(SERVER=SHARED)(CID=(PROGRAM=C:\Arquivos?de?programas\Quest?Software\Toad?for?Oracle\toad.exe)(HOST=P2578)(USER=ffreitas))))
+
+  VERSION INFORMATION:
+	TNS for 32-bit Windows: Version 9.2.0.8.0 - Production
+	Windows NT TCP/IP NT Protocol Adapter for 32-bit Windows: Version 9.2.0.8.0 - Production
+  Time: 22-NOV-2010 16:14:48
+  Tracing not turned on.
+  Tns error struct:
+    ns main err code: 12541
+    TNS-12541: TNS:não há listener
+    ns secondary err code: 12560
+    nt main err code: 511
+    TNS-00511: Não há listener
+    nt secondary err code: 61
+    nt OS err code: 0
+
+
+***********************************************************************
+Fatal NI connect error 12541, connecting to:
+ (DESCRIPTION=(LOAD_BALANCE=ON)(ADDRESS=(PROTOCOL=TCP)(Host=CANDEAL)(Port=2118)(PROTOCOL=TCP)(Host=CANDEAL)(Port=2119))(CONNECT_DATA=(SERVER=dedicated)(SERVICE_NAME=seg)(CID=(PROGRAM=C:\Arquivos?de?programas\Quest?Software\Toad?for?Oracle\toad.exe)(HOST=P2578)(USER=ffreitas))))
+
+  VERSION INFORMATION:
+	TNS for 32-bit Windows: Version 9.2.0.8.0 - Production
+	Windows NT TCP/IP NT Protocol Adapter for 32-bit Windows: Version 9.2.0.8.0 - Production
+  Time: 22-NOV-2010 22:32:36
+  Tracing not turned on.
+  Tns error struct:
+    ns main err code: 12541
+    TNS-12541: TNS:não há listener
+    ns secondary err code: 12560
+    nt main err code: 511
+    TNS-00511: Não há listener
+    nt secondary err code: 61
+    nt OS err code: 0
+
+
+***********************************************************************
+Fatal NI connect error 12519, connecting to:
+ (DESCRIPTION=(LOAD_BALANCE=ON)(ADDRESS=(PROTOCOL=TCP)(Host=GARIBALDI)(Port=2118)(PROTOCOL=TCP)(Host=GARIBALDI)(Port=2119)(PROTOCOL=TCP)(Host=GARIBALDI)(Port=2120))(CONNECT_DATA=(SERVER=SHARED)(SID=NFSE)(CID=(PROGRAM=C:\Arquivos?de?programas\Quest?Software\Toad?for?Oracle\toad.exe)(HOST=P2578)(USER=ffreitas))))
+
+  VERSION INFORMATION:
+	TNS for 32-bit Windows: Version 9.2.0.8.0 - Production
+	Windows NT TCP/IP NT Protocol Adapter for 32-bit Windows: Version 9.2.0.8.0 - Production
+  Time: 22-NOV-2010 22:41:59
+  Tracing not turned on.
+  Tns error struct:
+    ns main err code: 12564
+    TNS-12564: TNS:conexão recusada
+    ns secondary err code: 0
+    nt main err code: 0
+    nt secondary err code: 0
+    nt OS err code: 0
+
+
+***********************************************************************
+Fatal NI connect error 12523, connecting to:
+ (DESCRIPTION=(LOAD_BALANCE=ON)(ADDRESS=(PROTOCOL=TCP)(Host=AMARALINA)(Port=2118)(PROTOCOL=TCP)(Host=AMARALINA)(Port=2119)(PROTOCOL=TCP)(Host=AMARALINA)(Port=2120))(CONNECT_DATA=(SERVER=SHARED)(SERVICE_NAME=SCA)(CID=(PROGRAM=C:\Arquivos?de?programas\Quest?Software\Toad?for?Oracle\toad.exe)(HOST=P2578)(USER=ffreitas))))
+
+  VERSION INFORMATION:
+	TNS for 32-bit Windows: Version 9.2.0.8.0 - Production
+	Windows NT TCP/IP NT Protocol Adapter for 32-bit Windows: Version 9.2.0.8.0 - Production
+  Time: 22-NOV-2010 22:57:23
+  Tracing not turned on.
+  Tns error struct:
+    ns main err code: 12564
+    TNS-12564: TNS:conexão recusada
+    ns secondary err code: 0
+    nt main err code: 0
+    nt secondary err code: 0
+    nt OS err code: 0
+
+
+***********************************************************************
+Fatal NI connect error 12541, connecting to:
+ (DESCRIPTION=(LOAD_BALANCE=ON)(ADDRESS=(PROTOCOL=TCP)(Host=CANDEAL)(Port=2118)(PROTOCOL=TCP)(Host=CANDEAL)(Port=2119))(CONNECT_DATA=(SERVER=dedicated)(SERVICE_NAME=seg)(CID=(PROGRAM=C:\Arquivos?de?programas\Quest?Software\Toad?for?Oracle\toad.exe)(HOST=P2578)(USER=ffreitas))))
+
+  VERSION INFORMATION:
+	TNS for 32-bit Windows: Version 9.2.0.8.0 - Production
+	Windows NT TCP/IP NT Protocol Adapter for 32-bit Windows: Version 9.2.0.8.0 - Production
+  Time: 22-NOV-2010 23:02:38
+  Tracing not turned on.
+  Tns error struct:
+    ns main err code: 12541
+    TNS-12541: TNS:não há listener
+    ns secondary err code: 12560
+    nt main err code: 511
+    TNS-00511: Não há listener
+    nt secondary err code: 61
+    nt OS err code: 0
+
+
+***********************************************************************
+Fatal NI connect error 12520, connecting to:
+ (DESCRIPTION=(ADDRESS=(PROTOCOL=TCP)(HOST=AMARALINA)(PORT=2119))(CONNECT_DATA=(SERVER=shared)(SERVICE_NAME=SGA)(CID=(PROGRAM=C:\Arquivos?de?programas\Quest?Software\Toad?for?Oracle\toad.exe)(HOST=P2578)(USER=ffreitas))))
+
+  VERSION INFORMATION:
+	TNS for 32-bit Windows: Version 9.2.0.8.0 - Production
+	Windows NT TCP/IP NT Protocol Adapter for 32-bit Windows: Version 9.2.0.8.0 - Production
+  Time: 23-NOV-2010 10:07:27
+  Tracing not turned on.
+  Tns error struct:
+    ns main err code: 12564
+    TNS-12564: TNS:conexão recusada
+    ns secondary err code: 0
+    nt main err code: 0
+    nt secondary err code: 0
+    nt OS err code: 0
+
+
+***********************************************************************
+Fatal NI connect error 12504, connecting to:
+ (DESCRIPTION=(LOAD_BALANCE=yes)(ADDRESS=(PROTOCOL=TCP)(Host=10.1.4.44)(Port=2118))(PROTOCOL=TCP)(Host=10.1.4.44)(Port=2120)(CONNECT_DATA=(CID=(PROGRAM=C:\Arquivos?de?programas\Quest?Software\Toad?for?Oracle\toad.exe)(HOST=P2578)(USER=ffreitas))))
+
+  VERSION INFORMATION:
+	TNS for 32-bit Windows: Version 9.2.0.8.0 - Production
+	Windows NT TCP/IP NT Protocol Adapter for 32-bit Windows: Version 9.2.0.8.0 - Production
+  Time: 23-NOV-2010 10:10:18
+  Tracing not turned on.
+  Tns error struct:
+    ns main err code: 12564
+    TNS-12564: TNS:conexão recusada
+    ns secondary err code: 0
+    nt main err code: 0
+    nt secondary err code: 0
+    nt OS err code: 0
+
+
+***********************************************************************
+Fatal NI connect error 12504, connecting to:
+ (DESCRIPTION=(LOAD_BALANCE=yes)(ADDRESS=(PROTOCOL=TCP)(Host=10.1.4.44)(Port=2118))(PROTOCOL=TCP)(Host=10.1.4.44)(Port=2120)(CONNECT_DATA=(CID=(PROGRAM=C:\Arquivos?de?programas\Quest?Software\Toad?for?Oracle\toad.exe)(HOST=P2578)(USER=ffreitas))))
+
+  VERSION INFORMATION:
+	TNS for 32-bit Windows: Version 9.2.0.8.0 - Production
+	Windows NT TCP/IP NT Protocol Adapter for 32-bit Windows: Version 9.2.0.8.0 - Production
+  Time: 23-NOV-2010 10:10:41
+  Tracing not turned on.
+  Tns error struct:
+    ns main err code: 12564
+    TNS-12564: TNS:conexão recusada
+    ns secondary err code: 0
+    nt main err code: 0
+    nt secondary err code: 0
+    nt OS err code: 0
+
+
+***********************************************************************
+Fatal NI connect error 12504, connecting to:
+ (DESCRIPTION=(LOAD_BALANCE=yes)(ADDRESS=(PROTOCOL=TCP)(Host=10.1.4.44)(Port=2118))(PROTOCOL=TCP)(Host=10.1.4.44)(Port=2120)(CONNECT_DATA=(CID=(PROGRAM=C:\Arquivos?de?programas\Quest?Software\Toad?for?Oracle\toad.exe)(HOST=P2578)(USER=ffreitas))))
+
+  VERSION INFORMATION:
+	TNS for 32-bit Windows: Version 9.2.0.8.0 - Production
+	Windows NT TCP/IP NT Protocol Adapter for 32-bit Windows: Version 9.2.0.8.0 - Production
+  Time: 23-NOV-2010 10:11:23
+  Tracing not turned on.
+  Tns error struct:
+    ns main err code: 12564
+    TNS-12564: TNS:conexão recusada
+    ns secondary err code: 0
+    nt main err code: 0
+    nt secondary err code: 0
+    nt OS err code: 0
+
+
+***********************************************************************
+Fatal NI connect error 12523, connecting to:
+ (DESCRIPTION=(ADDRESS=(PROTOCOL=TCP)(HOST=AMARALINA)(PORT=2118))(CONNECT_DATA=(SERVER=SHARED)(SERVICE_NAME=SIP)(CID=(PROGRAM=C:\Arquivos?de?programas\Quest?Software\Toad?for?Oracle\toad.exe)(HOST=P2578)(USER=ffreitas))))
+
+  VERSION INFORMATION:
+	TNS for 32-bit Windows: Version 9.2.0.8.0 - Production
+	Windows NT TCP/IP NT Protocol Adapter for 32-bit Windows: Version 9.2.0.8.0 - Production
+  Time: 23-NOV-2010 10:11:57
+  Tracing not turned on.
+  Tns error struct:
+    ns main err code: 12564
+    TNS-12564: TNS:conexão recusada
+    ns secondary err code: 0
+    nt main err code: 0
+    nt secondary err code: 0
+    nt OS err code: 0
+
+
+***********************************************************************
+Fatal NI connect error 12514, connecting to:
+ (DESCRIPTION=(ADDRESS=(PROTOCOL=TCP)(HOST=AMARALINA)(PORT=2119))(CONNECT_DATA=(SERVER=SHARED)(SERVICE_NAME=SIP)(CID=(PROGRAM=C:\Arquivos?de?programas\Quest?Software\Toad?for?Oracle\toad.exe)(HOST=P2578)(USER=ffreitas))))
+
+  VERSION INFORMATION:
+	TNS for 32-bit Windows: Version 9.2.0.8.0 - Production
+	Windows NT TCP/IP NT Protocol Adapter for 32-bit Windows: Version 9.2.0.8.0 - Production
+  Time: 23-NOV-2010 10:12:08
+  Tracing not turned on.
+  Tns error struct:
+    ns main err code: 12564
+    TNS-12564: TNS:conexão recusada
+    ns secondary err code: 0
+    nt main err code: 0
+    nt secondary err code: 0
+    nt OS err code: 0
+
+
+***********************************************************************
+Fatal NI connect error 12520, connecting to:
+ (DESCRIPTION=(ADDRESS=(PROTOCOL=TCP)(HOST=AMARALINA)(PORT=2118))(CONNECT_DATA=(SERVER=SHARED)(SERVICE_NAME=RCP)(CID=(PROGRAM=C:\Arquivos?de?programas\Quest?Software\Toad?for?Oracle\toad.exe)(HOST=P2578)(USER=ffreitas))))
+
+  VERSION INFORMATION:
+	TNS for 32-bit Windows: Version 9.2.0.8.0 - Production
+	Windows NT TCP/IP NT Protocol Adapter for 32-bit Windows: Version 9.2.0.8.0 - Production
+  Time: 23-NOV-2010 10:13:38
+  Tracing not turned on.
+  Tns error struct:
+    ns main err code: 12564
+    TNS-12564: TNS:conexão recusada
+    ns secondary err code: 0
+    nt main err code: 0
+    nt secondary err code: 0
+    nt OS err code: 0
+
+
+***********************************************************************
+Fatal NI connect error 12523, connecting to:
+ (DESCRIPTION=(ADDRESS=(PROTOCOL=TCP)(HOST=AMARALINA)(PORT=2118))(CONNECT_DATA=(SERVER=SHARED)(SERVICE_NAME=SIP)(CID=(PROGRAM=C:\Arquivos?de?programas\Quest?Software\Toad?for?Oracle\toad.exe)(HOST=P2578)(USER=ffreitas))))
+
+  VERSION INFORMATION:
+	TNS for 32-bit Windows: Version 9.2.0.8.0 - Production
+	Windows NT TCP/IP NT Protocol Adapter for 32-bit Windows: Version 9.2.0.8.0 - Production
+  Time: 23-NOV-2010 10:15:55
+  Tracing not turned on.
+  Tns error struct:
+    ns main err code: 12564
+    TNS-12564: TNS:conexão recusada
+    ns secondary err code: 0
+    nt main err code: 0
+    nt secondary err code: 0
+    nt OS err code: 0
+
+
+***********************************************************************
+Fatal NI connect error 12514, connecting to:
+ (DESCRIPTION=(LOAD_BALANCE=ON)(ADDRESS=(PROTOCOL=TCP)(Host=AMARALINA)(Port=2118)(PROTOCOL=TCP)(Host=AMARALINA)(Port=2119)(PROTOCOL=TCP)(Host=AMARALINA)(Port=2120))(CONNECT_DATA=(SERVER=SHARED)(SERVICE_NAME=SIP)(CID=(PROGRAM=C:\Arquivos?de?programas\Quest?Software\Toad?for?Oracle\toad.exe)(HOST=P2578)(USER=ffreitas))))
+
+  VERSION INFORMATION:
+	TNS for 32-bit Windows: Version 9.2.0.8.0 - Production
+	Windows NT TCP/IP NT Protocol Adapter for 32-bit Windows: Version 9.2.0.8.0 - Production
+  Time: 23-NOV-2010 10:16:13
+  Tracing not turned on.
+  Tns error struct:
+    ns main err code: 12564
+    TNS-12564: TNS:conexão recusada
+    ns secondary err code: 0
+    nt main err code: 0
+    nt secondary err code: 0
+    nt OS err code: 0
+
+
+***********************************************************************
+Fatal NI connect error 12514, connecting to:
+ (DESCRIPTION=(ADDRESS=(PROTOCOL=TCP)(HOST=AMARALINA)(PORT=2119))(CONNECT_DATA=(SERVER=DEDICATED)(SERVICE_NAME=SIP)(CID=(PROGRAM=C:\Arquivos?de?programas\Quest?Software\Toad?for?Oracle\toad.exe)(HOST=P2578)(USER=ffreitas))))
+
+  VERSION INFORMATION:
+	TNS for 32-bit Windows: Version 9.2.0.8.0 - Production
+	Windows NT TCP/IP NT Protocol Adapter for 32-bit Windows: Version 9.2.0.8.0 - Production
+  Time: 23-NOV-2010 10:16:47
+  Tracing not turned on.
+  Tns error struct:
+    ns main err code: 12564
+    TNS-12564: TNS:conexão recusada
+    ns secondary err code: 0
+    nt main err code: 0
+    nt secondary err code: 0
+    nt OS err code: 0
+
+
+***********************************************************************
+Fatal NI connect error 12541, connecting to:
+ (DESCRIPTION=(ADDRESS=(PROTOCOL=TCP)(Host=GARIBALDI)(Port=1521))(CONNECT_DATA=(SID=NFSE)(SERVER=DEDICATED)(CID=(PROGRAM=C:\Arquivos?de?programas\Quest?Software\Toad?for?Oracle\toad.exe)(HOST=P2578)(USER=ffreitas))))
+
+  VERSION INFORMATION:
+	TNS for 32-bit Windows: Version 9.2.0.8.0 - Production
+	Windows NT TCP/IP NT Protocol Adapter for 32-bit Windows: Version 9.2.0.8.0 - Production
+  Time: 23-NOV-2010 10:31:03
+  Tracing not turned on.
+  Tns error struct:
+    ns main err code: 12541
+    TNS-12541: TNS:não há listener
+    ns secondary err code: 12560
+    nt main err code: 511
+    TNS-00511: Não há listener
+    nt secondary err code: 61
+    nt OS err code: 0
+
+
+***********************************************************************
+Fatal NI connect error 12514, connecting to:
+ (DESCRIPTION=(LOAD_BALANCE=ON)(ADDRESS=(PROTOCOL=TCP)(Host=AMARALINA)(Port=2118)(PROTOCOL=TCP)(Host=AMARALINA)(Port=2119)(PROTOCOL=TCP)(Host=AMARALINA)(Port=2120))(CONNECT_DATA=(SERVER=SHARED)(SERVICE_NAME=SIP)(CID=(PROGRAM=C:\Arquivos?de?programas\Quest?Software\Toad?for?Oracle\toad.exe)(HOST=P2578)(USER=ffreitas))))
+
+  VERSION INFORMATION:
+	TNS for 32-bit Windows: Version 9.2.0.8.0 - Production
+	Windows NT TCP/IP NT Protocol Adapter for 32-bit Windows: Version 9.2.0.8.0 - Production
+  Time: 23-NOV-2010 15:11:39
+  Tracing not turned on.
+  Tns error struct:
+    ns main err code: 12564
+    TNS-12564: TNS:conexão recusada
+    ns secondary err code: 0
+    nt main err code: 0
+    nt secondary err code: 0
+    nt OS err code: 0

@@ -1,0 +1,104 @@
+#!/bin/ksh
+#Program : alert_master.sh
+#Author : Antony Raj created on 03/17/2003
+#Document : This is the main program,checks alert for all instances
+#
+SCRIPTLOC=/cluster/dhp/oracle/erp_scripts/alert_scripts
+export SCRIPTLOC
+for i in `cat /cluster/dhp/oracle/erp_scripts/oratab_dhp|cut -d: -f1`
+do
+ora_stat=`ps -ef|grep -v grep|grep ora_smon_$i|wc -l`
+ora_chk=`expr $ora_stat`
+if [ $ora_chk -eq 1 ]
+then
+$SCRIPTLOC/alert.sh $i
+fi
+done
+
+
+#!/bin/ksh
+#Program : alert.sh
+#Author : Antony Raj Created on 03/17/2003
+#Document : This is the sub-program called by alert_master.sh
+#Purpose : Send E-Mail notification,if there is an ORA- error in Alert Log
+#
+SCRIPTDIR=/cluster/dhp/oracle/erp_scripts/alert_scripts
+ORACLE_SID=$1
+export ORACLE_SID
+if [ -z "$1" ]
+then 
+echo "Usage: alert.sh "
+exit 99
+fi
+stat=`ps -ef|grep -v grep|grep ora_smon_$1|wc -l`
+ora_stat=`expr $stat`
+if [ $ora_stat -eq 0 ]
+then
+exit 0
+fi
+ORACLE_HOME=`cat /cluster/dhp/oracle/erp_scripts/oratab_dhp|grep $ORACLE_SID|cut -d: -f2`
+export ORACLE_HOME
+export PATH=$ORACLE_HOME/bin:$PATH
+
+$ORACLE_HOME/bin/sqlplus -s '/ as sysdba' << !
+@/cluster/dhp/oracle/erp_scripts/alert_scripts/get_dict_parm
+exit
+!
+ALRT_CHK=`cat /cluster/dhp/oracle/erp_scripts/alert_scripts/alert_$1_dir.log| \
+grep ?|wc -l`
+alrt_stat=`expr $ALRT_CHK`
+if [ $alrt_stat -eq 1 ]
+then
+ALERT_DIR=$ORACLE_HOME/rdbms/log 
+else
+ALERT_DIR=`cat /cluster/dhp/oracle/erp_scripts/alert_scripts/alert_$1_dir.log`
+fi
+export ALERT_DIR
+cd $SCRIPTDIR
+
+if [ -f $SCRIPTDIR/cntfile_$1.log ]
+then
+chk=`cat $SCRIPTDIR/cntfile_$1.log|wc -l`
+chk1=`expr $chk`
+if [ $chk1 -gt 0 ]
+then 
+cat $SCRIPTDIR/cntfile_$1.log|read num
+else
+num=0
+fi
+else
+touch $SCRIPTDIR/cntfile_$1.log
+num=0
+fi
+if [ $num -gt 0 ]
+then
+cd $ALERT_DIR
+cat alert_${ORACLE_SID}.log |wc -l |read ct1
+sz=`expr $ct1 - $num`
+if [ $sz -eq 0 ]
+then
+exit
+fi
+cd $ALERT_DIR
+cat alert_${ORACLE_SID}.log |tail -$sz|grep ORA- |cat > /tmp/alerterr_$1.log 2>$SCRIPTDIR/error_$1_.log
+ora_cnt=`cat /tmp/alerterr_$1.log|wc -l`
+ora_num=`expr $ora_cnt`
+
+if [ $ora_num -gt 0 ]
+then
+cat /tmp/alerterr_$1.log|/usr/bin/mailx -s "Alert Log Errors for the database $ORACLE_SID" araj2@csc.com dliu4@csc.com 
+fi
+cat alert_${ORACLE_SID}.log |wc -l|read cnt 
+echo $cnt > $SCRIPTDIR/cntfile_$1.log
+exit
+else
+cd $ALERT_DIR
+cat alert_${ORACLE_SID}.log | grep ORA- |cat > /tmp/alerterr_$1.log
+ora_cnt=`cat /tmp/alerterr_$1.log|wc -l`
+ora_num=`expr $ora_cnt`
+if [ $ora_num -gt 0 ]
+then
+cat /tmp/alerterr_$1.log|/usr/bin/mailx -s "Alert Log Errors for the database $ORACLE_SID" araj2@csc.com dliu4@csc.com 
+fi
+cat alert_${ORACLE_SID}.log | wc -l |read cnt
+echo $cnt > $SCRIPTDIR/cntfile_$1.log

@@ -1,0 +1,34 @@
+rem
+rem script to compile all invalid objects in the database
+rem
+rem user should have dba privilege to execute this
+rem
+rem Biju Thomas
+rem
+set termout off echo off pages 0 trims off lines 100
+spool /tmp/cinv.sql
+select 'alter '||decode(object_type,'PACKAGE BODY','PACKAGE',object_type)
+|| ' '||owner||'.'|| object_name ||' compile' ||
+decode(object_type, 'PACKAGE BODY', ' body;', ';')
+from dba_objects
+where status = 'INVALID'
+/
+spool off
+set termout on feedback on echo on
+spool /tmp/cinvobj.lis
+@/tmp/cinv.sql
+
+column owner format A6
+column object_name format A30
+column object_type format A20
+select owner, object_name, object_type, status
+from dba_objects
+where status = 'INVALID'
+/
+spool off
+set lines 80 
+prompt Spool file saved at /tmp/cinvobj.lis
+prompt Script file saved at /tmp/cinv.sql
+prompt
+
+

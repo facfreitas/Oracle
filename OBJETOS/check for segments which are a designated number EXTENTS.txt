@@ -1,0 +1,88 @@
+@echo off
+rem----------------------------------------------------------------------------------
+rem   Name: extent_threshold.bat
+rem   Purpose:
+rem   This script will check for segments which are a designated number
+rem   of extents from the maximum number of extents allocated for an
+rem   NT implementation.
+rem
+rem
+rem   Dependancies:
+rem   It is necessary to edit this file and to replace the following:
+rem        {userid} --> Change to the user name to use connect to your database instance
+rem        {password} --> Change to the password of userid
+rem        {oracle home} --> Change to the oracle home designation
+rem        {logfile directory} --> Change to the destination directory for
+rem                                log files
+rem        {tool directory} --> Change to the destination directory for
+rem                                tool files
+rem
+rem
+rem   Usage: c:\>extent_threshold.bat SID CNT
+rem
+rem----------------------------------------------------------------------------------
+
+REM :::::::::::::: Begin Declare Variables Section
+ set ORA_HOME={oracle home}
+ set CONNECT_USER="{userid}/{password}"
+ set ORACLE_SID=%1
+ set CNT=%2
+
+ set TOOLS={tool directory}
+ set LOGDIR=%TOOLS%\log
+ set LOGFILE=%LOGDIR%\%0.log
+ set ETFILE=c:\temp\extent_threshold.sql
+REM :::::::::::::: End Declare Variables Section
+
+REM :::::::::::::: Begin Parameter Checking Section 
+if  "%1" == ""  goto usage
+if  "%2" == ""  goto usage
+
+REM Create backup directories if already not exist 
+if not exist %LOGDIR%       mkdir %LOGDIR%
+
+echo. > %LOGFILE%
+(echo Extent Threshold started  & date/T & time/T) >> %LOGFILE%
+REM :::::::::::::: End Parameter Checking Section 
+
+REM :::::::::::::: Begin Create Dynamic files Section 
+echo.                                                         >%ETFILE%
+echo set heading off feedback off 	                          >>%ETFILE%
+echo set linesize 300  pagesize 0                             >>%ETFILE%
+echo set serveroutput on size 1000000                         >>%ETFILE%
+echo col segment_name    format a30     heading "Segment"     >>%ETFILE%
+echo col segment_type    format a15     heading "Type"        >>%ETFILE%
+echo col tablespace_name format a15     heading "Tablespace"  >>%ETFILE%
+echo col extents         format 999,990 heading "^# Of  ^|Extents"  >>%ETFILE%
+echo col max_extents     format 999,990 heading "Maximum|Extents  >>%ETFILE%
+echo.                                                         >>%ETFILE%
+echo select segment_name,segment_type,tablespace_name,        >>%ETFILE%
+echo        extents,max_extents                               >>%ETFILE%
+echo from dba_segments                                        >>%ETFILE% 
+echo where max_extents - extents ^< %CNT%                     >>%ETFILE%
+echo and owner in ('SYS','SYSTEM')                            >>%ETFILE%
+echo order by 3,1,2;							  >>%ETFILE%
+echo exit                                                     >>%ETFILE%
+REM ::::::::::::: End Create Dynamic files Section 
+
+REM :::::::::::::: Begin extent checking Section 
+ %ORA_HOME%\sqlplus -s  %CONNECT_USER%  @%ETFILE% >> %LOGFILE%
+ (echo Extent Threshold completed & date/T) >> %LOGFILE%
+goto end
+REM :::::::::::::: End extent checking Section 
+
+REM :::::::::::::: Begin Error handling section
+:usage
+  echo Error, Usage: extent_threshold.bat SID CNT
+  goto end
+REM :::::::::::::: End Error handling section
+
+REM :::::::::::::: Cleanup  Section
+:end
+set ORA_HOME=
+set ORACLE_SID=
+set CNT=
+set CONNECT_USER=
+set ECFILE=
+
+exit
