@@ -1,0 +1,5 @@
+CREATE OR REPLACE TRIGGER LoginTrigger 
+AFTER LOGON ON SCOTT.SCHEMA       
+BEGIN          
+execute immediate 'alter session set OPTIMIZER_GOAL=FIRST_ROWS';       
+END;         

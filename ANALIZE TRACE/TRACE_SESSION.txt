@@ -1,0 +1,13 @@
+ttitle off
+
+prompt
+prompt +---------------------------------------------------------+
+prompt |    The Following Portion Will Turn tracing ON or OFF    |
+prompt |             To exit early press CTL-C                   |
+prompt +---------------------------------------------------------+
+prompt
+accept _sid     number prompt "............................... Enter user SID :"
+accept _serial  number prompt "............................Enter user SERIAL# :"
+accept _TRUE    char   prompt "Enter TRUE to enable trace or FALSE to disable :"
+
+execute sys.dbms_system.set_sql_trace_in_session(&_sid,&_serial,&_TRUE);

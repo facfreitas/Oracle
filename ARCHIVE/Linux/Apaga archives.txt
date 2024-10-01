@@ -1,0 +1,1 @@
+find /oracle/ibametro/admin/archive -ctime +30 -exec rm -f "{}" \;

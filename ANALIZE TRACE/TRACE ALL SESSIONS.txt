@@ -1,0 +1,15 @@
+set serveroutput on
+
+begin
+ for sess_rec in (select sid,serial#
+		 from   v$session
+		 where  username like upper('&user_name'))
+loop
+  sys.dbms_system.set_sql_trace_in_session
+      (sess_rec.sid, sess_rec.serial#,TRUE);
+end loop;
+
+end;
+/
+
+set serveroutput off

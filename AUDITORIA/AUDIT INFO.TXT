@@ -1,0 +1,69 @@
+rem Information on Audits Enabled on Database
+
+set pages 0 
+feedback off 
+trims on 
+lines 80 
+verify off 
+
+spool C:\audinfo.lst
+
+select 'Database Name ' || global_name from   global_name
+/
+
+set pages 999
+
+prompt
+prompt STATEMENT AUDITS ENABLED ON THIS DATABASE
+prompt =========================================
+column user_name format a10
+column audit_option format a40 
+
+select * from dba_stmt_audit_opts
+/
+
+prompt ===============================================================================
+prompt
+prompt PRIVILEGE AUDITS ENABLED ON THIS DATABASE
+prompt =========================================
+
+select * from dba_priv_audit_opts
+/
+
+prompt ===============================================================================
+prompt
+prompt OBJECT AUDITS ENABLED ON THIS DATABASE
+prompt ======================================
+
+column object_name format a25
+
+select (owner ||'.'|| object_name) object_name,
+       alt, aud, com, del, gra, ind, ins, loc, ren, sel, upd, ref, exe
+from   dba_obj_audit_opts
+where  alt != '-/-' 
+or     aud != '-/-' 
+or     com != '-/-' 
+or     del != '-/-' 
+or     gra != '-/-' 
+or     ind != '-/-' 
+or     ins != '-/-' 
+or     loc != '-/-' 
+or     ren != '-/-' 
+or     sel != '-/-' 
+or     upd != '-/-' 
+or     ref != '-/-' 
+or     exe != '-/-' 
+/
+
+prompt ===============================================================================
+prompt
+prompt DEFAULT AUDITS ENABLED ON THIS DATABASE
+prompt =======================================
+
+select * from all_def_audit_opts
+/
+
+prompt ===============================================================================
+prompt
+spool off
+set pages 24 feedback on verify on

@@ -1,0 +1,55 @@
+-- "Set scan off" turns off substitution variables. 
+Set scan off; 
+
+CREATE OR REPLACE PROCEDURE SYSTEM.insere_audita (
+   v_sessionid   IN   VARCHAR2,
+   v_login       IN   VARCHAR2,
+   v_schema      IN   VARCHAR2,
+   v_comando     IN   VARCHAR2,
+   v_parametro   IN   VARCHAR2,
+   v_objeto      IN   VARCHAR2
+)
+IS
+   v_data        DATE;
+   v_usuario     VARCHAR2 (20);
+   v_maquina     VARCHAR2 (30);
+/* -----------------------------------------------------------*/
+-- CRIADA POR ANTONIO SANT'ANA
+-- SYSDESIGN CONSULTORIA EM INFORMATICA
+-- 25/08/2003
+/* -----------------------------------------------------------*/
+BEGIN
+   -- SELECIONA A DATA ATUAL
+   SELECT SYSDATE
+     INTO v_data
+     FROM DUAL;
+
+   -- SELECIONA O USUARIO DO SO ATUAL
+   SELECT UPPER (osuser)
+     INTO v_usuario
+     FROM v$session
+    WHERE audsid = v_sessionid;
+
+   -- SELECIONA A MAQUINA ATUAL
+   SELECT UPPER (machine)
+     INTO v_maquina
+     FROM v$session
+    WHERE audsid = v_sessionid;
+
+   -- INSERE EM T_AUDITA
+   INSERT INTO SYSTEM.t_audita
+               (login, SCHEMA, usuario, maquina, DATA, comando,
+                parametro, objeto
+               )
+        VALUES (v_login, v_schema, v_usuario, v_maquina, v_data, v_comando,
+                v_parametro, v_objeto
+               );
+END insere_audita;
+/
+
+
+CREATE PUBLIC SYNONYM INSERE_AUDITA FOR SYSTEM.INSERE_AUDITA;
+
+
+GRANT EXECUTE ON  SYSTEM.INSERE_AUDITA TO PUBLIC;
+

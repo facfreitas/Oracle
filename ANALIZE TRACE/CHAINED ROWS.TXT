@@ -1,0 +1,40 @@
+/* Descricao  : Verifica Percentual de Linhas encadeadas                   */
+/* Para este SCRIPT funcionar é necessário executar o script UTLCHAIN.SQL  */
+/* e rodar o ANALYZE com a opcao LIST CHAINED ROWS INTO chained_rows       */
+/* Ex: ANALYZE CLUSTER emp_dept LIST CHAINED ROWS INTO chained_rows;       */
+
+def g_Script     = 'chained.sql'
+def g_Titulo     = 'Percentual de Linhas Encadeadas'
+ 
+start 'rpt_cab.sql'
+ 
+set echo     off
+set feedback off
+set termout  off
+set linesize 60
+set pages    60
+set space     2
+
+col c1  format a10              heading 'Owner'     
+col c2  format a30              heading 'Table Name'     
+col c3  format 999,999          heading 'Numero de |Linhas Encad.'
+col c4  format 99,999,999       heading 'Total Reg|Tabela'
+col c5  format 999.9999         heading 'Percent|Encadeamento'
+
+select cr.owner_name                   c1,
+       cr.table_name                   c2,
+       count(head_rowid)               c3, 
+       sum(num_rows)/count(head_rowid) c4,
+  ((count(head_rowid)) / (sum(num_rows) / count(head_rowid))) * 100 c5
+ from chained_rows cr, dba_tables t
+where cr.table_name = t.table_name
+group by cr.c1, cr.c2
+/
+
+set termout on
+
+undef g_Script
+undef g_Titulo
+ttitle off
+clear column
+clear breaks

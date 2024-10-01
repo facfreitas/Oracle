@@ -1,0 +1,1 @@
+SELECT UTL_INADDR.get_host_name('10.145.84.51') FROM dual; 

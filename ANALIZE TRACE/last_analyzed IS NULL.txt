@@ -1,0 +1,11 @@
+SELECT 'analyze table ' || owner || '.' || table_name
+       || ' compute statistics;'
+  FROM dba_tables
+ WHERE owner = UPPER ('&&schema') AND last_analyzed IS NULL
+
+
+SELECT 'analyze table ' || owner || '.' || table_name
+       || ' compute statistics;'
+  FROM dba_tables
+ WHERE last_analyzed IS NULL
+ and owner not in ('SYS', 'SYSTEM')
