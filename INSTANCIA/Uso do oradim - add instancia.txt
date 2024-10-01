@@ -1,0 +1,3 @@
+set ORACLE_SID=BACK
+oradim -new -sid BACK -startmode manual -pfile "G:\ORACLE\ADMIN\BACK\PFILE\init.ora"
+oradim -edit -sid BACK -startmode auto

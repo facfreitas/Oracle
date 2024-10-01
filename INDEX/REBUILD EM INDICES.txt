@@ -1,0 +1,3 @@
+alter index <NM_INDICE> rebuild
+tablespace <NM_TS_IND>
+storage (initial <TAM K|M> next <TAM K|M> pctincrease 0);

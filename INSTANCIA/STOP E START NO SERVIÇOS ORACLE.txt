@@ -1,0 +1,3 @@
+PARANDO : net stop OracleService<instancia> /Y
+
+START :   net start OracleService<instancia> /Y

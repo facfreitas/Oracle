@@ -1,0 +1,1 @@
+oradim -edit -sid RECO -intpwd oracle -startmode auto -pfile c:\db1\initDB1.ora

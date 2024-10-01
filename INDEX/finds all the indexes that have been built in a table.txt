@@ -1,0 +1,39 @@
+This script finds all the indexes that have been built in a table tablespace. 
+rem Usage Information:  SQLPLUS SYS/pswd
+rem                     idxs_in_tblsp.sql
+
+set pagesize 0;
+set linesize 80;
+set echo off;
+set feedback off; 
+set heading off;
+
+accept schema prompt 'Enter schema owner name: '
+accept tblsp prompt 'Enter table tablespace name: '
+
+column c1 format a15;
+column c2 format a30;
+column c3 format a25;
+column c4 format a4;
+
+spool idxs_in_tblsp.lis;
+
+prompt Report of all indexes built in the table tablespace
+prompt Use courier font in email for best readability of report
+prompt
+prompt DB   Index Owner     Index Name                     Tablespace Name 
+prompt ---- --------------- ------------------------------ -------------------------
+
+SELECT NAME c4,
+	OWNER c1,
+	index_NAME c2,
+	TABLESPACE_NAME c3
+FROM
+	DBA_indexes, v$database
+WHERE 
+      owner = upper('&schema')
+   and tablespace_name = upper('&tblsp')
+ORDER BY 1,2,3;
+
+spool off;
+

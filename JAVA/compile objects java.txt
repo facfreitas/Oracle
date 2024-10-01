@@ -1,0 +1,30 @@
+
+/* Script Description: This query will identify and recompile invalid java or java classes.
+
+                       NOTE: This script makes the assumption that $ORACLE_HOME/javavm/initjvm.sql 
+                             has been run on the instance.
+
+   Output file:        js.sql
+
+   Prepared/
+   CopyRighted By:     TheOracleResourceStop Script Archive
+                       www.orsweb.com
+
+   Usage Information:  SQLPLUS SYS/pswd
+                       @compinvalidjava.sql
+*/
+
+set head off pages 0 lines 80 verify off echo off;
+ 
+spool js.sql
+
+select 'alter '||object_type||' "'||dbms_java.longname(object_name)||'" compile;'
+from dba_objects
+where object_type like 'JAVA%'
+and status = 'INVALID';
+
+spool off;
+
+@js
+
+set head on pages 24 lines 80;

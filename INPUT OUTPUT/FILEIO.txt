@@ -1,0 +1,89 @@
+
+rem Script Description   This is an adhoc report against current statistics,
+rem                      based on the queries used for UTLBSTAT/UTLESTAT.
+rem
+rem Output file:        fileio.lis
+rem
+rem Prepared By:        Oracle Resource Stop
+rem
+rem Usage Information:  SQLPLUS SYS/pswd
+rem                     @fileio.sql  
+rem
+
+spool fileio.lis
+
+column drive    format a15
+column filename format a40
+column physrds  format 9999999999
+column phywrts  format   99999999
+column blk_rds  format 9999999999
+column blk_wrt  format   99999999
+column total    format 9999999999
+set linesize 124 pagesize 50 newpage 0 feedback off
+
+ttitle skip center "Database File Information" skip center -
+                   "Ordered by I/O per Drive" skip 2
+break on report 
+
+compute sum of physrds on report
+compute sum of phywrts on report
+compute sum of blk_rds on report
+compute sum of blk_wrt on report
+compute sum of total   on report
+
+SELECT
+  substr(i.name,1,15) "DRIVE",             /*assumes a 15-letter drive name*/
+  sum(x.phyrds) + sum(x.phywrts) "Total",  /*Total IO*/
+  sum(x.phyrds)    "PHYSRDS",              /*Physical reads*/
+  sum(x.phywrts)   "PHYWRTS",              /*Physical writes*/
+  sum(x.phyblkrd)  "BLK_RDS",              /*Block Reads*/
+  sum(x.phyblkwrt) "BLK_WRT"               /*Block Writes*/
+FROM
+  v$filestat x, ts$ ts, file$ f, v$datafile i
+WHERE
+  i.file#=f.file# and
+  ts.ts#=f.ts#    and
+  x.file#=f.file#
+GROUP BY
+  substr(i.name,1,15)                      /*assumes a 15-letter drive name*/
+ORDER BY
+  2 desc;
+
+
+ttitle skip center "Database File I/O Information" skip 2
+clear breaks
+break on drive skip 1 on report 
+
+compute sum of total   on drive
+compute sum of physrds on drive
+compute sum of phywrts on drive
+compute sum of blk_rds on drive
+compute sum of blk_wrt on drive
+
+SELECT
+  substr(i.name,1,15) "DRIVE",            /*assumes a 15-letter drive name*/
+  i.name filename,
+  x.phyrds + x.phywrts  "Total",          /*Total IO*/ 
+  x.phyrds    "PHYRDS",                   /*Physical Reads*/
+  x.phywrts   "PHYWRTS",                  /*Physical Writes*/
+  x.phyblkrd  "BLK_RDS",                  /*Block Reads*/
+  x.phyblkwrt "BLK_WRT"                   /*Block Writes*/
+FROM
+  v$filestat x, ts$ ts, file$ f, v$datafile i
+WHERE
+  i.file#=f.file# and 
+  ts.ts#=f.ts#    and
+  x.file#=f.file#
+ORDER BY
+  1,2;
+
+spool off
+clear breaks
+clear buffer
+clear columns
+clear computes
+
+  
+
+
+

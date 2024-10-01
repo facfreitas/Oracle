@@ -1,0 +1,192 @@
+rem  Procedure to calculate index space saving if they were rebuilt
+rem  calculated Index size is based on the formula from Server Admin Guide
+rem  resource consuming script, use accordingly
+rem
+rem  Biju Thomas
+rem  03/19/1999
+rem
+rem  Parameters : 1. Schema - Wild card can be used
+rem               2. Table Name - Wild card can be used
+rem
+rem
+set serveroutput on feedback off verify off pages 0 echo off
+prompt For large table this might take a while, please be patient...
+prompt
+spool /tmp/ind_rspace.lst
+declare
+     wuser  varchar2 (15) := '&1';
+     wtable varchar2 (30) := '&2';
+     /* Indexes */
+     cursor cind is
+     select owner, table_owner, index_name, table_name, tablespace_name,
+            ini_trans, pct_free
+     from   dba_indexes where
+            table_name like upper(wtable) and
+            table_owner like upper(wuser);
+
+     /* Indexe columns */
+     cursor cicol (pindowner in varchar2, pindname in varchar2) is
+     select column_name, column_length
+     from   dba_ind_columns where
+            index_owner = pindowner and
+            index_name  = pindname;
+
+     wcount       number := 0;
+     wdate        varchar2 (25) := to_char(sysdate,'Mon DD, YYYY  HH:MI AM');
+
+     wbs          number;
+     wf           number;
+     wd           number;
+     wv           number;
+     wbhs         number;
+     wbpe         number;
+     wadspb       number;
+     wactindsize  number;
+     wcalcindsize number;
+     wpred        number;
+     wblocks      number;
+     wtotcalc     number := 0;
+     wtotact      number := 0;
+     wtotred      number := 0;
+
+     wrows          number;
+     wcolsize       number;
+     wcols          varchar2 (500);
+     wsql           varchar2 (500);
+     wnumrows       number;
+     wcursor_handle integer;
+     wdummy         integer;
+
+     wtotal_blocks               number;
+     wtotal_bytes                number;
+     wunused_blocks              number;
+     wunused_bytes               number;
+     wlast_used_extent_file_id   number;
+     wlast_used_extent_block_id  number;
+     wlast_used_block            number;
+
+
+  begin
+   dbms_output.enable(100000);
+
+   dbms_output.put_line('********** INDEX REBUILD SIZE INFORMATION  ********** ' || wdate);
+   dbms_output.put_line('*-----------------*---------------------------------*-------*---------*--------');
+   dbms_output.put_line('TABLESPACE_NAME   TABLE.INDEX_NAME                  CURRENT ESTIMATED   PERCENT');
+   dbms_output.put_line('.                                                   SIZE_KB   SIZE_KB REDUCTION');
+   dbms_output.put_line('*-----------------*---------------------------------*-------*---------*--------');
+
+   for rind in cind loop
+
+     -- Actual space used by the index
+     --
+     dbms_space.unused_space (rind.owner, rind.index_name, 'INDEX',
+                             wtotal_blocks,  wtotal_bytes,  wunused_blocks,
+                             wunused_bytes, wlast_used_extent_file_id,
+                             wlast_used_extent_block_id, wlast_used_block);
+
+     -- Calculate required space for the index
+     -- Using the method described in Server7 Adminstrators Guide
+
+     -- Total Block Header Size = fixed header + variable transaction header
+     --
+     wbhs := 113 + (24 * rind.ini_trans);
+
+     -- Available data space per data block = (block size - block header) -
+     --                   ((block size - block header) * (pctfree/100))
+     --
+     select value into wbs
+     from v$parameter 
+     where upper(name) = 'DB_BLOCK_SIZE';
+     --
+     wadspb := (wbs - wbhs) - ((wbs - wbhs) * (rind.pct_free/100));
+
+     -- Calculate column lengths
+     --
+     wcols := '';
+     wf := 0;
+     wv := 0;
+     wd := 0;
+     for ricol in cicol (rind.owner, rind.index_name) loop
+        wcols := wcols || 'avg(vsize(' || ricol.column_name || ')) + ';
+	-- 
+	-- required for next step
+	if ricol.column_length < 127 then
+	   wf := wf + 1;
+        else
+	   wv := wv + 2;
+        end if;
+     end loop;
+     wcols := wcols || '0';
+     wsql := 'select ' || wcols || ' from ' || rind.table_owner || '.' || rind.table_name;
+     wcursor_handle := dbms_sql.open_cursor;
+     dbms_sql.parse(wcursor_handle, wsql, DBMS_SQL.V7);
+     dbms_sql.define_column(wcursor_handle,1,wcolsize);
+     wdummy := dbms_sql.execute_and_fetch(wcursor_handle, true);
+     dbms_sql.column_value(wcursor_handle, 1, wcolsize);
+     dbms_sql.close_cursor(wcursor_handle);
+     wd := wcolsize;
+
+     -- Calculate total average index value size
+     -- bytes/entry = entry header + rowid length + F + V + D
+     --
+     wbpe := 2 + 6 + wf + wv + wd;
+
+     -- Find total number of rows
+     --
+     wcursor_handle := dbms_sql.open_cursor;
+     dbms_sql.parse(wcursor_handle,'select count(*) from ' || rind.table_owner || '.' || rind.table_name,DBMS_SQL.V7);
+     dbms_sql.define_column(wcursor_handle,1,wrows);
+     wdummy := dbms_sql.execute_and_fetch(wcursor_handle, true);
+     dbms_sql.column_value(wcursor_handle, 1, wrows);
+     dbms_sql.close_cursor(wcursor_handle);
+
+     -- Calculate number of blocks and bytes
+     -- blocks = 1.05*(total rows/(floor(avg data per block/avg entry size)
+     --
+     wblocks := round(1.05 * (wrows / (floor(wadspb/wbpe))));
+     wcalcindsize := wblocks * wbs;
+     --
+     wactindsize := (wtotal_blocks - wunused_blocks) * wbs;
+     --
+     wpred := (wactindsize - wcalcindsize) / wactindsize * 100;
+
+     -- Convert to KB
+     wcalcindsize := wcalcindsize / 1024;
+     wactindsize  := wactindsize / 1024;
+
+     wtotcalc := wtotcalc + wcalcindsize;
+     wtotact  := wtotact  + wactindsize;
+
+     -- Display output
+     --
+     dbms_output.put_line(rpad(rind.tablespace_name,18) || rpad(rind.table_name ||'.'||rind.index_name, 33) || to_char(wactindsize,'999,999') || to_char(wcalcindsize,'999,999.9') || to_char(wpred,'999999.9'));
+
+     --
+     wcount := wcount + 1;
+   end loop;
+
+   wtotred := (wtotact - wtotcalc) / wtotact * 100;
+   dbms_output.put_line('*-----------------*---------------------------------*-------*---------*--------');
+   dbms_output.put_line(rpad('TOTAL',51) || to_char(wtotact,'999,999') || to_char(wtotcalc,'999,999.9') || to_char(wtotred,'999999.9'));
+
+   dbms_output.put_line('********** END INFO **********');
+   if wcount =0 then
+    dbms_output.put_line('******************************************************
+');
+    dbms_output.put_line('*                                                    *
+');
+    dbms_output.put_line('* Plese Verify Input Parameters... No Matches Found! *
+');
+    dbms_output.put_line('*                                                    *
+');
+    dbms_output.put_line('******************************************************
+');
+   end if;
+  end;
+/
+set serveroutput off feedback on verify on pages 999
+spool off
+prompt
+prompt Output saved at /tmp/ind_rspace.lst
+
+

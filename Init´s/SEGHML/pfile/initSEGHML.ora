@@ -1,0 +1,59 @@
+# +-----------------------------------------+
+# | ARQUIVO : initSEG.ora                   |
+# | NOME BANCO DADOS: SEGHML		    |
+# | OBJETIVO : CONFIGURAR O BANCO DUPLICADO | 		   |
+# +-----------------------------------------+
+
+db_name=SEGHML
+instance_name=SEGHML
+compatible=9.2.0.0.0
+
+CONTROL_FILES=("R:\control\SEGHML\control01.ctl",
+               "R:\control\SEGHML\control02.ctl",
+               "R:\control\SEGHML\control03.ctl")
+
+DB_FILE_NAME_CONVERT=('R:\ORADATA\SEG','R:\ORADATA\SEGHML')
+LOG_FILE_NAME_CONVERT=('R:\REDO\SEG','R:\REDO\SEGHML')
+
+open_cursors=500
+
+db_block_size=8192
+db_cache_size=150m
+db_file_multiblock_read_count=16
+
+pga_aggregate_target=30m
+sort_area_size=1048576
+
+background_dump_dest=R:\admin\SEGHML\bdump
+core_dump_dest=R:\admin\SEGHML\cdump
+timed_statistics=TRUE
+user_dump_dest=R:\admin\SEGHML\udump
+
+aq_tm_processes=1
+
+job_queue_processes=0
+
+max_enabled_roles=148 # Numero máximo de role por owner
+
+hash_join_enabled=TRUE
+query_rewrite_enabled=FALSE
+star_transformation_enabled=FALSE
+
+java_pool_size=33554432
+large_pool_size=8388608
+shared_pool_size=100m
+
+processes=150
+fast_start_mttr_target=300
+
+undo_management=AUTO
+undo_retention=10800
+undo_tablespace=UNDOTBS1
+
+remote_login_passwordfile=EXCLUSIVE
+
+log_archive_dest_1='LOCATION=R:\archive\SEGHML\'
+log_archive_format = 'SEGHML%d_%t_%s.arc'
+log_archive_start=true
+
+utl_file_dir = *

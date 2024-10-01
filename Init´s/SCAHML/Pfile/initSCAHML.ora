@@ -1,0 +1,60 @@
+# +----------------------------------------------+
+# | ARQUIVO : initSCAHML.ora                     |
+# | NOME BANCO DADOS: SCAHML		         |    
+# | OBJETIVO : CONFIGURAR O BANCO DE HOMOLOGAÇÃO | 		   |
+# +----------------------------------------------+
+
+db_name=SCAHML
+instance_name=SCAHML
+
+CONTROL_FILES=("S:\Oracle\SCAHML\Control\control01.ctl",
+               "S:\Oracle\SCAHML\Control\control02.ctl",
+               "S:\Oracle\SCAHML\Control\control03.ctl")
+
+DB_FILE_NAME_CONVERT=('S:\Oracle\SCA\Data','S:\Oracle\SCAHML\Data','T:\Oracle\SCA\Data','S:\Oracle\SCAHML\Data')
+LOG_FILE_NAME_CONVERT=('S:\Oracle\SCA\Redo','S:\Oracle\SCAHML\Redo','T:\Oracle\SCA\Redo','S:\Oracle\SCAHML\Redo')
+
+open_cursors=300
+
+db_block_size=8192
+db_cache_size=35M
+db_file_multiblock_read_count=16
+
+pga_aggregate_target=30M
+sort_area_size=1048576
+
+background_dump_dest=S:\Oracle\SCAHML\Trace\Bdump
+core_dump_dest=S:\Oracle\SCAHML\Trace\Cdump
+timed_statistics=TRUE
+user_dump_dest=S:\Oracle\SCAHML\Trace\Udump
+
+aq_tm_processes=1
+compatible=9.2.0.0.0
+
+job_queue_processes=0
+
+max_enabled_roles=148 # Numero máximo de role por owner
+
+hash_join_enabled=TRUE
+query_rewrite_enabled=FALSE
+star_transformation_enabled=FALSE
+
+java_pool_size=8388608
+large_pool_size=16777216
+shared_pool_size=52428800
+
+processes=200
+fast_start_mttr_target=300
+
+undo_management=AUTO
+undo_retention=28800
+undo_tablespace=UNDOTBS1
+
+remote_login_passwordfile=EXCLUSIVE
+
+
+log_archive_dest_1='LOCATION=S:\Oracle\SCAHML\Archive\'
+log_archive_format=SCAHML-%t_%s.dbf
+log_archive_start=true
+
+utl_file_dir = *

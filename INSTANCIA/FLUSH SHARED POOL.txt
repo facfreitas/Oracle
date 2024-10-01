@@ -1,0 +1,41 @@
+
+rem Script Description: This package will flush shared pool
+rem
+rem
+rem Output file:        flushsharedpool.lis
+rem
+rem Prepared By:        TheOracleResourceStop
+rem                     www.orsweb.com
+rem
+rem			NOTE:	Script to be run by SYS or other user that has received the ALTER 
+rem				SYSTEM privilege directly and not through a role.
+rem
+rem Usage Information:  SQLPLUS SYS/pswd
+rem                     @flushsharedpool.sql
+rem
+rem
+create or replace package flush_shared_pool as
+	procedure flush_shared_pool;
+end;
+/
+create or replace package body flush_shared_pool as
+procedure flush_shared_pool is
+	FspCur 	integer;
+	FspTemp	integer;
+begin
+	FspCur := dbms_sql.open_cursor;
+	dbms_sql.parse (FspCur, 
+			'alter system flush shared_pool',
+			dbms_sql.v7
+	);
+	FspTemp := dbms_sql.execute(FspCur);
+	dbms_sql.close_cursor(FspCur);
+	exception
+		when others then
+			if dbms_sql.is_open(FspCur) then
+				dbms_sql.close_cursor(FspCur);
+			end if;
+end	/* procedure */;
+end	/* package */;
+/
+

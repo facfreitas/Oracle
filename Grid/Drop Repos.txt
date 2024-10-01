@@ -1,0 +1,1 @@
+emca -deconfig dbcontrol db -repos drop -SYS_PWD eepSA$1986 -SYSMAN_PWD eepSA$1986

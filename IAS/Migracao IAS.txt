@@ -1,0 +1,59 @@
+panorama: Servidor Linux 
+com RedHat 6.2 e IAS 9i HTTP Server Only que fora instalado por mim e Tavares a 
+ser migrado para um Linux RedHat 7.1 com Oracle9iAS 1.0.2.2.1 Enterprise 
+instalado por mim, certo?
+
+Servidor antigo (ou atual, seja como for) 8i:
+
+1. Observe os arquivos:
+
+$ORACLE_HOME/network/admin/tnsnames.ora e sqlnet.ora
+$ORACLE_HOME/6iserver/network/admin/tnsnames.ora e sqlnet.ora
+  Não os copie para o novo servidor! Motivo: serviços como o reports server são 
+startados baseados no tnsnames.ora, acredite!
+  Então vc deve pegar as chaves "ALIAS =" dos tnsnames encontrados e 
+acrescentar no novo servidor, permitindo que ele se conecte a todos os bancos 
+configurados no outro.
+
+2. Quanto ao HTTP Server Apache:
+
+Veja a release do Apache da Oracle em ambos os servidores.
+
+$ORACLE_HOME/Apache/Apache/bin/./httpd -v
+
+Se for idêntica (o que eu acho difícil e improvável) então faça um backup do 
+httpd.conf do 9i e o sobre-escreva com o do 8i. Caso contrário, caso queira 
+testar assim mesmo, o risco é que o Apache não inicie devido a 
+incompatibilidade de diretivas de uma versão para outra.
+
+Sendo assim, atente para linhas com as seguintes diretivas:
+
+NameServer, Port, Listen, Bind, Alias, ScriptAlias e no final do arquivo, 
+include, que adiciona diretivas encontradas em arquivos externos, tais como 
+$ORACLE_HOME/Apache/Jserv/etc/jserv.conf e 
+$ORACLE_HOME/Apache/Apache/conf/oracle_apache.conf, utilizando o bom sendo 
+(digamos assim) para alterar essas diretivas.
+
+3. o DAD:
+
+Procure em $ORACLE_HOME/Apache/modplsql/cfg/wdbsvr.app pelo(s) DAD(´s) em uso e 
+acrescente no arquivo equivalente no 9i.
+
+Atente para o início do arquivo :
+
+[WVGATEWAY]
+defaultDAD = portal30
+administrators = all
+
+onde "administrators = all" é o default e permite que qualquer um acesse a 
+configuração DAD, sendo assim, se baseie na conf. do 8i.
+
+============
+POR ÚLTIMO :
+
+Obs.: Acredito já ter feito boa parte das configurações acima relatadas nas 
+últimas vezes em que estive aí no Polo, então faça um checklist.
+
+Fui direto em algumas coisas, caso contrário o documento ficaria muito extenso, 
+mas qualquer dúvida qt a procedimento ou diretivas do Apache é só falar.
+

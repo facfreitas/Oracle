@@ -1,0 +1,13 @@
+Write a Message to the Alert Log 
+
+This tip comes from Marco Gilbert, DBA at MRQ, in Ste-Foy, Québec, Canada.
+
+
+If you want to write a message to the alert log, you can use the undocumented KSDWRT procedure of the DBMS_SYSTEM package. 
+
+This procedure has two parameters, the first one must be "2" to write to the alert file, the second one is the message you want to write. 
+Here is an example: 
+
+
+execute sys.dbms_system.ksdwrt(2,to_char(sysdate)|| ' -- ');
+

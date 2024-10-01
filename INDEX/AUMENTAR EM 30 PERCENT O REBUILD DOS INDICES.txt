@@ -1,0 +1,10 @@
+Select 'alter index '||owner||'.'||segment_name||' rebuild tablespace <TS_NAME> '|| 
+	  ' storage ( initial '||  trunc(bytes*1.3/1024)||
+			   'k minextents 1 maxextents unlimited pctincrease 0 freelists 1);'			   
+from dba_segments
+where tablespace_name = ' '
+and segment_type = 'INDEX'
+
+
+
+

@@ -1,0 +1,1 @@
+D:\oracle\product\10.2.0\db_1\BIN\imp system@sgf10 file=X:\DMP\SGFPROD_COM_LINHAS.DMP log=X:\DMP\imp_SGF10.log fromuser=dbainfra,dbasgf,dbaudit touser=dbainfra,dbasgf,dbaudit recordlength=65535 commit=y feedback=10000

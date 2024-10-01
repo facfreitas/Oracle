@@ -1,0 +1,3 @@
+SELECT round(SYSDATE-logon_time,4) "Days", round(SYSDATE-logon_time,4)*24 "Hours",logon_time
+FROM sys.V_$SESSION
+WHERE sid=1 /* this is PMON */

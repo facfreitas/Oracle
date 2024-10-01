@@ -1,0 +1,124 @@
+declare
+  security_key number;
+begin
+  -- for the RuntimeExample class
+  dbms_java.grant_permission('DAN', 'java.io.FilePermission', '<<ALL FILES>>', 'read,write,execute,delete', security_key);
+  dbms_java.grant_permission('DAN', 'java.lang.RuntimePermission', 'writeFileDescriptor', NULL, security_key);
+  dbms_java.grant_permission('DAN', 'java.lang.RuntimePermission', 'readFileDescriptor', NULL, security_key);
+  -- to use the Java Reflection API
+  dbms_java.grant_permission('PUBLIC', 'java.lang.RuntimePermission', 'accessDeclaredMembers', 'execute', security_key);
+  dbms_java.grant_permission('PUBLIC', 'java.lang.RuntimePermission', 'modifyPermission', NULL, security_key);
+  -- to create a ServerSocket object
+  dbms_java.grant_permission('DAN', 'java.net.SocketPermission', '*', 'accept,connect,listen,resolve', security_key);
+end;
+/
+select object_name
+  from all_objects
+ where owner = 'DAN'
+   and object_type = 'JAVA CLASS'
+/
+select dbms_java.longname(object_name)
+  from all_objects
+ where owner = 'DAN'
+   and object_type = 'JAVA CLASS'
+/
+begin
+  dbms_java.set_compiler_option('','debug','true');
+end;
+/
+CREATE OR REPLACE JAVA SOURCE NAMED "Hello" AS public class hello {
+      public static String helloWorld() {
+         String returnValue;
+         
+         System.out.println("This is System.out. Can you see it?");
+         returnValue = "Hello world, ";
+         returnValue += "this is my first Java program";
+         
+  	     return returnValue;
+  	  }
+};
+/
+select object_name, object_type, status
+from all_objects
+where object_name in ('Hello', 'hello')
+and owner = 'DAN'
+/
+ALTER JAVA SOURCE "Hello" RESOLVE;
+CREATE OR REPLACE AND RESOLVE JAVA SOURCE NAMED "Hello" AS public class hello {
+      public static String helloWorld() {
+         String returnValue;
+         
+         System.out.println("This is System.out. Can you see it?");
+         returnValue = "Hello world, ";
+         returnValue += "this is my first Java program";
+         
+  	     return returnValue;
+  	  }
+};
+/
+CREATE OR REPLACE FUNCTION HELLO_WORLD RETURN VARCHAR2 IS 
+LANGUAGE JAVA NAME 'hello.helloWorld() return java.lang.String';
+/
+set serveroutput on
+
+begin
+  dbms_java.set_output(100000);
+end;
+/
+DECLARE
+  my_varchar2 VARCHAR2(64);
+BEGIN
+  my_varchar2 := hello_world;
+  DBMS_OUTPUT.PUT_LINE(my_varchar2);
+END;
+/
+CREATE OR REPLACE AND RESOLVE JAVA SOURCE NAMED "RuntimeExample" AS public class RuntimeExample {
+      public static String runNotepad() {
+         String returnValue = null;
+         
+         Runtime r = Runtime.getRuntime();
+         long totalMemory = r.totalMemory();
+         try {
+	        Process p = r.exec("notepad.exe \"C:\\Documents and Settings\\pfhdab0\\Desktop\\LAOUG\\fun.txt\"");
+	        returnValue = p.toString();
+	     } catch (Exception e) {
+	     	System.out.println("Exception calling Runtime.exec()->" + e);
+	     }
+	     /* You can get creative here and 
+	        1) Use p.waitFor() to block while the process is running, 
+	        2) Send the command to be executed as a parameter to the method, etc. */
+         
+  	     return returnValue;
+  	  }
+};
+/
+select object_name, last_ddl_time, object_type, status
+from all_objects
+where object_name = 'RuntimeExample'
+and owner = 'DAN'
+/
+CREATE OR REPLACE FUNCTION runNotepad RETURN VARCHAR2 IS 
+LANGUAGE JAVA NAME 'RuntimeExample.runNotepad() return java.lang.String';
+/
+DECLARE
+  my_varchar2 VARCHAR2(64);
+BEGIN
+  my_varchar2 := runnotepad;
+  DBMS_OUTPUT.PUT_LINE(my_varchar2);
+END;
+/
+begin
+  dbms_java.set_compiler_option('','debug','true');
+end;
+/
+exec DBMS_JAVA.START_DEBUGGING('&ProxyName.', &ProxyPort., 45);
+
+stop in hello.helloWorld
+
+DECLARE
+  my_varchar2 VARCHAR2(64);
+BEGIN
+  my_varchar2 := hello_world;
+  DBMS_OUTPUT.PUT_LINE(my_varchar2);
+END;
+/

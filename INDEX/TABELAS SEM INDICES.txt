@@ -1,0 +1,11 @@
+Script Description: Lists all tables that do not have any indexes.
+
+set pages 65;
+
+select  owner, table_name 
+from  all_tables
+where owner not in ('SYS','SYSTEM')
+MINUS
+select  owner, table_name  
+from  all_indexes;
+

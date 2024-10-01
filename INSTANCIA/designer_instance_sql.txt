@@ -1,0 +1,571 @@
+I use this script to create Designer repository instances. This example was used in an AIX/Oracle 7.3.4 environment; some alterations are needed where indicated to run on 8.0.
+Enjoy!
+
+# INIT.ORA changes:
+# These existing parameters change:
+#
+db_name = DES2				# only for new instance, otherwise ORCL
+control_files = ( %RDBMS73_CONTROL%\ctl1des2.dbf, %RDBMS73_ARCHIVE%\ctl2des2.dbf)
+db_block_buffers = 2000			# 8MB at 4kB block size
+shared_pool_size = 18000000		# minimal for Designer
+log_checkpoint_interval = 100000	# avoid checkpointing
+log_buffer = 163840
+global_names = false			# Designer V1 prerequisite
+#
+# These parameters need to be added:
+#
+cursor_space_for_time = true
+db_block_size = 4096			# only for new instance!
+dml_locks = 500
+open_cursors = 300
+rollback_segments=(rollback1, rollback2, rollback3, rollback4, rollback5,
+rollback6, rollback7, rollback8, rollback9)
+sort_area_size = 262144			# 256kB
+sort_area_retained_size = 262144
+unlimited_rollback_segments = true	# Not needed for O8 and up, 7.3 only
+#
+# end of INIT.ORA changes
+--
+-- Script to create instance where Designer V1 and V2 repositories may reside.
+-- When Designer V6 repository is needed, copy the V2 stuff and rename where
+-- appropiate.
+-- Latest change: 16 December 1999 by Frank van Bortel, Inter Access/V&L
+SPOOL des2_db
+--
+-- Connect to and stop de Instance
+--
+CONNECT INTERNAL
+SHUTDOWN ABORT
+STARTUP NOMOUNT
+--
+-- Create the Database
+-- System: 70M for Des2K V1.3.2, 75M voor V2/V6,
+-- 90MB for the lot.
+-- Redo logs are on mirrored drives, no need for multiplexing here
+--
+CREATE DATABASE 
+ CONTROLFILE REUSE
+ LOGFILE GROUP 1 ('/hd14/oradata/redolog01.dbf') SIZE 12M REUSE, 
+         GROUP 2 ('/hd15/oradata/redolog02.dbf') SIZE 12M REUSE,
+         GROUP 3 ('/hd14/oradata/redolog03.dbf') SIZE 12M REUSE,
+	 GROUP 4 ('/hd15/oradata/redolog04.dbf') SIZE 12M REUSE
+ DATAFILE          '/hd16/oracle/system01.dbf' SIZE 90M REUSE 
+                 AUTOEXTEND ON NEXT 10M
+ CHARACTER SET WE8ISO8859P1;
+--
+-- Because of the nature of Designer, following structures
+-- are altered:
+--
+ALTER tablespace SYSTEM default storage (next 512K); 
+--
+ALTER table idl_ub1$ pctfree 0 pctused 50 storage (next 512K);
+ALTER table idl_ub2$ pctfree 0 pctused 50 storage (next 512K);
+--
+-- Create a tablespace for Temporary Segments
+-- initial extend = sort_area_size plus (at least) 1 block
+--
+CREATE TABLESPACE TEMP TEMPORARY
+ DATAFILE '/hd18/oracle/temp01.dbf'
+ SIZE 2M REUSE
+ AUTOEXTEND ON NEXT 2M
+ DEFAULT STORAGE ( INITIAL      270336
+                   NEXT        256K
+                   MAXEXTENTS  UNLIMITED
+                   PCTINCREASE 0 );
+--
+-- Make de built-in users use this tablespace for temporary segments
+--
+ALTER USER SYS    TEMPORARY TABLESPACE TEMP;
+ALTER USER SYSTEM TEMPORARY TABLESPACE TEMP;
+-- 
+-- Create Rollback tablespace and Segments
+--
+CREATE TABLESPACE ROLLBACK 
+ DATAFILE '/hd16/oracle/rollback01.dbf'
+ SIZE 9M REUSE
+ AUTOEXTEND ON NEXT 1M
+ DEFAULT STORAGE ( INITIAL     200K
+                   NEXT        200K
+                   MINEXTENTS    5
+                   MAXEXTENTS    UNLIMITED
+                   PCTINCREASE   0 );
+--
+-- Create nine Rollback Segments
+-- 
+CREATE ROLLBACK SEGMENT ROLLBACK1
+ TABLESPACE ROLLBACK
+ STORAGE ( OPTIMAL 1M );
+ALTER ROLLBACK SEGMENT ROLLBACK1 ONLINE;
+--
+CREATE ROLLBACK SEGMENT ROLLBACK2
+ TABLESPACE ROLLBACK
+ STORAGE ( OPTIMAL 1M );
+ALTER ROLLBACK SEGMENT ROLLBACK2 ONLINE;
+--
+CREATE ROLLBACK SEGMENT ROLLBACK3
+ TABLESPACE ROLLBACK
+ STORAGE ( OPTIMAL 1M );
+ALTER ROLLBACK SEGMENT ROLLBACK3 ONLINE;
+--
+CREATE ROLLBACK SEGMENT ROLLBACK4
+ TABLESPACE ROLLBACK
+ STORAGE ( OPTIMAL 1M );
+ALTER ROLLBACK SEGMENT ROLLBACK4 ONLINE;
+--
+CREATE ROLLBACK SEGMENT ROLLBACK5
+ TABLESPACE ROLLBACK
+ STORAGE ( OPTIMAL 1M );
+ALTER ROLLBACK SEGMENT ROLLBACK5 ONLINE;
+--
+CREATE ROLLBACK SEGMENT ROLLBACK6
+ TABLESPACE ROLLBACK
+ STORAGE ( OPTIMAL 1M );
+ALTER ROLLBACK SEGMENT ROLLBACK6 ONLINE;
+--
+CREATE ROLLBACK SEGMENT ROLLBACK7
+ TABLESPACE ROLLBACK
+ STORAGE ( OPTIMAL 1M );
+ALTER ROLLBACK SEGMENT ROLLBACK7 ONLINE;
+--
+CREATE ROLLBACK SEGMENT ROLLBACK8
+ TABLESPACE ROLLBACK
+ STORAGE ( OPTIMAL 1M );
+ALTER ROLLBACK SEGMENT ROLLBACK8 ONLINE;
+--
+CREATE ROLLBACK SEGMENT ROLLBACK9
+ TABLESPACE ROLLBACK
+ STORAGE ( OPTIMAL 1M );
+ALTER ROLLBACK SEGMENT ROLLBACK9 ONLINE;
+--
+SPOOL OFF
+--
+SPOOL des2_tools
+-- 
+-- Create a Tools tablespace, it will be OEM's default TS
+--
+CREATE TABLESPACE TOOLS 
+ DATAFILE '/hd17/oracle/tools01.dbf'
+ SIZE 5M REUSE
+ AUTOEXTEND ON NEXT 5M
+ DEFAULT STORAGE ( INITIAL       8K 
+                   NEXT        256K 
+                   MAXEXTENTS  UNLIMITED
+                   PCTINCREASE   0 );
+--
+-- Make de built-in user System use this tablespace
+--
+ALTER USER SYSTEM DEFAULT TABLESPACE TOOLS;
+--
+SPOOL OFF
+--
+SPOOL des2_ts
+-- 
+-- Create tablespace for Designer/2000 V1.3.2 Tables
+--
+CREATE TABLESPACE DES2K_TABLES
+ DATAFILE '/hd17/oracle/d2k132table.dbf'
+ SIZE 15M REUSE
+ AUTOEXTEND ON NEXT 5M
+ DEFAULT STORAGE ( INITIAL       8K 
+                   NEXT        150K
+                   MAXEXTENTS  UNLIMITED
+                   PCTINCREASE 0 );
+-- 
+-- Create tablespace for Designer/2000 V1.3.2 Indexes
+--
+CREATE TABLESPACE DES2K_INDEXES
+ DATAFILE '/hd17/oracle/d2k132index.dbf'
+ SIZE 10M REUSE
+ AUTOEXTEND ON NEXT 5M
+ DEFAULT STORAGE ( INITIAL       8K 
+                   NEXT        100K 
+                   MAXEXTENTS  UNLIMITED
+                   PCTINCREASE 0 );
+-- 
+-- Create Designer V2 Metadata-Tables tablespace
+--
+CREATE TABLESPACE META_TAB
+ DATAFILE '/hd17/oracle/d2k2metatab.dbf'
+ SIZE 12M REUSE
+ AUTOEXTEND ON NEXT 6M
+ DEFAULT STORAGE ( INITIAL       8K 
+                   NEXT          256K
+                   MAXEXTENTS  UNLIMITED
+                   PCTINCREASE 0 );
+-- 
+-- Create Designer V2 Metadata-Indexes tablespace
+--
+CREATE TABLESPACE META_IND
+ DATAFILE '/hd17/oracle/d2k2metaidx.dbf'
+ SIZE 18M REUSE
+ AUTOEXTEND ON NEXT 9M
+ DEFAULT STORAGE ( INITIAL       8K 
+                   NEXT          512K
+                   MAXEXTENTS  UNLIMITED
+                   PCTINCREASE 0 );
+-- 
+-- Create Designer V2 Tempdata-Tables tablespace
+--
+CREATE TABLESPACE TEMP_TAB
+ DATAFILE '/hd17/oracle/d2k2tempdat.dbf'
+ SIZE 20M REUSE
+ AUTOEXTEND ON NEXT 10M
+ DEFAULT STORAGE ( INITIAL       8K 
+                   NEXT          1M
+                   MAXEXTENTS  UNLIMITED
+                   PCTINCREASE 0 );
+-- 
+-- Create Designer V2 Tempdata-Indexes tablespace
+--
+CREATE TABLESPACE TEMP_IND
+ DATAFILE '/hd17/oracle/d2k2tempidx.dbf'
+ SIZE 14M REUSE
+ AUTOEXTEND ON NEXT 7M
+ DEFAULT STORAGE ( INITIAL       8K 
+                   NEXT          1M
+                   MAXEXTENTS  UNLIMITED
+                   PCTINCREASE 0 );
+-- 
+-- Create Designer V2 Constantgrowth-Tables tablespace
+--
+CREATE TABLESPACE CONST_TAB
+ DATAFILE '/hd17/oracle/d2k2consdat.dbf'
+ SIZE 128k REUSE
+ AUTOEXTEND ON NEXT 128k
+ DEFAULT STORAGE ( INITIAL       8K 
+                   NEXT          32K
+                   MAXEXTENTS  UNLIMITED
+                   PCTINCREASE 0 );
+-- 
+-- Create Designer V2 Constantgrowth-Indexes tablespace
+--
+CREATE TABLESPACE CONST_IND
+ DATAFILE '/hd17/oracle/d2k2considx.dbf'
+ SIZE 500k REUSE
+ AUTOEXTEND ON NEXT 500k
+ DEFAULT STORAGE ( INITIAL       8K 
+                   NEXT          32K
+                   MAXEXTENTS  UNLIMITED
+                   PCTINCREASE 0 );
+-- 
+-- Create Designer V2 Rapidgrowth-Tables tablespace
+--
+CREATE TABLESPACE RAPID_TAB
+ DATAFILE '/hd17/oracle/d2k2rapiddat.dbf'
+ SIZE 5M REUSE
+ AUTOEXTEND ON NEXT 2M
+ DEFAULT STORAGE ( INITIAL       8K 
+                   NEXT          250K
+                   MAXEXTENTS  UNLIMITED
+                   PCTINCREASE 0 );
+-- 
+-- Create Designer Rapidgrowth-Indexes tablespace
+--
+CREATE TABLESPACE RAPID_IND
+ DATAFILE '/hd17/oracle/d2k2rapididx.dbf'
+ SIZE 15M REUSE
+ AUTOEXTEND ON NEXT 5M
+ DEFAULT STORAGE ( INITIAL       8K 
+                   NEXT          1M
+                   MAXEXTENTS  UNLIMITED
+                   PCTINCREASE 0 );
+-- 
+-- Create a tablespace for Designer V2 Hash-Tables
+--
+CREATE TABLESPACE HASH_TAB
+ DATAFILE '/hd17/oracle/d2k2hashtab.dbf'
+ SIZE 10M REUSE
+ AUTOEXTEND ON NEXT 2M
+ DEFAULT STORAGE ( INITIAL       8K 
+                   NEXT          256K
+                   MAXEXTENTS  UNLIMITED
+                   PCTINCREASE 0 );
+-- 
+-- Create Designer V2 Hash-Indexes tablespace
+--
+CREATE TABLESPACE HASH_IND
+ DATAFILE '/hd17/oracle/d2k2hashidx.dbf'
+ SIZE 1M REUSE
+ AUTOEXTEND ON NEXT 500k
+ DEFAULT STORAGE ( INITIAL       8K 
+                   NEXT          128K
+                   MAXEXTENTS  UNLIMITED
+                   PCTINCREASE 0 );
+SPOOL OFF
+--
+-- 
+-- Create a tablespace for User Tables
+--
+SPOOL des2_user
+
+CREATE TABLESPACE USER_DATA
+ DATAFILE '/hd17/oracle/users01.dbf'
+ SIZE 2M REUSE
+ AUTOEXTEND ON NEXT 2M
+ DEFAULT STORAGE ( INITIAL       8K 
+                   NEXT        100K 
+                   MAXEXTENTS  UNLIMITED
+                   PCTINCREASE 0  );
+SPOOL OFF
+--
+-- Create de database Views and default Packages
+--
+--
+-- Create a logfile
+--
+SPOOL des2_dbviews
+--
+SET ECHO OFF
+SET TERMOUT OFF
+--
+@$ORACLE_HOME/admin/catalog.sql
+@$ORACLE_HOME/admin/catproc.sql
+@$ORACLE_HOME/admin/dbmspool.sql
+@$ORACLE_HOME/admin/prvtpool.plb
+-- Oracle 8: create V7 import and export views
+--@$ORACLE_HOME/admin/catexp7.sql
+--
+SET ECHO ON
+SET TERMOUT ON
+SPOOL OFF
+--
+-- Create de Designer Repository Owners
+--
+SPOOL des2_repown
+--
+--  Create a Role which can be granted to de Repository Owner
+--
+CREATE ROLE DES2K_OWNER_ROLE;
+
+GRANT CREATE CLUSTER,
+      CREATE DATABASE LINK,
+      CREATE PROCEDURE,
+      CREATE    ROLE,
+      DROP ANY  ROLE,
+      GRANT ANY ROLE,
+      CREATE SESSION,
+      ALTER  SESSION,
+      CREATE SEQUENCE, 
+      CREATE SNAPSHOT,
+      CREATE ANY    SYNONYM,
+      DROP   ANY    SYNONYM,
+      CREATE PUBLIC SYNONYM,
+      DROP   PUBLIC SYNONYM,
+      CREATE TABLE,
+      CREATE TRIGGER,
+      CREATE ANY TRIGGER,
+      CREATE VIEW,
+      SELECT ANY TABLE
+TO DES2K_OWNER_ROLE;
+--
+-- Just in case the 'SELECT ANY TABLE' privilege is
+-- revoked / not granted to de des2k_owner_role:
+--
+GRANT SELECT ON SYS.DBA_ROLES         TO DES2K_OWNER_ROLE; 
+GRANT SELECT ON SYS.DBA_ROLE_PRIVS    TO DES2K_OWNER_ROLE;
+GRANT SELECT ON SYS.ROLE_ROLE_PRIVS   TO DES2K_OWNER_ROLE;
+GRANT SELECT ON SYS.DBA_SYS_PRIVS     TO DES2K_OWNER_ROLE;
+GRANT SELECT ON SYS.DBA_ROLLBACK_SEGS TO DES2K_OWNER_ROLE;
+GRANT SELECT ON SYS.DBA_SEGMENTS      TO DES2K_OWNER_ROLE;
+--
+-- Create de Repository Owner Designer/2000 V1
+--
+CREATE USER D2KV1_OWNER
+   IDENTIFIED BY D2KV1_OWNER
+   DEFAULT TABLESPACE DES2K_TABLES
+   TEMPORARY TABLESPACE TEMP
+   QUOTA UNLIMITED ON USER_DATA
+   QUOTA UNLIMITED ON DES2K_TABLES
+   QUOTA UNLIMITED ON DES2K_INDEXES;
+
+GRANT DES2K_OWNER_ROLE TO D2KV1_OWNER;
+GRANT CREATE TABLE, CREATE SYNONYM, CREATE SEQUENCE TO D2KV1_OWNER;
+--
+-- Make several Database Packages executable by the Repository Owner
+--
+-- Explicitly needed:
+--
+GRANT EXECUTE ON SYS.DBMS_LOCK        TO D2KV1_OWNER;
+GRANT EXECUTE ON SYS.DBMS_PIPE        TO D2KV1_OWNER;
+--
+-- Also used needed, but normally granted to public:
+--
+GRANT EXECUTE ON SYS.DBMS_ALERT       TO D2KV1_OWNER;
+GRANT EXECUTE ON SYS.DBMS_SHARED_POOL TO D2KV1_OWNER;
+GRANT EXECUTE ON SYS.DBMS_SQL         TO D2KV1_OWNER;
+GRANT EXECUTE ON SYS.STANDARD         TO D2KV1_OWNER;
+GRANT EXECUTE ON SYS.DBMS_STANDARD    TO D2KV1_OWNER;
+GRANT EXECUTE ON SYS.DBMS_TRANSACTION TO D2KV1_OWNER;
+GRANT EXECUTE ON SYS.DBMS_UTILITY     TO D2KV1_OWNER;
+--
+-- Create Repository V2 Owner account
+--
+CREATE USER D2KV2_OWNER
+   IDENTIFIED BY D2KV2_OWNER
+   DEFAULT TABLESPACE META_TAB
+   TEMPORARY TABLESPACE TEMP
+   QUOTA UNLIMITED ON USER_DATA
+   QUOTA UNLIMITED ON META_TAB
+   QUOTA UNLIMITED ON META_IND
+   QUOTA UNLIMITED ON TEMP_TAB
+   QUOTA UNLIMITED ON TEMP_IND
+   QUOTA UNLIMITED ON CONST_TAB
+   QUOTA UNLIMITED ON CONST_IND
+   QUOTA UNLIMITED ON RAPID_TAB
+   QUOTA UNLIMITED ON RAPID_IND
+   QUOTA UNLIMITED ON HASH_TAB
+   QUOTA UNLIMITED ON HASH_IND;
+--
+GRANT DES2K_OWNER_ROLE TO D2KV2_OWNER;
+--
+-- Grant execute rights to Repository Owner
+--
+GRANT EXECUTE ON SYS.DBMS_LOCK TO D2KV2_OWNER;
+GRANT EXECUTE ON SYS.DBMS_PIPE TO D2KV2_OWNER;
+GRANT create sequence TO D2KV2_OWNER;
+GRANT create synonym  TO D2KV2_OWNER;
+GRANT create table    TO D2KV2_OWNER;
+--
+GRANT EXECUTE ON SYS.DBMS_ALERT       TO D2KV2_OWNER;
+GRANT EXECUTE ON SYS.DBMS_LOCK        TO D2KV2_OWNER;
+GRANT EXECUTE ON SYS.DBMS_PIPE        TO D2KV2_OWNER;
+GRANT EXECUTE ON SYS.DBMS_SHARED_POOL TO D2KV2_OWNER;
+GRANT EXECUTE ON SYS.DBMS_SQL         TO D2KV2_OWNER;
+GRANT EXECUTE ON SYS.STANDARD         TO D2KV2_OWNER;
+GRANT EXECUTE ON SYS.DBMS_STANDARD    TO D2KV2_OWNER;
+GRANT EXECUTE ON SYS.DBMS_TRANSACTION TO D2KV2_OWNER;
+GRANT EXECUTE ON SYS.DBMS_UTILITY     TO D2KV2_OWNER;
+--
+SPOOL OFF
+
+--
+-- Create Webserver DBA and Webserver user accounts
+--
+SPOOL des2_www
+--
+-- Create de Web Server Dba Account
+--
+CREATE USER WWW_DBA
+IDENTIFIED BY WWW_DBA  
+DEFAULT TABLESPACE TOOLS
+TEMPORARY TABLESPACE TEMP
+QUOTA UNLIMITED ON TOOLS;
+--
+GRANT CONNECT, DBA to WWW_DBA;
+--
+CREATE ROLE WWW_USER_ROLE;
+--
+GRANT CREATE CLUSTER,
+      CREATE DATABASE LINK,
+      CREATE PROCEDURE,
+      CREATE ROLE,
+      CREATE SESSION,
+      ALTER  SESSION,
+      CREATE SEQUENCE, 
+      CREATE SNAPSHOT,
+      CREATE SYNONYM,
+      CREATE TABLE,
+      CREATE TRIGGER,
+      CREATE VIEW
+TO WWW_USER_ROLE;
+--
+-- Create de Web Server Users
+--
+CREATE USER WWW_USER
+   IDENTIFIED BY WWW_USER  
+   DEFAULT TABLESPACE USER_DATA
+   TEMPORARY TABLESPACE TEMP
+   QUOTA UNLIMITED ON USER_DATA;
+--
+GRANT WWW_USER_ROLE TO WWW_USER;
+--
+SPOOL OFF
+--
+-- Create User Accounts
+--
+SPOOL des2_users
+--
+CREATE ROLE DES2K_USER_ROLE;
+--
+GRANT CREATE CLUSTER,
+      CREATE DATABASE LINK,
+      CREATE PROCEDURE,
+      CREATE    ROLE,
+      DROP ANY  ROLE,
+      GRANT ANY ROLE,
+      CREATE SESSION,
+      ALTER  SESSION,
+      CREATE SEQUENCE, 
+      CREATE SNAPSHOT,
+      CREATE SYNONYM,
+      CREATE TABLE,
+      CREATE ANY TRIGGER,
+      CREATE VIEW
+TO DES2K_USER_ROLE;
+--
+GRANT SELECT ON SYS.DBA_ROLES         TO DES2K_USER_ROLE; 
+GRANT SELECT ON SYS.DBA_ROLE_PRIVS    TO DES2K_USER_ROLE;
+GRANT SELECT ON SYS.DBA_SYS_PRIVS     TO DES2K_USER_ROLE;
+GRANT SELECT ON SYS.DBA_ROLLBACK_SEGS TO DES2K_USER_ROLE;
+GRANT SELECT ON SYS.DBA_SEGMENTS      TO DES2K_USER_ROLE;
+--
+-- Create Users
+-- Replace by your own users
+--
+CREATE USER SCOTT
+   IDENTIFIED BY TIGER
+   DEFAULT TABLESPACE USER_DATA
+   TEMPORARY TABLESPACE TEMP
+   QUOTA UNLIMITED ON USER_DATA;
+--
+GRANT connect TO SCOTT;
+GRANT CREATE TABLE, CREATE VIEW, CREATE SEQUENCE to SCOTT;
+--
+-- default Designer V132 User
+--
+CREATE USER D132
+   IDENTIFIED BY D132
+   DEFAULT TABLESPACE USER_DATA
+   TEMPORARY TABLESPACE TEMP
+   QUOTA UNLIMITED ON USER_DATA;
+--
+GRANT DES2K_USER_ROLE TO D132;
+GRANT CREATE TABLE, CREATE VIEW, CREATE SEQUENCE to D132;
+--
+-- default Designer V2 User, I have chose to use the repository version#
+--
+CREATE USER D603
+   IDENTIFIED BY D603 
+   DEFAULT TABLESPACE USER_DATA
+   TEMPORARY TABLESPACE TEMP
+   QUOTA UNLIMITED ON USER_DATA;
+--
+GRANT DES2K_USER_ROLE TO D603;
+GRANT CREATE TABLE, CREATE VIEW, CREATE SEQUENCE to D603;
+--
+SPOOL OFF
+--
+-- Create de Enterprise Manager account
+--
+CREATE USER SYSMAN identified by SYSMAN
+DEFAULT TABLESPACE TOOLS
+TEMPORARY TABLESPACE TEMP;
+--
+GRANT CONNECT, RESOURCE, DBA to SYSMAN;
+-- 
+-- Create DBA synonyms for SYSTEM
+--
+SPOOL des2_dbasyn
+--
+-- Create de DBA synonyms for de user SYSTEM
+--
+CONNECT SYSTEM/MANAGER
+@$ORACLE_HOME/admin/catdbsyn.SQL
+@$ORACLE_HOME/admin/utlxplan.SQL
+--
+-- Create Public User Profile
+--
+@$ORACLE_HOME/sqlplus/admin/pupbld.SQL
+--
+DISCONNECT
+SPOOL OFF

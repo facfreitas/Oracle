@@ -1,0 +1,92 @@
+Check List dos Bancos
+---------------------
+
+Verificar as senhas que devem estar todas no padrão
+ 	- VNC
+ 	- Administrator ou OSUSER
+	- SYSTEM / SYS
+
+Verificar parâmetros de memória
+	- Shared Pool
+	- Buffer Cache
+ 	- Sql Area
+	- Sort Area Size
+	- Log Buffer
+
+Verificar o Log Files
+	- Tamanho e quantidade dos REDO
+	- Espelhamentos dos REDO
+	- Localização dos archives
+	- Todos os bancos devem estar em Archive MODE exceto o GEOP 40
+
+Verificar estruturas de diretórios
+	- Oracle
+		- <sid>
+			- Archive
+			- ControlA
+			- ControlB
+			- Data
+			- Export
+			- MirrorA
+			- MirrorB
+			- OriglogA
+			- OriglogB
+			- Pfile
+			- Trace
+				- Bdump
+				- Cdump
+				- Udump
+
+Verificar tamanho das tablespaces
+	- As tablespaces devem estar com no máximo 60%-80% de ocupação
+	- Gerenciar o tamanho da TEMP e ROLLBACK
+
+Fragmentação das Tablespaces;
+	- Permitir no máximo 15% de fragmentação para tablespaces
+	(exceto Rollback e temporária)
+	- Padronizar até 3 tamanhos distintos de extents
+
+Segmentação de Objetos
+	- Nenhum objeto deve conter mais que 15 extensões
+	(ideal apenas uma extenção)
+	- Gerenciar tamanho dos initial e next
+  	- Eliminar as linhas migradas
+	- Gerenciar os parametros de alocação dentro do bloco pctused e pctfree
+
+Verificar a Tablespaces dos Objetos
+	- Nenhum objeto que não seja do SYSTEM pode estar na TS SYSTEM
+	- Todos os usuários devem ter a TS TEMP apontando para uma TS TEMP
+	- Nenhum usuário pode ter a TS DEFAULT como SYSTEM
+	- Índices devem estar em TS de índices e TBLS em TS de TBLS
+	- Objetos de um usuário devem estar na sua TS e não na TS de outros usuários
+
+Verificar os Grants dos USUARIOS
+	- Listar todos os usuários que possuam GRANT de DBA, ou qualquer grant %ANY%
+	- Verificar com o usuário quais os privilégios necessários
+
+Verificar os Objetos em Geral
+	- Verificar os sinônimos públicos
+	- Verificar os sinônimos para objetos inexistentes
+	- Verificar objetos inválidos
+
+Implantar o Instance Monitor em todos os bancos
+	- Criar o usuário SYSDESIGN/IMON com TS DEFAULT qq uma e TS TEMP -- Temp
+	- Conceder grant connect, resource p/ SYSDESIGN
+
+Criar usuário para export
+	- Criar usuário EXPORT/COELBA com grant´s de create_session e exp_full_database
+
+Implantar política de controle startup e shutdown
+  	- Nos bancos com versão superior a 8.1.5
+	- Rodar o script p_start_shut.sql
+
+Agendamento do sistema operacional
+	- colocar o PKZIP no %oracle_home%/bin
+	- criar .bat para compactar os archives 
+		(pkzip -a -m <sid>_arc.zip *.arc)
+	- criar .bat para exportar o banco
+	- agendar o .bat dos archives diariamente de acordo com o banco (log switches)
+	- agendar o .bat do export para seg, ter, qua, qui, sex às 23:00
+
+Procedimentos de Backup
+	- Agendar junto com Gabriel e demais usuários da máquina o procedimento de backup

@@ -1,0 +1,97 @@
+##############################################################################
+# Copyright (c) 1991, 2001, 2002 by Oracle Corporation
+##############################################################################
+ 
+###########################################
+# Cursors and Library Cache
+###########################################
+open_cursors=300
+ 
+###########################################
+# Cache and I/O
+###########################################
+db_block_size=8192
+db_cache_size=25165824
+db_file_multiblock_read_count=16
+ 
+###########################################
+# Sort, Hash Joins, Bitmap Indexes
+###########################################
+pga_aggregate_target=25165824
+sort_area_size=524288
+ 
+###########################################
+# File Configuration
+###########################################
+control_files=("E:\Oracle\NFSEDES\Control\control01.ctl", "E:\Oracle\NFSEDES\Control\control02.ctl", "E:\Oracle\NFSEDES\Control\control03.ctl")
+ 
+###########################################
+# Diagnostics and Statistics
+###########################################
+background_dump_dest=E:\Oracle\NFSEDES\Trace\Bdump
+core_dump_dest=E:\Oracle\NFSEDES\Trace\Cdump
+timed_statistics=TRUE
+user_dump_dest=E:\Oracle\NFSEDES\Trace\Udump
+ 
+###########################################
+# Miscellaneous
+###########################################
+compatible=9.2.0.0.0
+ 
+###########################################
+# Instance Identification
+###########################################
+instance_name=NFSEDES
+ 
+###########################################
+# Database Identification
+###########################################
+db_domain=""
+db_name=NFSEDES
+ 
+###########################################
+# MTS
+###########################################
+dispatchers="(protocol=TCP)"
+ 
+###########################################
+# Optimizer
+###########################################
+hash_join_enabled=TRUE
+query_rewrite_enabled=FALSE
+star_transformation_enabled=FALSE
+ 
+###########################################
+# Pools
+###########################################
+java_pool_size=33554432
+large_pool_size=8388608
+shared_pool_size=50331648
+ 
+###########################################
+# Processes and Sessions
+###########################################
+processes=150
+ 
+###########################################
+# Redo Log and Recovery
+###########################################
+fast_start_mttr_target=300
+ 
+###########################################
+# Network Registration
+###########################################
+local_listener=LISTENER_NFSEDES
+ 
+###########################################
+# System Managed Undo and Rollback Segments
+###########################################
+undo_management=AUTO
+undo_retention=10800
+undo_tablespace=UNDOTBS1
+ 
+###########################################
+# Security and Auditing
+###########################################
+remote_login_passwordfile=EXCLUSIVE
+ 
