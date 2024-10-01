@@ -1,0 +1,5 @@
+select a.name, b.status
+from v$rollname a, v$rollstat b
+where a.name in (select segment_name
+	  		 	from dba_segments)
+and a.usn = b.usn

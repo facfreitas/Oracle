@@ -1,0 +1,3 @@
+SELECT SUM (VALUE) / 1024 / 1024 mb
+  FROM v$sesstat s, v$statname n
+ WHERE n.statistic# = s.statistic# AND NAME = 'session pga memory';

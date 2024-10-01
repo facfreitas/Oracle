@@ -1,0 +1,12 @@
+alter session set NLS_LANGUAGE='BRAZILIAN PORTUGUESE';
+alter session set NLS_TERRITORY='BRAZIL';
+alter session set NLS_CURRENCY='Cr$';
+alter session set NLS_ISO_CURRENCY='BRAZIL';
+alter session set NLS_NUMERIC_CHARACTERS=',.';
+alter session set NLS_DATE_FORMAT='DD/MM/RR';
+alter session set NLS_DATE_LANGUAGE='BRAZILIAN PORTUGUESE';
+alter session set NLS_TIME_FORMAT='HH24:MI:SSXFF';
+alter session set NLS_TIMESTAMP_FORMAT='DD/MM/RR HH24:MI:SSXFF';
+alter session set NLS_TIME_TZ_FORMAT='HH24:MI:SSXFF TZH:TZM';
+alter session set NLS_TIMESTAMP_TZ_FORMAT='DD/MM/RR HH24:MI:SSXFF TZH:TZM';
+alter session set NLS_DUAL_CURRENCY='Cr$';

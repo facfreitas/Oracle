@@ -1,0 +1,8 @@
+//TESTE
+//A ideia aqui é ter comentarios no arquivo!
+192.168.56.101,1521,ardadb,system,oracle,sp,prod//comentario grudado
+//192.168.56.100,1521,ardadb,system,oracle,sp,dev //e comentarios soltos em linhas
+//192.168.56.101,1521,ardadb,system,orcle,sp,homo	//comentario com TAB
+//192.168.56.101,1521,ardadba,system,orcle,sp,prod		//COMENTARIOS COM TABS
+//192.168.56.101,1521,servicox,system,oracle,sp,prod
+//FIM DO ARQUIVO

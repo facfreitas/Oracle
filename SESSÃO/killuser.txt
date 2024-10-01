@@ -1,0 +1,65 @@
+
+/* Script Description: This procedure will permit CONTROLLED kill of user sessions
+
+                 NOTE: This procedure should be created under SYS. Grant EXECUTE permissions to the userid
+                       that will have ability to create other userids. 
+
+   Output file:        N/A
+
+   Prepared/
+   CopyRighted By:     TheOracleResourceStop Script Archive
+                       www.orsweb.com
+
+   Usage Information:  SQLPLUS SYS/pswd
+                       @killuserproc.sql
+*/
+
+
+CREATE OR REPLACE PROCEDURE killuser(SessID integer)
+AS
+v_serialnum	INTEGER;
+v_err 		INTEGER;
+v_rowcnt	INTEGER;
+v_errmsg	VARCHAR2(255);
+v_sqlstatus	INTEGER;
+cur_stmt        VARCHAR(2000);
+BEGIN
+	BEGIN
+	v_serialnum := 0;
+	v_err  := 0;
+	v_rowcnt := 0;
+
+	SELECT serial# INTO v_serialnum
+	FROM   v$session
+	WHERE  sid = SessID
+         and username is not null
+         and username != 'DBSNMP';
+
+	v_rowcnt := SQL%ROWCOUNT;
+	EXCEPTION
+	WHEN NO_DATA_FOUND THEN
+          RAISE_APPLICATION_ERROR(-20001, 'User Session Does Not Exist');
+        WHEN OTHERS THEN
+	  v_serialnum := 0;
+	  v_err := SQLCODE;
+	  v_errmsg := SQLERRM;
+          RAISE_APPLICATION_ERROR(-20002, v_errmsg);
+	END;
+
+        IF v_serialnum > 0 
+        THEN
+        dbms_output.put_line('I am here....');
+        cur_stmt := 'ALTER SYSTEM KILL SESSION '''||SessID||','||v_serialnum||'''';
+        dbms_output.put_line(cur_stmt);
+	EXECUTE IMMEDIATE cur_stmt;
+        end if;
+EXCEPTION
+WHEN OTHERS THEN
+  v_serialnum := 0;
+  v_err := SQLCODE;
+  v_errmsg := SQLERRM;
+  RAISE_APPLICATION_ERROR(-20003, v_errmsg);
+END killuser;
+/
+create public synonym KILLUSER for sys.killuser;
+

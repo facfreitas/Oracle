@@ -1,0 +1,19 @@
+como fazo para deletar o conteudo de uma tablespace de rollback?
+
+
+Rogério primeiro você torna os segmentos de rollback offline, 
+depois pode dropa-los sem problemas, 
+se você estiver em 9i é um pouco diferente, agora
+se for em banco 8i esse é o procedimento.
+
+select 'alter rollback segment '||segment_name||' offline;'
+from dba_rollback_segs;
+
+depois
+
+select 'drop rollback segment '||segment_name||';'
+from dba_rollback_segs;
+
+
+
+

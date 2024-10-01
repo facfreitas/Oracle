@@ -1,0 +1,25 @@
+
+rem Script Description: This script will locate the most CPU intensive sessions.
+rem
+rem Output file:        cpusess.lis
+rem
+rem Prepared By:        Oracle Resource Stop
+rem
+rem Usage Information:  SQLPLUS SYS/pswd
+rem                     @heavycpusess.sql
+rem
+set termout on
+set feedback on
+set pagesize 132
+
+spool cpusess.lis
+
+SELECT sess.username, v.sid, substr(s.name,1,30) "Statistic", v.value 
+FROM v$statname s , v$sesstat v , v$session sess
+WHERE s.name = 'CPU used by this session' 
+and v.statistic#=s.statistic# 
+and v.value > 0 
+and sess.sid = v.sid
+ORDER BY 3 desc;
+
+spool off;

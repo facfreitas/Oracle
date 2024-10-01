@@ -1,0 +1,55 @@
+CREATE OR REPLACE PROCEDURE SYSTEM.send_mail (
+   p_assunto    IN   VARCHAR2,
+   p_mensagem   IN   VARCHAR2
+)
+IS
+   w_conn             UTL_SMTP.connection;
+   w_enter            VARCHAR2 (2)        := CHR (13) || CHR (10);
+   w_host    CONSTANT VARCHAR2 (30)       := '10.0.64.66';
+   w_porta   CONSTANT NUMBER              := 25;
+   w_de      CONSTANT VARCHAR2 (200)
+                                    := 'DBA ORACLE <admoracle@coelba.com.br>';
+   w_msg              VARCHAR2 (4000)
+      :=    'DATE: '
+         || TO_CHAR (SYSDATE, 'dd Mon yy hh24:mi:ss')
+         || w_enter
+         || 'DE: '
+         || w_de
+         || w_enter
+         || 'ASSUNTO: '
+         || p_assunto
+         || w_enter
+         || w_enter
+         || p_mensagem
+         || w_enter;
+
+   PROCEDURE send_header (NAME IN VARCHAR2, header IN VARCHAR2)
+   AS
+   BEGIN
+      UTL_SMTP.write_data (w_conn, NAME || ': ' || header || UTL_TCP.crlf);
+   END;
+BEGIN
+   w_conn := UTL_SMTP.open_connection (w_host, w_porta);
+   UTL_SMTP.helo (w_conn, w_host);
+   UTL_SMTP.mail (w_conn, 'ansantana@coelba.com.br');
+   UTL_SMTP.rcpt (w_conn, 'admoracle@coelba.com.br');
+   UTL_SMTP.open_data (w_conn);
+   send_header ('From', '"ANTONIO SANTANA" <ansantana@coelba.com.br>');
+   send_header ('To', '"Adm. Oracle" <ansantana@coelba.com.br>');
+   send_header ('Subject', 'TESTE 1 2 3');
+   UTL_SMTP.write_data (w_conn, UTL_TCP.crlf || w_msg);
+   UTL_SMTP.close_data (w_conn);
+   -- UTL_SMTP.DATA (w_conn, w_msg);
+   UTL_SMTP.quit (w_conn);
+EXCEPTION
+   WHEN UTL_SMTP.transient_error OR UTL_SMTP.permanent_error
+   THEN
+      UTL_SMTP.quit (w_conn);
+      raise_application_error (-20000,
+                                  'FALHOU AO ENVIAR COM O SEGUINTE ERRO: '
+                               || SQLERRM
+                              );
+END;
+/
+
+

@@ -1,0 +1,6 @@
+create rollback segment <NM_SEG>
+storage ( initial <TAM K|M> next <TAM K|M> minextents 2 
+maxextents unlimited  optimal <TAM K|M>)
+tablespace <NM_TS_ROLL>;
+
+alter rollback segment <NM_SEG> online;

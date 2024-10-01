@@ -1,0 +1,2 @@
+#!/bin/bash
+java -jar -Xms300m -Xmx1g Ardaj.jar

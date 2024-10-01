@@ -1,0 +1,2 @@
+CREATE ROLLBACK SEGMENT RB9 TABLESPACE RBS STORAGE ( INITIAL 100K NEXT 100K OPTIMAL 500K);          
+ALTER ROLLBACK SEGMENT RB9 ONLINE;                                                                  

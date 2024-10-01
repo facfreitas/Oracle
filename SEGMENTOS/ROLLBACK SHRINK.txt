@@ -1,0 +1,6 @@
+select 'alter rollback segment '|| SEGMENT_NAME || ' shrink;'
+from   dba_rollback_segs
+where  status = 'ONLINE'
+/
+
+
