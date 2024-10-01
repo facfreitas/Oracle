@@ -1,0 +1,1 @@
+mount -t shm shmfs -o size=5g /dev/shm

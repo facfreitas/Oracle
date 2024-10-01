@@ -1,0 +1,1 @@
+exp \'username/password as sysdba\' transport_tablespace=y tablespace=exemplo log=export.log

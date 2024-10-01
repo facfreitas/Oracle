@@ -1,0 +1,58 @@
+declare
+   t_out_file   UTL_FILE.file_type;
+   t_buffer     VARCHAR2(32767);
+   t_amount     BINARY_INTEGER := 1000;
+   t_pos        INTEGER := 1;
+   t_clob_len   INTEGER;
+   P_DATA CLOB;
+   P_DIR  VARCHAR2(100) := '\\vitoria\dbspool$\Desenv\SGF\';
+   P_FILE VARCHAR2(100) := 'TESTE_LOB6.TXT'; 
+BEGIN
+   select dsconfiguracaomenu into P_DATA from usuario where squsuario = 1081;
+   t_clob_len := DBMS_LOB.GetLength(p_data);
+   t_out_file := UTL_FILE.fOpen(p_dir,p_file, 'W', 32767);
+  
+   dbms_output.put_line(' length : '||t_clob_len);
+   
+   WHILE t_pos < t_clob_len LOOP
+   
+      dbms_output.put_line(' t_pos before : '||t_pos);
+      DBMS_LOB.Read(p_data, t_amount, t_pos, t_buffer);
+      UTL_FILE.Put(t_out_file, t_buffer);
+      UTL_FILE.fflush(t_out_file);
+      dbms_output.put_line(' t_pos after : '||t_pos);
+      t_pos := t_pos + t_amount;
+      
+   END LOOP;
+   dbms_output.put_line('completed writing');
+   UTL_FILE.fClose(t_out_file);
+ /*  EXCEPTION
+   WHEN OTHERS THEN
+      IF(UTL_FILE.Is_Open(t_out_file))THEN
+         UTL_FILE.fClose(t_out_file);
+      END IF;
+      RAISE;*/
+    EXCEPTION
+    when utl_file.invalid_path then
+    raise_application_error(-20001,
+    'Local ou nome de Arq. Inválido..');
+    when utl_file.invalid_mode then
+    raise_application_error(-20002,
+    'Parametro open_mode Inválido.');
+    when utl_file.invalid_filehandle then
+    raise_application_error(-20002,
+    'File handle Inválido.');
+    when utl_file.invalid_operation then
+    raise_application_error(-20003,
+    'Permissão Negada ou Arq. Indisponível.');
+    when utl_file.read_error then
+    raise_application_error(-20004,
+    'Erro I/O durante Leitura.');
+    when utl_file.write_error then
+    raise_application_error(-20005,
+    'Erro I/O durante Gravação.');
+    when utl_file.internal_error then
+    raise_application_error(-20006,
+    'Erro Interno em PL/SQL.');
+
+END;

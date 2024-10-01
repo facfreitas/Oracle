@@ -1,0 +1,26 @@
+SELECT a.object_name,
+       a.owner object_owner,
+       Decode(b.locked_mode, 0, 'None',
+                             1, 'Null (NULL)',
+                             2, 'Row-S (SS)',
+                             3, 'Row-X (SX)',
+                             4, 'Share (S)',
+                             5, 'S/Row-X (SSX)',
+                             6, 'Exclusive (X)',
+                             b.locked_mode) locked_mode,
+       b.session_id sid,
+       b.oracle_username,
+       b.os_user_name
+FROM   all_objects a,
+       v$locked_object b
+WHERE  a.object_id = b.object_id
+
+
+SELECT 'alter rollback segment '||SEGMENT_NAME||' offline;'
+FROM DBA_ROLLBACK_SEGS
+WHERE SEGMENT_NAME != 'SYSTEM'
+AND STATUS = 'ONLINE';
+
+SELECT	 A.NAME, B.XACTS,
+		 C.SID, C.SERIAL#,
+	

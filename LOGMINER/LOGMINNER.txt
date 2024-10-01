@@ -1,0 +1,33 @@
+rem -----------------------------------------------------------------------
+rem Filename:   logmgr.sql
+rem Purpose:    Log Miner: extract undo statements from online and archived
+rem             redo log files based on selection criteria.
+rem Date:       21-Sep-2000
+rem Author:     Frank Naude, Oracle FAQ
+rem -----------------------------------------------------------------------
+
+-- Create a dictionary file 
+--   (init.ora parameter utl_file_dir must be set)
+exec dbms_logmnr_d.build('mydictfile', '/tmp');
+
+-- Register log files, can be from a different db
+--   (NEWFILE=start new list/ ADDFILE=add next file)
+exec dbms_logmnr.add_logfile(
+	LogFileName =>
+'/app/oracle/arch/oradba/log_1_0000000027.oradba', 
+	Options     => dbms_logmnr.NEW);
+exec dbms_logmnr.add_logfile(
+	LogFileName =>
+'/app/oracle/arch/oradba/log_1_0000000028.oradba', 
+	Options     => dbms_logmnr.ADDFILE);
+
+-- Start the logminer session
+exec dbms_logmnr.start_logmnr(DictFileName => '/tmp/mydictfile');
+
+-- Query v_$logmnr_contents view to extract required info
+select timestamp, sql_undo
+from   sys.v_$logmnr_contents
+where  seg_name = 'EMPLOYEES';
+
+-- Stop the logminer session
+exec dbms_logmnr.end_logmnr;

@@ -1,0 +1,46 @@
+/* Script Description: This script capture information on sessions that are holding locks 
+                       and provides the information needed to kill the session using the 
+                       ALTER SYSTEM KILL SESSION command. 
+
+   Usage Information:  SQLPLUS SYS/pswd
+                       @deadlock.sql
+*/
+
+set linesize 132 pagesize 66 echo on;
+ 
+break on Kill on username on terminal;
+
+column string heading 'Kill String' format a13;
+column res heading 'Resource Type' format 999 
+column id1 format 9999990;
+column id2 format 9999990;
+column lmode heading 'Lock Held' format a20;
+column request heading 'Lock Requested' format a20;
+column serial# format 99999;
+column username  format a10  heading "Username";
+column terminal heading Term format a6;
+column tab format a35 heading "Table Name";
+column owner format a9;
+column address format a18 ;
+
+spool deadlock.lis
+
+select nvl(s.username,'Internal') username, 
+	 nvl(s.terminal,'None') terminal, 	
+       l.sid||','||s.serial# string, 
+	 u1.name||'.'||substr(t1.name,1,20) tab, 	
+       decode(l.lmode,1,'no lock',2,'row share',3,'row exclusive',4,'share', 
+              5,'share row exclusive',6,'exclusive',null) lmode, 	
+        decode(l.request,1,'no lock',2,'row share',3,'row exclusive',
+                         4,'share',	5,'share row exclusive',6,'exclusive',null) request 
+from	v$lock l, v$session s, sys.user$ u1, sys.obj$ t1 
+where	l.sid = s.sid
+  and t1.obj# = decode(l.id2,0,l.id1,l.id2)
+  and u1.user# = t1.owner#
+  and s.type != 'BACKGROUND'
+order by 1,2,5;
+
+spool off;
+clear columns;
+clear breaks;
+

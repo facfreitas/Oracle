@@ -1,0 +1,1 @@
+srvctl status scan_listener

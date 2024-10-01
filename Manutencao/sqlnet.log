@@ -1,0 +1,80 @@
+
+
+***********************************************************************
+Fatal NI connect error 12535, connecting to:
+ (DESCRIPTION=(ADDRESS=(COMMUNITY=tcp.world)(PROTOCOL=TCP)(Host=10.7.32.5)(Port=1521))(CONNECT_DATA=(SID=EPROC)(CID=(PROGRAM=D:\ARQUIVOS DE PROGRAMAS\QUEST SOFTWARE\TOAD\TOAD.EXE)(HOST=CLB060739)(USER=sys471441))))
+
+  VERSION INFORMATION:
+	TNS for 32-bit Windows: Version 8.1.6.0.0 - Production
+	Windows NT TCP/IP NT Protocol Adapter for 32-bit Windows: Version 8.1.6.0.0 - Production
+  Time: 30-OUT-2003 17:29:52
+  Tracing not turned on.
+  Tns error struct:
+    nr err code: 0
+    ns main err code: 12535
+    TNS-12535: TNS:tempo esgotado para operação
+    ns secondary err code: 12560
+    nt main err code: 505
+    TNS-00505: Operação com tempo de espera
+    nt secondary err code: 60
+    nt OS err code: 0
+
+
+***********************************************************************
+Fatal NI connect error 12535, connecting to:
+ (DESCRIPTION=(ADDRESS=(COMMUNITY=tcp.world)(PROTOCOL=TCP)(Host=10.7.32.5)(Port=1521))(CONNECT_DATA=(SID=EPROC)(CID=(PROGRAM=D:\ARQUIVOS DE PROGRAMAS\QUEST SOFTWARE\TOAD\TOAD.EXE)(HOST=CLB060739)(USER=sys471441))))
+
+  VERSION INFORMATION:
+	TNS for 32-bit Windows: Version 8.1.6.0.0 - Production
+	Windows NT TCP/IP NT Protocol Adapter for 32-bit Windows: Version 8.1.6.0.0 - Production
+  Time: 30-OUT-2003 17:31:47
+  Tracing not turned on.
+  Tns error struct:
+    nr err code: 0
+    ns main err code: 12535
+    TNS-12535: TNS:tempo esgotado para operação
+    ns secondary err code: 12560
+    nt main err code: 505
+    TNS-00505: Operação com tempo de espera
+    nt secondary err code: 60
+    nt OS err code: 0
+
+
+***********************************************************************
+Fatal NI connect error 12535, connecting to:
+ (DESCRIPTION=(ADDRESS=(COMMUNITY=tcp.world)(PROTOCOL=TCP)(Host=10.7.32.5)(Port=1521))(CONNECT_DATA=(SID=EPROC)(CID=(PROGRAM=D:\ARQUIVOS DE PROGRAMAS\QUEST SOFTWARE\TOAD\TOAD.EXE)(HOST=CLB060739)(USER=sys471441))))
+
+  VERSION INFORMATION:
+	TNS for 32-bit Windows: Version 8.1.6.0.0 - Production
+	Windows NT TCP/IP NT Protocol Adapter for 32-bit Windows: Version 8.1.6.0.0 - Production
+  Time: 30-OUT-2003 17:32:50
+  Tracing not turned on.
+  Tns error struct:
+    nr err code: 0
+    ns main err code: 12535
+    TNS-12535: TNS:tempo esgotado para operação
+    ns secondary err code: 12560
+    nt main err code: 505
+    TNS-00505: Operação com tempo de espera
+    nt secondary err code: 60
+    nt OS err code: 0
+
+
+***********************************************************************
+Fatal NI connect error 12560, connecting to:
+ (DESCRIPTION=(ADDRESS=(PROTOCOL=BEQ)(PROGRAM=oracle)(ARGV0=oracleORCL)(ARGS='(DESCRIPTION=(LOCAL=YES)(ADDRESS=(PROTOCOL=beq)))'))(CONNECT_DATA=(SID=ORCL)(CID=(PROGRAM=C:\ARQUIVOS DE PROGRAMAS\QUEST SOFTWARE\TOAD\TOAD.EXE)(HOST=SYSDESIGN-DBA)(USER=sys471441))))
+
+  VERSION INFORMATION:
+	TNS for 32-bit Windows: Version 8.1.7.0.0 - Production
+	Oracle Bequeath NT Protocol Adapter for 32-bit Windows: Version 8.1.7.0.0 - Production
+  Time: 04-FEV-2004 20:56:18
+  Tracing not turned on.
+  Tns error struct:
+    nr err code: 0
+    ns main err code: 12560
+    TNS-12560: TNS:erro de adaptador de protocolo
+    ns secondary err code: 0
+    nt main err code: 102
+    TNS-00102: Erro de operação da vinculação Palavra-Chave-Valor
+    nt secondary err code: 0
+    nt OS err code: 0

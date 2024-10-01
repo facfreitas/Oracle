@@ -1,0 +1,2 @@
+export ORACLE_SID=tlmh
+imp export/coelba@tlmh2k63 file=/naoremover/tlmh_full1.dmp,/naoremover/tlmh_full2.dmp,/naoremover/tlmh_full3.dmp,/naoremover/tlmh_full4.dmp,/naoremover/tlmh_full5.dmp,/naoremover/tlmh_full6.dmp,/naoremover/tlmh_full7.dmp,/naoremover/tlmh_full8.dmp,/naoremover/tlmh_full9.dmp,/naoremover/tlmh_full10.dmp,/naoremover/tlmh_full11.dmp,/naoremover/tlmh_full12.dmp,/naoremover/tlmh_full13.dmp,/naoremover/tlmh_full14.dmp log=/naoremover/imp_full_tlmh_20050401.log fromuser=logwatch,slb touser=logwatch,slb FEEDBACK=100000 filesize=2000m ignore=y

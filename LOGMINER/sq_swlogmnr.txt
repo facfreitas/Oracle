@@ -1,0 +1,398 @@
+REDO ANALYSIS BY LOGMINER
+ 
+                                      SAMEER WADHWA
+                                      Wadhwa_S@Hotmail.com
+                                     www.SamOraTech.com
+ 
+ 
+LogMiner is a utility provided by oracle8i to read and interpret online or archived redo log files.
+ 
+Logminer utility used a package name DBMS_LOGMNR which contains procedure add_logfile,start_logmnr and end_logmnr.
+ 
+(i)PROCEDURE ADD_LOGFILE
+Argument Name Type In/Out Default?
+------------------------------ ----------------------- ------ --------
+LOGFILENAME VARCHAR2 IN
+OPTIONS BINARY_INTEGER IN DEFAULT
+ 
+This procedure is used for adding a redo log file or an archived log file to a list of logs to be processed. 
+ 
+Parameter
+Description
+LOGFILENAME
+Name of online Online or archived redo log file
+OPTIONS
+Option can be either of the following
+<!--[if !supportLists]-->(i) <!--[endif]-->DBMS_LOGMNR.NEW [ For New List of Logs ]
+<!--[if !supportLists]-->(ii) <!--[endif]-->DBMS_LOGMNR.ADDFILE [ Add a file to the existing list ]
+<!--[if !supportLists]-->(iii) <!--[endif]-->DBMS_LOGMNR.REMOVEFILE [ Remove a file from a list]
+ 
+ 
+PROCEDURE START_LOGMNR
+Argument Name Type In/Out Default?
+------------------------------ ----------------------- ------ --------
+STARTSCN NUMBER IN DEFAULT
+ENDSCN NUMBER IN DEFAULT
+STARTTIME DATE IN DEFAULT
+ENDTIME DATE IN DEFAULT
+DICTFILENAME VARCHAR2 IN DEFAULT
+OPTIONS BINARY_INTEGER IN DEFAULT
+ 
+This procedure start the LOGMINER session.
+ 
+Parameter
+Description
+STARTSCN 
+It specifies to access redo entries greater than or equal the START SCN number
+ENDSCN
+It specifies to access redo entries greater than or equal the ENDSCN number
+STARTTIME
+It specifies to access redo entries greater than or equal the STARTTIME
+ENDTIME
+It specifies to access redo entries greater than or equal the ENDTIME
+DICTFILENAME
+It specifies the data dictionary file.
+Options
+It indicate if a column map is specified in the logmnr.opt file
+ 
+ 
+ 
+PROCEDURE END_LOGMNR
+ 
+This procedure end the logminer session
+ 
+ 
+Following are the steps for setting up of logminer 
+ 
+STEP 1:
+ 
+For setting up LOGMINER you have to run the following scripts from sys user or svrmgrl 
+ 
+Oracle Version
+ 
+Script Name
+ 
+Location
+ 
+8.1.6/8.1.7
+ 
+8.1.5
+ 
+dbmslmd.sql
+dbmslm.sql
+prvtlm.plb
+dbmslogmnrd.sql
+dbmslogmnr.sql
+prvtlogmnr.plb
+ 
+ 
+$ORACLE_HOME/rdbms/admin
+  $ORACLE_HOME/rdbms/admin 
+  $ORACLE_HOME/rdbms/admin 
+$ORACLE_HOME/rdbms/admin
+$ORACLE_HOME/rdbms/admin
+$ORACLE_HOME/rdbms/admin
+ 
+ 
+ 
+STEP 2:
+ 
+Add a UTL_FILE_DIR directory in the parameter file , so that logminer create the file over there.
+For example UTL_FILE_DIR = C:\temp for NT or UTL_FILE_DIR = /tmp
+ 
+ 
+STEP 3:
+ 
+Create a dictionary files by executing dbms_logmnr_d.build , the first parameter here is the
+Name of the output file which logminer will create and second parameter is the location of this 
+File as defined in UTL_FILE in init parameter file.
+ 
+Set serveroutput on size 100000;
+Begin
+Sys.dbms_logmnr_d.build('AnalyzeRedo.log','c:\temp');
+End;
+/
+ 
+STEP 4:
+ 
+Add the redo log file to logminer by
+STEP 4a
+SQL> Execute DBMS_LOGMNR.ADD_LOGFILE (LogFileName =><first log file name>,Options => dbms_logmnr.new);
+ 
+STEP 4b
+SQL>Execute DBMS_LOGMNR.ADD_LOGFILE (LogFileName =><log file name>,Options => dbms_logmnr.addfile);
+ 
+Note: Step 4a is required before executing Step 4b
+ 
+STEP 5:
+ 
+Start the logminer Analyzer
+ 
+SQL>Execute DBMS_LOGMNR.START_LOGMNR ( DICTFILENAME=>'<completer path of output file as above>'); 
+ 
+ 
+ 
+*****************SETUP has completed now*************************
+ 
+ 
+I generally use the following script to setup log miner after step 2 defined above
+[Logmsetup.sql ] Script for setting up log miner
+ 
+[logmnsetupout.txt] The script shows you the output you will get after running Logmsetup.sql
+ 
+[Redoread.sql] The script for reading the contents of v$logmnr_contents 
+ 
+Modify the above scripts according to your need.
+ 
+ 
+Let us understand now, how the log miner works practically. To test functionality of log miner , do not close the logminer session and let us name it as session B. 
+ 
+Also create a script name logmnrresult.sql as follows.
+ 
+SCRIPT NAME :- logmnrresult.sql
+ 
+col sql_undo format a40 wrap
+col sql_redo format a40
+select timestamp,sql_undo,sql_redo from v$logmnr_contents where username='SCOTT'
+and trunc(timestamp) = to_char(sysdate,'DD-MON-YY') 
+/
+ 
+ 
+Now open another session , session A and try to test the following test cases with session A and Session B as follows :-
+ 
+Test case sw-1 
+ 
+ 
+ 
+Connect as SCOTT user and call it as " SESSION A "
+ora816 SamSQL :> create table test (x number);
+ora816 SamSQL :> insert into test values (10);
+ora816 SamSQL :> insert into test values (13);
+ora816 SamSQL :> insert into test values (15);
+ora816 SamSQL :> commit;
+ 
+ 
+Connect with Session B
+ora816 SamSQL :> @ logmnrresult.sql
+TIMESTAMP SQL_UNDO SQL_REDO
+--------- ---------------------------------------- ----------------------------------------
+23-MAY-01 set transaction read write;
+23-MAY-01 delete from SCOTT.TEST where X = 10 and insert into SCOTT.TEST(X) values (10);
+ROWID = 'AAAGvVAABAAAHe6AAA';
+23-MAY-01 delete from SCOTT.TEST where X = 13 and insert into SCOTT.TEST(X) values (13);
+ROWID = 'AAAGvVAABAAAHe6AAB';
+23-MAY-01 delete from SCOTT.TEST where X = 15 and insert into SCOTT.TEST(X) values (15);
+ROWID = 'AAAGvVAABAAAHe6AAC';
+23-MAY-01 commit;
+ 
+ 
+ 
+Observation : Test case sw-1 :
+ 
+Session A has inserted three rows into a test table and commit it. Session B show you redo log 
+And rollback segment entries corresponding to session A. When you do the insert ,automatically
+Corresponding reverse entry goes to rollback segment.
+ 
+Test case sw-2
+ 
+ 
+ 
+ 
+ 
+ 
+Connect with Session A....................................................................................... 
+ 
+ora816 SamSQL :> delete from test where x = 5;
+ora816 SamSQL :> rollback;
+ 
+ 
+Connect with Session B
+ 
+ora816 SamSQL :> @ logmnrresult.sql
+TIMESTAMP SQL_UNDO SQL_REDO
+--------- ---------------------------------------- ----------------------------------------
+ 
+23-MAY-01 set transaction read write;
+23-MAY-01 insert into SCOTT.TEST(X) values (5); delete from SCOTT.TEST where X = 5 and R
+OWID = 'AAAGvVAABAAAHe6AAE';
+ 
+23-MAY-01 insert into SCOTT.TEST(X) values (5);
+23-MAY-01 commit;
+ 
+ 
+ 
+ 
+Observation : Test case sw-2 :
+ 
+Session A has delete a row and then rollback. Session B show you redo log rollback segment 
+entries corresponding to session A. When you did the delete Corresponding reverse entry 
+(insert in above case) gone to rollback segment . After rollback from session A insert 
+statement moved from sql_undo (rollback segment) to sql_redo (redo log) and does the commit
+internally.
+ 
+ 
+Test case sw-3
+ 
+ 
+ 
+ 
+Connect with Session A
+ 
+ora816 SamSQL :> update test set x=100;
+ora816 SamSQL :> rollback;
+ 
+ 
+Connect with Session B
+ora816 SamSQL :> @ logmnrresult.sql
+TIMESTAMP SQL_UNDO SQL_REDO
+--------- ---------------------------------------- ----------------------------------------
+ 
+23-MAY-01 set transaction read write;
+23-MAY-01 update SCOTT.TEST set X = 10 where ROWID update SCOTT.TEST set X = 100 where ROWI
+= 'AAAGvVAABAAAHe6AAA'; D = 'AAAGvVAABAAAHe6AAA';
+ 
+23-MAY-01 update SCOTT.TEST set X = 13 where ROWID update SCOTT.TEST set X = 100 where ROWI
+= 'AAAGvVAABAAAHe6AAB'; D = 'AAAGvVAABAAAHe6AAB';
+ 
+23-MAY-01 update SCOTT.TEST set X = 15 where ROWID update SCOTT.TEST set X = 100 where ROWI
+= 'AAAGvVAABAAAHe6AAC'; D = 'AAAGvVAABAAAHe6AAC';
+ 
+23-MAY-01 update SCOTT.TEST set X = 5 where ROWID update SCOTT.TEST set X = 100 where ROWI
+= 'AAAGvVAABAAAHe6AAE'; D = 'AAAGvVAABAAAHe6AAE';
+ 
+ 
+23-MAY-01 update SCOTT.TEST set X = 5 where ROWID
+= 'AAAGvVAABAAAHe6AAE';
+ 
+23-MAY-01 update SCOTT.TEST set X = 15 where ROWID
+= 'AAAGvVAABAAAHe6AAC';
+ 
+23-MAY-01 update SCOTT.TEST set X = 13 where ROWID
+= 'AAAGvVAABAAAHe6AAB';
+ 
+23-MAY-01 update SCOTT.TEST set X = 10 where ROWID
+= 'AAAGvVAABAAAHe6AAA';
+ 
+23-MAY-01 commit;
+ 
+ 
+Observation : Test case sw-3 :
+ 
+Session A has updated a table with x=100 and then rollback. Session B show you redo log and
+rollback segment entries corresponding to session A. When you did update corresponding reverse 
+entry with respect to rowid gone to sql_undo (rollback segment) . and after rollback from 
+session A. update statement moved from sql_undo (rollback segment) to sql_redo (redo log) 
+and does the commit internally.
+ 
+Test case sw-4
+ 
+ 
+ 
+ 
+Connect with Session A
+ 
+ora816 SamSQL :> update test set x=120 where x=13;
+ora816 SamSQL :> commit;
+ 
+ 
+ 
+Connect with Session B
+ 
+ora816 SamSQL :> @ logmnrresult.sql
+TIMESTAMP SQL_UNDO SQL_REDO
+--------- ---------------------------------------- ----------------------------------------
+ 
+23-MAY-01 set transaction read write;
+23-MAY-01 update SCOTT.TEST set X = 13 where ROWID update SCOTT.TEST set X = 120 where ROWI
+= 'AAAGvVAABAAAHe6AAB'; D = 'AAAGvVAABAAAHe6AAB';
+ 
+23-MAY-01 commit;
+ 
+Observation : Test case sw-4 :
+ 
+Session A has updated a table with x=120 where x=13 and then commit. Session B shows you
+redo log and rollback segment entries corresponding to session A. When you did update
+corresponding reverse entry with respect to rowid gone to sql_undo (rollback segment) . 
+ 
+ 
+End of Test cases 
+ 
+ 
+Connect with Session B
+ 
+ora816 SamSQL :> execute dbms_logmnr.end_logmnr;
+ 
+ 
+Dbms_logmnr.end_logmnr end the session that was performing the analysis.
+ 
+ 
+The above test cases explain the activity performed when you do the commit or rollback between 
+transactions.
+ 
+Let us see following example from Oracle Magazine to analyze archive log files.
+Oracle Magazine Sep/Oct 1999) LogMiner in Action 
+ 
+There are many ways in which you can use LogMiner in a normal business day. For example, consider the situation in which a database user-Joe-performs an activity that must later be reversed, and you know only that the activity occurred between 8:45 a.m. and 9:30 a.m. 
+In this case, the dictionary file is dict.ora, and it is stored under /user/local/data. Make sure the init.ora parameter UTL_FILE_DIR is set to /user/local/data. Then, start up the database and create the dictionary, using: 
+EXECUTE DBMS_LOGMNR_D.BUILD (
+DICTIONARY_FILENAME => 'DICT.ORA',
+DICTIONARY_LOCATION => '/USER/LOCAL/DATA');
+Now, add to the list the names of the log files created during the time period. For the sake of the example, assume that two log files-arch_234.log and arch_235.log-were created. Create the new list and then add the second file to it, as follows: 
+EXECUTE DBMS_LOGMNR.ADD_LOGFILE
+        ( OPTIONS =>   DBMS_LOGMNR.NEW, 
+LOGFILENAME => '/ARCH/PROD/ARCH_234.LOG');
+EXECUTE DBMS_LOGMNR.ADD_LOGFILE
+        ( OPTIONS =>    DBMS_LOGMNR.ADDFILE, 
+LOGFILENAME => '/ARCH/PROD/ARCH_235.LOG');
+Next, start LogMiner using the dictionary file you created above, and limit the search to the specific time range during which Joe made his changes to the database: 
+EXECUTE DBMS_LOGMNR.START_LOGMNR( 
+DICTFILENAME => '/USER/LOCAL/DATA/DICT.ORA', 
+STARTTIME => TO_DATE('15-MAR-1999 08:45:00',
+        'DD-MON-YYYY HH:MI:SS')
+ENDTIME => TO_DATE('15-MAR-1999 09:30:00',
+        'DD-MON-YYYY HH:MI:SS')); 
+Now, the V$LOGMNR views are populated with the database manipulation language (DML) statements applied to the database during the time frame you specified. Only the session that performed the analysis to view the log information can query the views. 
+This simple example shows how powerful and easy to use Log Miner is: 
+SELECT SQL_REDO, SQL_UNDO 
+FROM   V$LOGMNR_CONTENTS 
+WHERE  USERNAME = 'JOE' 
+AND    TABLENAME = 'SALARY';
+ 
+SQL_REDO
+-------------
+delete * from SALARY
+where EMPNO = 12345
+insert into SALARY(NAME, EMPNO, SAL)
+values('JOEDEVO', 12345,2500)
+2 rows selected
+ 
+SQL_UNDO
+-----------------------------------
+insert into    SALARY(NAME,EMPNO, SAL)
+values ('JOEDEVO', 12345,500) and ROWID = 'AAABOOAABAAEPCABA';
+delete * from SALARY
+where EMPNO = 12345 and        ROWID = 'AAABOOAABAAEPCABA';
+With this information, you can undo the operation-in this case, return Joe to his previous salary
+ 
+CONCLUSION 
+ 
+As As you seen how powerful Log Miner utility is and how is it easy to read online or archived log file(s).
+ 
+ 
+Note from Author :-
+Thanks for Reading this article. 
+ 
+Sameer Wadhwa
+Send me your comments ,feedback or suggestions at
+Wadhwa_S@Hotmail.com or
+SamWad@Msn.com
+www.SamOraTech.com
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+

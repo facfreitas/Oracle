@@ -1,0 +1,1 @@
+alter system set SEC_CASE_SENSITIVE_LOGON = FALSE;

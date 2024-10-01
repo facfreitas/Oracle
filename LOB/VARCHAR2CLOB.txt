@@ -1,0 +1,35 @@
+
+------------------------------------------------
+-- Salva Varchar2 e cLob                      --
+-- Utilizado para quando temos a necessidade  --
+-- de trabalhar com mais de 2000 kb           --
+------------------------------------------------
+Procedure SalvaVarchar2ToCLOB ( P_Var2 In Varchar2
+                              , P_Loc in Out cLob )
+Is
+l_nTamanho      Number;
+l_nMax_Tamanho  Number := 32000;
+l_nVar_Offset   Number := 1;
+l_vBuffer       Varchar2(32000);
+
+Begin
+
+   l_nTamanho := Length(P_Var2);
+   While l_nTamanho > l_nMax_Tamanho
+      Loop
+         l_vBuffer     := Substr(P_Var2, l_nVar_offset, l_nMax_Tamanho);
+         DBMS_LOB.writeappend( P_Loc, l_nMax_Tamanho, l_vBuffer);
+         l_nTamanho    := l_nTamanho - l_nMax_Tamanho;
+         l_vVar_offset := l_vVar_offset + l_nMax_Tamanho;
+      End Loop;
+   If l_nTamanho > 0 then
+      l_vBuffer := substr(p_string, l_string_offset);
+      DBMS_LOB.writeappend(p_loc, l_amount, l_buffer);
+   End if;
+Exception
+   When VALUE_ERROR then
+      'Value Error in SalvaVarchar2ToCLOB '
+   When others then
+      'Error in SalvaVarchar2ToCLOB '
+End SalvaVarchar2ToCLOB;
+

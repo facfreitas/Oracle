@@ -1,0 +1,24 @@
+
+rem Script Description: This script will identify how much larger to make the shared pool if Multi-Threaded Server
+rem                     is running on the database. Issue these queries while the application is running.
+rem
+rem
+rem Output file:        mtsmaxmem.lis
+rem
+rem Prepared By:        TheOracleResourceStop Script Archive
+rem                     www.orsweb.com
+rem
+rem Usage Information:  SQLPLUS SYS/pswd
+rem                     @mtsmaxmemory.sql
+rem
+
+SELECT SUM(VALUE) || ' BYTES' "TOTAL MEMORY FOR ALL SESSIONS"
+FROM V$SESSTAT, V$STATNAME
+WHERE NAME = 'session uga memory'
+AND V$SESSTAT.STATISTIC# = V$STATNAME.STATISTIC#;
+
+SELECT SUM(VALUE) || ' BYTES' "TOTAL MAX MEM FOR ALL SESSIONS"
+FROM V$SESSTAT, V$STATNAME
+WHERE NAME = 'session uga memory max'
+AND V$SESSTAT.STATISTIC# = V$STATNAME.STATISTIC#;
+

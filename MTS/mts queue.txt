@@ -1,0 +1,35 @@
+
+rem Script Description: Returns the average number of seconds that a shared server request 
+rem                     waited in the queue. If this time is increasing, try increasing the 
+rem                     number of shared servers via the INIT.ORA parameters: MTS_SERVERS and 
+rem                     MTS_MAX_SERVERS. 
+rem
+rem              NOTES: Address - Address of the process that owns the queue.
+rem                     type - Type of queue:
+rem                     queued - Number of items currently in the queue.
+rem                     wait - Total time that all items in this queue have waited - in 
+rem                            hundredths of a second.
+rem                     totalq - Total number of items that have ever been in the queue.
+rem                     Average wait - The average number of seconds an item waits in the queue
+rem
+rem Output file:        mtsqueue.lis
+rem
+rem Prepared By:        TheOracleResourceStop Script Archive
+rem                     www.orsweb.com
+rem
+rem Usage Information:  SQLPLUS SYS/pswd
+rem                     @mtsqueue.sql
+rem
+
+spool mtsqueue.lis
+
+select rawtohex(paddr) "Address ",
+type,
+queued,
+wait,
+totalq,
+round(decode(totalq, 0, 0, wait/(totalq * .01))) "Average wait"
+from v$queue
+order by paddr;
+
+spool off;
