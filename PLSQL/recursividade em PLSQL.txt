@@ -1,0 +1,27 @@
+SQL> create or replace procedure rec (n number) is 
+  2  begin 
+  3    insert into a(nome) values (to_char(n)); 
+  4    if n>0 
+  5    then rec(n-1); 
+  6    end if; 
+  7  end; 
+  8  / 
+
+Procedure created. 
+
+SQL> exec rec(5); 
+
+PL/SQL procedure successfully completed. 
+
+SQL> select * from a; 
+
+NOME      
+---------- 
+5 
+4 
+3 
+2 
+1 
+0 
+
+6 rows selected. 

@@ -1,0 +1,552 @@
+####################################################################################
+#### RMAN TARGET  SYS/SYS@SADDESTP CATALOG RMAN_2/RMAN@SGFDES_TEMP
+#### NO DOS> set NLS_DATE_FORMAT= DD/MM/YYYY:HH24:MI:SS
+#### RMAN> CONFIGURE RETENTION POLICY TO NONE;
+#### RMAN> CONFIGURE DEVICE TYPE DISK PARALLELISM 3;
+####################################################################################
+
+####################################################################################
+#### PRIMEIRO BACKUP
+####################################################################################
+run {	
+backup	
+filesperset 3
+format 'D:\Temp\TesteBackup\SAD\BKP\Disco\DF_%d_%s_%t.RMAN' database;
+sql 'alter system switch logfile';
+sql 'alter system switch logfile';
+backup 
+filesperset 3
+format 'D:\Temp\TesteBackup\SAD\BKP\Disco\ARC_%d_%s_%t.RMAN' archivelog all;
+backup 
+format 'D:\Temp\TesteBackup\SAD\BKP\Disco\CTR_%d_%s_%t.RMAN' current controlfile;
+}
+
+####################################################################################
+#### ELIMINAR O TBS DESEJADO
+####################################################################################
+
+SQL> DROP TABLESPACE TESTE
+VERIFICAR NO ALERT O MOMENTO DA DELECAO OU NO RMAN
+
+-- ALERT
+Mon Jan 30 10:29:51 2006
+DROP TABLESPACE TESTE
+
+-- RMAN PELO TOAD
+
+SELECT DF.FILE#,DFATT.FNAME ,DF.CREATE_TIME,DF.DROP_TIME
+FROM DF,DFATT
+WHERE   DF.FILE# = DFATT.FILE#
+
+####################################################################################
+#### SEGUNDO BACKUP
+####################################################################################
+
+run {	
+backup	
+filesperset 3
+format 'D:\Temp\TesteBackup\SAD\BKP\Disco\DF_%d_%s_%t.RMAN' database;
+sql 'alter system switch logfile';
+sql 'alter system switch logfile';
+backup 
+filesperset 3
+format 'D:\Temp\TesteBackup\SAD\BKP\Disco\ARC_%d_%s_%t.RMAN' archivelog all;
+backup 
+format 'D:\Temp\TesteBackup\SAD\BKP\Disco\CTR_%d_%s_%t.RMAN' current controlfile;
+}
+
+####################################################################################
+#### VERIFICAR BACKUPS DE DATAFILES E CONTROLFILES
+####################################################################################
+
+RMAN> list backup of controlfile SUMMARY;
+
+
+Lista de Backups
+===============
+Key     TY LV S Device Type Tempo de ConclusÒo   #Pieces #Copies Tag
+------- -- -- - ----------- -------------------- ------- ------- ---
+14      B  F  A DISK         30/01/2006:10:20:19 1       1       TAG20060130T101953
+42      B  F  A DISK         30/01/2006:10:20:27 1       1       TAG20060130T102027
+54      B  F  A DISK         30/01/2006:10:46:30 1       1       TAG20060130T104605
+86      B  F  A DISK         30/01/2006:10:46:43 1       1       TAG20060130T104643
+
+RMAN> list backup  SUMMARY;
+
+
+Lista de Backups
+===============
+Key     TY LV S Device Type Tempo de ConclusÒo   #Pieces #Copies Tag
+------- -- -- - ----------- -------------------- ------- ------- ---
+12      B  F  A DISK         30/01/2006:10:20:00 1       1       TAG20060130T101953
+13      B  F  A DISK         30/01/2006:10:20:14 1       1       TAG20060130T101953
+14      B  F  A DISK         30/01/2006:10:20:19 1       1       TAG20060130T101953
+32      B  A  A DISK         30/01/2006:10:20:25 1       1       TAG20060130T102025
+33      B  A  A DISK         30/01/2006:10:20:25 1       1       TAG20060130T102025
+34      B  A  A DISK         30/01/2006:10:20:25 1       1       TAG20060130T102025
+42      B  F  A DISK         30/01/2006:10:20:27 1       1       TAG20060130T102027
+52      B  F  A DISK         30/01/2006:10:46:12 1       1       TAG20060130T104605
+53      B  F  A DISK         30/01/2006:10:46:26 1       1       TAG20060130T104605
+54      B  F  A DISK         30/01/2006:10:46:30 1       1       TAG20060130T104605
+71      B  A  A DISK         30/01/2006:10:46:41 1       1       TAG20060130T104641
+72      B  A  A DISK         30/01/2006:10:46:41 1       1       TAG20060130T104641
+73      B  A  A DISK         30/01/2006:10:46:41 1       1       TAG20060130T104641
+74      B  A  A DISK         30/01/2006:10:46:41 1       1       TAG20060130T104641
+86      B  F  A DISK         30/01/2006:10:46:43 1       1       TAG20060130T104643
+
+RMAN>
+
+####################################################################################
+#### DERRUBAR A INSTANCIA E DELETAR OS ARQUIVOS FISICAMENTE
+####################################################################################
+
+
+SQL> shutdown immediate;
+
+DELETA OS DATAFILES, CONTROLFILES, ARCHIVES, REDO
+
+####################################################################################
+#### LEVANTAR O BANCO COMO NOMOUNT PARA RESTAURAR O CONTROLFILE
+####################################################################################
+
+SQL> STARTUP NOMOUNT
+InstÔncia ORACLE iniciada.
+
+Total System Global Area   85007956 bytes
+Fixed Size                   454228 bytes
+Variable Size              58720256 bytes
+Database Buffers           25165824 bytes
+Redo Buffers                 667648 bytes
+
+####################################################################################
+#### VERIFICAR QUAL TAG DESEJA RESTAURAR COM RMAN E CATALOGO 
+####################################################################################
+
+#### - rman target ... catalog (D:\oracle\ora92\bin\rman target sys/oracle catalog rman/backup_online@rep)
+#### - pegar o ultimo controlfile do dia desejado, sao gerados 2 TAG de controlfiles por backup
+run {
+restore controlfile from tag ='TAG20060130T102027';  
+mount database;
+}
+
+####################################################################################
+#### INICIAR O RESTORE COM RMAN E SEM CATALOGO 
+#### ATENCAO SEM CATALOGO ....... NOCATALOG
+####################################################################################
+
+####- rman target ... nocatalog
+
+1 - SAIR DO CATALOG
+RMAN> EXIT
+
+Recovery Manager completo.
+
+2 - CONECTAR SEM CATALOG
+H:\>RMAN TARGET  SYS/SYS@SADDESTP NOCATALOG
+
+
+2.1 - RESTAURAR O BANCO COM A TAG DESEJADA - ANTES DA TAG DO CONTROLFILE
+run {
+restore  database  from tag ='TAG20060130T101953'; 
+}
+
+
+####################################################################################
+#### INICIAR O RECOVER COM RMAN E SEM CATALOGO 
+#### ATENCAO SEM CATALOGO ....... NOCATALOG
+####################################################################################
+
+4 - PODE-SE FAZER DE DUAS MANEIRAS O RECOVER
+
+4.1 - QUANDO SE SABE O HORARIO DE DELECAO DA TBS
+
+
+RMAN>run {
+set until time "to_date('30/01/2006:10:28:00','DD/MM/YYYY:HH24:MI:SS')";
+recover  database;
+}
+
+4.2 - POR MEIO DE APLICACAO DE ARCHIVES
+## RESTAURAR OS ARCHIVES QUE ESTAO ANTES DO HORARIO DA DELECAO DO TBS
+## VERIFICANDO OS ARCHIVESLOGS
+
+-- NO RMAN PELO TOAD
+SELECT SEQUENCE#,COMPLETION_TIME,FNAME,FNAME_HASHKEY,ARCHIVED,STATUS
+FROM AL;
+
+-- NO SQLPLUS
+SELECT SEQUENCE#,NAME,COMPLETION_TIME,ARCHIVED,STATUS,REGISTRAR
+FROM V$ARCHIVED_LOG;
+
+RMAN> run{
+restore archivelog from logseq 1 until logseq 3;
+}
+
+## IR PARA O SQLPLUS PARA APLICAR OS ARCHIVES
+SQL> recover database until cancel using backup controlfile;
+ou RECOVER DATABASE USING BACKUP CONTROLFILE UNTIL CANCEL;
+
+
+## IRA SOLICITAR QUAL O ARCHIVE QUER APLICAR
+Especificar log: {<RET>=nome de arquivo | sugerido | AUTO | CANCEL}
+## DIGITAR O CAMINHO ONDE ESTA O ARCHIVE
+D:\Temp\TesteBackup\SAD\admin\archive\SAD-1_1.DBF
+
+## VAI PEDIR OS PROXIMOS APLIQUE ATE O QUE QUISER E POR FIM DIGITE CANCEL
+## PODE-SE APLICAR OS QUE NOA ESTAO DENTRO DO CATALOGO, É SO DIZER O CAMINHO
+
+ORA-00279: alterar 1064461869 gerado em 01/30/2006 10:20:19 necessario para o
+thread 1
+ORA-00289: sugest?o : D:\TEMP\TESTEBACKUP\SAD\ADMIN\ARCHIVE\SAD-1_2.DBF
+ORA-00280: alterar 1064461869 para o thread 1 esta na sequencia  #2
+ORA-00278: o arquivo de log 'D:\Temp\TesteBackup\SAD\admin\archive\SAD-1_1.DBF'
+n?o e mais necessario para esta recuperac?o
+
+Especificar log: {<RET>=nome de arquivo | sugerido | AUTO | CANCEL}
+D:\Temp\TesteBackup\SAD\admin\archive\SAD-1_2.DBF
+ORA-00279: alterar 1064461871 gerado em 01/30/2006 10:20:19 necessario para o
+thread 1
+ORA-00289: sugest?o : D:\TEMP\TESTEBACKUP\SAD\ADMIN\ARCHIVE\SAD-1_3.DBF
+ORA-00280: alterar 1064461871 para o thread 1 esta na sequencia  #3
+ORA-00278: o arquivo de log 'D:\Temp\TesteBackup\SAD\admin\archive\SAD-1_2.DBF'
+n?o e mais necessario para esta recuperac?o
+
+Especificar log: {<RET>=nome de arquivo | sugerido | AUTO | CANCEL}
+D:\Temp\TesteBackup\SAD\admin\archive\SAD-1_3.DBF
+ORA-00279: alterar 1064461876 gerado em 01/30/2006 10:20:25 necessario para o
+thread 1
+ORA-00289: sugest?o : D:\TEMP\TESTEBACKUP\SAD\ADMIN\ARCHIVE\SAD-1_4.DBF
+ORA-00280: alterar 1064461876 para o thread 1 esta na sequencia  #4
+ORA-00278: o arquivo de log 'D:\Temp\TesteBackup\SAD\admin\archive\SAD-1_3.DBF'
+n?o e mais necessario para esta recuperac?o
+
+Especificar log: {<RET>=nome de arquivo | sugerido | AUTO | CANCEL}
+CANCEL
+
+####################################################################################
+#### ABRIR O BANCO COM RESETLOG
+####################################################################################
+
+SQL> ALTER DATABASE OPEN RESETLOGS;
+Banco de dados alterado.
+SQL> select file#,name from v$datafile;
+
+     FILE# NAME
+---------- --------------------------------------------------
+         1 D:\TEMP\TESTEBACKUP\SAD\ORADATA\SYSTEM01.DBF
+         2 D:\TEMP\TESTEBACKUP\SAD\ORADATA\UNDOTBS01.DBF
+         3 D:\TEMP\TESTEBACKUP\SAD\ORADATA\DBASAD_DADOS_0101.DBF
+         4 D:\TEMP\TESTEBACKUP\SAD\ORADATA\DBASAD_INDEX_0101.DBF
+         5 D:\TEMP\TESTEBACKUP\SAD\ORADATA\TESTE.ORA
+
+
+####################################################################################
+#### FIM
+####################################################################################
+
+
+####################################################################################
+#### FEITO COM O SUPORTE ORACLE
+####################################################################################
+
+
+D:\>RMAN TARGET  SYS/SYS@SADDESTP CATALOG RMAN_2/RMAN@SGFDES_TEMP
+
+Recovery Manager: Release 9.2.0.4.0 - Production
+
+Copyright (c) 1995, 2002, Oracle Corporation.  All rights reserved.
+
+conectado ao banco de dados de destino: SADDESTP (not mounted)
+conectado ao banco de dados do catßlogo de recuperaþÒo
+
+RMAN> list backup summary;
+
+
+Lista de Backups
+===============
+Key     TY LV S Device Type Tempo de ConclusÒo  #Pieces #Copies Tag
+------- -- -- - ----------- ------------------- ------- ------- ---
+11      B  F  A DISK        27-01-2006:13:46:21 1       1       TAG20060127T134614
+12      B  F  A DISK        27-01-2006:13:46:34 1       1       TAG20060127T134614
+13      B  F  A DISK        27-01-2006:13:46:53 1       1       TAG20060127T134614
+31      B  A  A DISK        27-01-2006:13:47:08 1       1       TAG20060127T134708
+32      B  A  A DISK        27-01-2006:13:47:08 1       1       TAG20060127T134708
+33      B  A  A DISK        27-01-2006:13:47:08 1       1       TAG20060127T134708
+41      B  F  A DISK        27-01-2006:13:47:09 1       1       TAG20060127T134709
+50      B  F  A DISK        27-01-2006:13:54:42 1       1       TAG20060127T135434
+51      B  F  A DISK        27-01-2006:13:54:53 1       1       TAG20060127T135434
+52      B  F  A DISK        27-01-2006:13:55:12 1       1       TAG20060127T135434
+69      B  A  A DISK        27-01-2006:13:55:27 1       1       TAG20060127T135527
+70      B  A  A DISK        27-01-2006:13:55:27 1       1       TAG20060127T135527
+71      B  A  A DISK        27-01-2006:13:55:27 1       1       TAG20060127T135527
+72      B  A  A DISK        27-01-2006:13:55:27 1       1       TAG20060127T135527
+84      B  F  A DISK        27-01-2006:13:55:29 1       1       TAG20060127T135528
+
+RMAN> list backupset 41;
+
+
+Lista de Conjuntos de Backup
+===================
+
+BS Key  Type LV Size       Device Type Elapsed Time Tempo de ConclusÒo
+------- ---- -- ---------- ----------- ------------ -------------------
+41      Full    1M         DISK        00:00:00     27-01-2006:13:47:09
+        BP Key: 42   Status: AVAILABLE   Tag: TAG20060127T134709
+        Nome do Componente: D:\ORACLE\ORA92\DATABASE\08H9TH6T_1_1
+  Arquivo de Controle IncluÝdo: SCN de Verif.: 1064461684   Tempo de verif.: 27-01-2006:13:47:09
+
+RMAN> run {
+2> restore controlfile from tag ='TAG20060127T134709';
+3> mount database;
+4> }
+
+Iniciando restore em 27-01-2006:14:37:30
+
+canal alocado: ORA_DISK_1
+canal ORA_DISK_1: sid=8 devtype=DISK
+canal alocado: ORA_DISK_2
+canal ORA_DISK_2: sid=14 devtype=DISK
+canal alocado: ORA_DISK_3
+canal ORA_DISK_3: sid=15 devtype=DISK
+canal ORA_DISK_1: iniciando restauraþÒo de conjunto de backups de arquivo de dados
+canal ORA_DISK_1: restaurar arquivo de controle
+nome do arquivo de saÝda=D:\TEMP\TESTEBACKUP\SAD\CONTROL\CONTROL01.CTL
+canal ORA_DISK_1: restaurada a parte de backup 1
+handle de componente=D:\ORACLE\ORA92\DATABASE\08H9TH6T_1_1 tag=TAG20060127T134709 parÔms=NULL
+canal ORA_DISK_1: restaurar inteiro
+duplicar arquivo de controle
+nome do arquivo de entrada=D:\TEMP\TESTEBACKUP\SAD\CONTROL\CONTROL01.CTL
+nome do arquivo de saÝda=D:\TEMP\TESTEBACKUP\SAD\CONTROL\CONTROL02.CTL
+nome do arquivo de saÝda=D:\TEMP\TESTEBACKUP\SAD\CONTROL\CONTROL03.CTL
+Finalizado restore em 27-01-2006:14:37:36
+
+banco de dados montado
+
+RMAN> exit
+
+
+Recovery Manager completo.
+
+D:\>RMAN TARGET  SYS/SYS@SADDESTP noCATALOG
+
+Recovery Manager: Release 9.2.0.4.0 - Production
+
+Copyright (c) 1995, 2002, Oracle Corporation.  All rights reserved.
+
+conectado ao banco de dados de destino: SADDESTP (DBID=2258704272)
+usar o arquivo de controle do banco de dados de destino em vez do catßlogo de recuperaþÒo
+
+RMAN> run {
+2> restore  database  from tag ='TAG20060127T134614';
+3> }
+
+Iniciando restore em 27-01-2006:14:40:37
+
+canal alocado: ORA_DISK_1
+canal ORA_DISK_1: sid=14 devtype=DISK
+canal alocado: ORA_DISK_2
+canal ORA_DISK_2: sid=8 devtype=DISK
+canal alocado: ORA_DISK_3
+canal ORA_DISK_3: sid=12 devtype=DISK
+canal ORA_DISK_1: iniciando restauraþÒo de conjunto de backups de arquivo de dados
+canal ORA_DISK_1: especificando arquivo(s) de dados para restauraþÒo a partir do conjunto de backups
+
+restaurando arquivo de dados 00002 para D:\TEMP\TESTEBACKUP\SAD\ORADATA\UNDOTBS01.DBF
+restaurando arquivo de dados 00004 para D:\TEMP\TESTEBACKUP\SAD\ORADATA\DBASAD_INDEX_0101.DBF
+canal ORA_DISK_2: iniciando restauraþÒo de conjunto de backups de arquivo de dados
+canal ORA_DISK_2: especificando arquivo(s) de dados para restauraþÒo a partir do conjunto de backups
+
+restaurando arquivo de dados 00003 para D:\TEMP\TESTEBACKUP\SAD\ORADATA\DBASAD_DADOS_0101.DBF
+restaurando arquivo de dados 00005 para D:\TEMP\TESTEBACKUP\SAD\ORADATA\TESTE.ORA
+canal ORA_DISK_3: iniciando restauraþÒo de conjunto de backups de arquivo de dados
+canal ORA_DISK_3: especificando arquivo(s) de dados para restauraþÒo a partir do conjunto de backups
+
+restaurando arquivo de dados 00001 para D:\TEMP\TESTEBACKUP\SAD\ORADATA\SYSTEM01.DBF
+canal ORA_DISK_1: restaurada a parte de backup 1
+handle de componente=D:\TEMP\TESTEBACKUP\SAD\BKP\DISCO\DF_SADDESTP_2_580830375.RMAN tag=TAG20060127T
+134614 parÔms=NULL
+canal ORA_DISK_1: restaurar inteiro
+canal ORA_DISK_2: restaurada a parte de backup 1
+handle de componente=D:\TEMP\TESTEBACKUP\SAD\BKP\DISCO\DF_SADDESTP_3_580830375.RMAN tag=TAG20060127T
+134614 parÔms=NULL
+canal ORA_DISK_2: restaurar inteiro
+canal ORA_DISK_3: restaurada a parte de backup 1
+handle de componente=D:\TEMP\TESTEBACKUP\SAD\BKP\DISCO\DF_SADDESTP_4_580830375.RMAN tag=TAG20060127T
+134614 parÔms=NULL
+canal ORA_DISK_3: restaurar inteiro
+Finalizado restore em 27-01-2006:14:41:10
+
+RMAN> EXIT
+
+
+Recovery Manager completo.
+
+D:\>RMAN TARGET  SYS/SYS@SADDESTP noCATALOG
+
+Recovery Manager: Release 9.2.0.4.0 - Production
+
+Copyright (c) 1995, 2002, Oracle Corporation.  All rights reserved.
+
+conectado ao banco de dados de destino: SADDESTP (DBID=2258704272)
+usar o arquivo de controle do banco de dados de destino em vez do catßlogo de recuperaþÒo
+
+RMAN> list backup of archivelog all;
+
+
+Lista de Conjuntos de Backup
+===================
+
+Tamanho da Chave BS       Tipo de Dispositivo Tempo Decorrido Tempo de ConclusÒo
+------- ---------- ----------- ------------ -------------------
+4       194K       DISK        00:00:00     27-01-2006:13:47:08
+        BP Key: 4   Status: AVAILABLE   Tag: TAG20060127T134708
+        Nome do Componente: D:\TEMP\TESTEBACKUP\SAD\BKP\DISCO\ARC_SADDESTP_5_580830428.RMAN
+
+  Lista de Logs Arquivados no conjunto de backup 4
+  Thrd Seq     Low SCN    Tempo Inferior      Next SCN   Next Time
+  ---- ------- ---------- ------------------- ---------- ---------
+  1    1       1064461095 23-01-2006:13:37:42 1064461651 27-01-2006:13:47:02
+
+Tamanho da Chave BS       Tipo de Dispositivo Tempo Decorrido Tempo de ConclusÒo
+------- ---------- ----------- ------------ -------------------
+5       512        DISK        00:00:00     27-01-2006:13:47:08
+        BP Key: 5   Status: AVAILABLE   Tag: TAG20060127T134708
+        Nome do Componente: D:\TEMP\TESTEBACKUP\SAD\BKP\DISCO\ARC_SADDESTP_6_580830428.RMAN
+
+  Lista de Logs Arquivados no conjunto de backup 5
+  Thrd Seq     Low SCN    Tempo Inferior      Next SCN   Next Time
+  ---- ------- ---------- ------------------- ---------- ---------
+  1    2       1064461651 27-01-2006:13:47:02 1064461653 27-01-2006:13:47:02
+
+Tamanho da Chave BS       Tipo de Dispositivo Tempo Decorrido Tempo de ConclusÒo
+------- ---------- ----------- ------------ -------------------
+6       1K         DISK        00:00:00     27-01-2006:13:47:08
+        BP Key: 6   Status: AVAILABLE   Tag: TAG20060127T134708
+        Nome do Componente: D:\TEMP\TESTEBACKUP\SAD\BKP\DISCO\ARC_SADDESTP_7_580830428.RMAN
+
+  Lista de Logs Arquivados no conjunto de backup 6
+  Thrd Seq     Low SCN    Tempo Inferior      Next SCN   Next Time
+  ---- ------- ---------- ------------------- ---------- ---------
+  1    3       1064461653 27-01-2006:13:47:02 1064461658 27-01-2006:13:47:06
+
+RMAN> list backup of archivelog all SUMMARY;
+
+
+Lista de Backups
+===============
+Key     TY LV S Device Type Tempo de ConclusÒo  #Pieces #Copies Tag
+------- -- -- - ----------- ------------------- ------- ------- ---
+4       B  A  A DISK        27-01-2006:13:47:08 1       1       TAG20060127T134708
+5       B  A  A DISK        27-01-2006:13:47:08 1       1       TAG20060127T134708
+6       B  A  A DISK        27-01-2006:13:47:08 1       1       TAG20060127T134708
+
+RMAN> run{
+2> restore archivelog from logseq 1 until logseq 3;
+3> }
+
+Iniciando restore em 27-01-2006:14:45:18
+
+canal alocado: ORA_DISK_1
+canal ORA_DISK_1: sid=8 devtype=DISK
+canal alocado: ORA_DISK_2
+canal ORA_DISK_2: sid=14 devtype=DISK
+canal alocado: ORA_DISK_3
+canal ORA_DISK_3: sid=15 devtype=DISK
+log de arquivamento thread 1 seq³Ûncia 1 jß estß no disco como arquivo D:\TEMP\TESTEBACKUP\SAD\ADMIN
+\ARCHIVE\SAD-1_1.DBF
+log de arquivamento thread 1 seq³Ûncia 2 jß estß no disco como arquivo D:\TEMP\TESTEBACKUP\SAD\ADMIN
+\ARCHIVE\SAD-1_2.DBF
+log de arquivamento thread 1 seq³Ûncia 3 jß estß no disco como arquivo D:\TEMP\TESTEBACKUP\SAD\ADMIN
+\ARCHIVE\SAD-1_3.DBF
+restauraþÒo nÒo efetuada; todos os arquivos somente para leitura, off-line ou jß restaurados
+Finalizado restore em 27-01-2006:14:45:19
+
+RMAN>
+#############################################################################################
+
+
+SQL> startup nomount;
+InstÔncia ORACLE iniciada.
+
+Total System Global Area   85007956 bytes
+Fixed Size                   454228 bytes
+Variable Size              58720256 bytes
+Database Buffers           25165824 bytes
+Redo Buffers                 667648 bytes
+SQL> select file#,name from v$datafile;
+
+     FILE# NAME
+---------- --------------------------------------------------
+         1 D:\TEMP\TESTEBACKUP\SAD\ORADATA\SYSTEM01.DBF
+         2 D:\TEMP\TESTEBACKUP\SAD\ORADATA\UNDOTBS01.DBF
+         3 D:\TEMP\TESTEBACKUP\SAD\ORADATA\DBASAD_DADOS_0101.DBF
+         4 D:\TEMP\TESTEBACKUP\SAD\ORADATA\DBASAD_INDEX_0101.DBF
+         5 D:\TEMP\TESTEBACKUP\SAD\ORADATA\TESTE.ORA
+
+
+SQL>  recover database until cancel using backup controlfile;
+ORA-00279: alterar 1064461607 gerado em 01/27/2006 13:46:15 necessario para o
+thread 1
+ORA-00289: sugest?o : D:\TEMP\TESTEBACKUP\SAD\ADMIN\ARCHIVE\SAD-1_1.DBF
+ORA-00280: alterar 1064461607 para o thread 1 esta na sequencia  #1
+
+
+Especificar log: {<RET>=nome de arquivo | sugerido | AUTO | CANCEL}
+CANCEL
+ORA-01547: advertencia: RECOVER obteve exito mas OPEN RESETLOGS obteria erro
+abaixo
+ORA-01152: o arquivo 1 n?o foi restaurado a partir de um backup suficientemente
+antigo
+ORA-01110: 1 do arquivo de dados:
+'D:\TEMP\TESTEBACKUP\SAD\ORADATA\SYSTEM01.DBF'
+
+
+ORA-01112: recuperac?o de midia n?o iniciada
+
+
+SQL> ALTER DATABASE OPEN RESETLOGS;
+ALTER DATABASE OPEN RESETLOGS
+*
+ERRO na linha 1:
+ORA-01152: o arquivo 1 n?o foi restaurado a partir de um backup suficientemente
+antigo
+ORA-01110: 1 do arquivo de dados:
+'D:\TEMP\TESTEBACKUP\SAD\ORADATA\SYSTEM01.DBF'
+
+
+SQL>  recover database until cancel using backup controlfile;
+ORA-00279: alterar 1064461607 gerado em 01/27/2006 13:46:15 necessario para o
+thread 1
+ORA-00289: sugest?o : D:\TEMP\TESTEBACKUP\SAD\ADMIN\ARCHIVE\SAD-1_1.DBF
+ORA-00280: alterar 1064461607 para o thread 1 esta na sequencia  #1
+
+
+Especificar log: {<RET>=nome de arquivo | sugerido | AUTO | CANCEL}
+
+ORA-00279: alterar 1064461651 gerado em 01/27/2006 13:47:02 necessario para o
+thread 1
+ORA-00289: sugest?o : D:\TEMP\TESTEBACKUP\SAD\ADMIN\ARCHIVE\SAD-1_2.DBF
+ORA-00280: alterar 1064461651 para o thread 1 esta na sequencia  #2
+ORA-00278: o arquivo de log 'D:\TEMP\TESTEBACKUP\SAD\ADMIN\ARCHIVE\SAD-1_1.DBF'
+n?o e mais necessario para esta recuperac?o
+
+
+Especificar log: {<RET>=nome de arquivo | sugerido | AUTO | CANCEL}
+CANCEL
+RecuperaþÒo de mÝdia cancelada.
+SQL> ALTER DATABASE OPEN RESETLOGS;
+
+Banco de dados alterado.
+
+SQL> select file#,name from v$datafile;
+
+     FILE# NAME
+---------- --------------------------------------------------
+         1 D:\TEMP\TESTEBACKUP\SAD\ORADATA\SYSTEM01.DBF
+         2 D:\TEMP\TESTEBACKUP\SAD\ORADATA\UNDOTBS01.DBF
+         3 D:\TEMP\TESTEBACKUP\SAD\ORADATA\DBASAD_DADOS_0101.DBF
+         4 D:\TEMP\TESTEBACKUP\SAD\ORADATA\DBASAD_INDEX_0101.DBF
+         5 D:\TEMP\TESTEBACKUP\SAD\ORADATA\TESTE.ORA
+
+
+

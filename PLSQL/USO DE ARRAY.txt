@@ -1,0 +1,23 @@
+Declare
+  -- Definindo um Tipo de array
+  Type Ex_Array Is VArray(200) Of Varchar2(20);
+  -- Definindo a variavel para o Array
+  vEx Ex_Array;
+  -- Definindo a variavel para controlar os registros do Array
+  nEx Number := 0;
+Begin
+  -- Inializa Array
+  vEx := Ex_Array ( );
+  -- Adiciona 3 Linhas no Array
+  << fEx >>
+  For nEx In 1..3 Loop
+    vEx(nEx) := Ex_Array ('Teste'||To_Char(nEx));
+  End Loop fEx;
+  -- Mostra as 3 Linhas do Array
+  << fEx >>
+  For nEx In 1..3 Loop
+    Dbms_OutPut.Put_Line (vEx(nEx));
+  End Loop fEx;
+End;
+
+

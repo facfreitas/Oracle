@@ -1,0 +1,94 @@
+# =====================================================================================================
+#
+# Script# clone.sh
+# Este script gera o ambiente de homologação a partir do banco de produção informado pelos seguintes parâmetros: 
+# $1 - SID da instância de homologação (Auxiliar)
+# $2 - SID da instância de produção (Target) 
+# $3 - SID da instância do RMAN (Catalogo RMAN)
+#
+# Desenvolvido por Fernando Freitas
+# Data atualização: 03/11/2014
+# =====================================================================================================
+
+
+echo ################## Inicio da sessão de declaração de variáveis ####################################
+echo.
+echo.
+export LOGFILE=LogClone$2.log   
+export ORACLE_SID=$1 
+export dbconnAuxiliar="/ as sysdba"
+export dbconnTarget=sys/oracle@$2  
+export dbconnCatalog=rman/rman001@$3
+echo.
+echo.
+echo ################## Final da sessão de declaração de variáveis ######################################
+echo.
+echo.
+echo.
+echo ################## Inicio da sessão de criação dinâmica de arquivos ################################
+echo ################## Gera script  para iniciar a instância de Homologação ############################
+echo.
+echo STARTUP NOMOUNT	> start$1.sql
+echo exit		>> start$1.sql
+echo.
+echo ################# Gera script  para Finalizar a instância de Homologação ###########################
+echo.
+echo SHUTDOWN immediate  > stop$1.sql
+echo exit            	>> stop$1.sql
+echo.
+echo ################## Gera script  para Duplicar a base de produção para homologação 
+echo.
+echo "run {"                                                                                                                                            > dup$2.sql
+echo "Allocate auxiliary channel 'ch0' type 'sbt_tape' PARMS 'SBT_LIBRARY=/usr/openv/netbackup/bin/libobk.so64';"                                       >> dup$2.sql
+echo "SEND 'NB_ORA_CLIENT=lssalabrac01.eepsa.com.br,NB_ORA_SID=RAC11,NB_ORA_SERV=WDCBKP01.intranet.local,NB_ORA_POLICY=Policy_SSA_Oracle_TST_RAC';"     >> dup$2.sql
+echo "duplicate target database to $1"	                                                                                                                >> dup$2.sql
+echo "DB_FILE_NAME_CONVERT '+DATA','/u01/app/oracle/oradata/RACQ/datafile'"                                                                             >> dup$2.sql
+echo "SPFILE" 	                                                                                                                			>> dup$2.sql	
+echo "PARAMETER_VALUE_CONVERT '+DATA', '/u01/app/oracle/oradata/RACQ/datafile'"	                                                                        >> dup$2.sql
+echo "SET LOG_FILE_NAME_CONVERT '+DATA','/u01/app/oracle/oradata/RACQ/datafile'"	   								>> dup$2.sql
+echo "SET SGA_MAX_SIZE '200M'"	                                                	                                                                >> dup$2.sql
+echo "SET SGA_TARGET '125M';"	                                                	                                                                >> dup$2.sql
+echo "release CHANNEL ch00;"                                                                                                                            >> dup$2.sql
+echo "}"                                                                                                                                                >> dup$2.sql
+echo "exit"                                                                                                                                             >> dup$2.sql
+echo.
+echo.
+echo ################## Final da sessão de criação dinâmica de arquivos ##################################
+echo.
+echo.
+echo.
+#######1#########2#########3 REGISTRO LOG DO INICIO ############4#########5#######6#########
+
+echo "Inicio duplicação OnLine:  $(date)"	 						> $LOGFILE
+
+echo.								 				>> $LOGFILE
+echo ------- Finalizando a instância Auxiliar - $1 -------------  				>> $LOGFILE	
+sqlplus $dbconnAuxiliar @stop$1.sql 			          				>> $LOGFILE
+echo.								  				>> $LOGFILE
+echo.								  				>> $LOGFILE
+echo ------- Inicializando a instância Auxiliar - $1 ----------   				>> $LOGFILE	
+sqlplus $dbconnAuxiliar @start$1.sql 			          				>> $LOGFILE	
+echo.								  				>> $LOGFILE
+echo.								  				>> $LOGFILE
+echo.                                                                   			>> $LOGFILE
+echo -------- conexão nas instâncias $1, $2 e $3----------------  				>> $LOGFILE	
+echo -------- Refresh do banco de Homologacao $1 ---------------- 				>> $LOGFILE
+echo.								  				>> $LOGFILE
+rman TARGET sys/manager@$2  CATALOG rman/rman001@$3 AUXILIARY sys/manager@$1 @dup$2.sql 	>> $LOGFILE	
+echo.								  				>> $LOGFILE
+echo.								  				>> $LOGFILE
+echo.								  				>> $LOGFILE
+#######1#########2#########3 REGISTRO LOG DO FIM ############4#########5#######6#########
+echo "Fim da duplicação OnLine:  $(date)"                                               	>> $LOGFILE
+
+
+
+
+
+
+
+
+
+
+
+

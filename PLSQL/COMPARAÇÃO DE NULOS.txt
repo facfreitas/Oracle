@@ -1,0 +1,38 @@
+Sabemos que quando um variável ou um campo no Oracle está NULL, ele não pode ser simplesmente comparado a um outro valor, pois o resultado da compração também será false! 
+
+Código: 
+declare 
+  a number:=null; 
+  b number:=null; 
+begin 
+  if a=b 
+  then dbms_output.put_line('SIM'); 
+  else  dbms_output.put_line('NAO'); 
+  end if; 
+end; 
+
+SQL> / 
+NAO 
+
+
+POUCO EFICIENTE 
+
+Para "sanar" este problema, é possivel usar NVL, que não é uma boa prática. Veremos porque: 
+
+Código: 
+if nvl(a, 123456789) = nvl(b, 123456789) 
+then --seu código 
+
+Isso funciona, se o valor for diferente de 123456789. Se o valor for igual, ferra a comparação! 
+
+MUITO EFICIENTE 
+
+A melhor prática possível 
+
+É um pouco trabalhosa, mas sempre funcionará: 
+Código: 
+
+if a<>b 
+or (a is null and b is not null) 
+or (a is not null and b is null) 
+then --seu codigo 

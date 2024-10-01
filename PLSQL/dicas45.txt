@@ -1,0 +1,34 @@
+Excelente explicação sobre constraints deferred:
+http://technet.oracle.com/products/oracle8/htdocs/xcptwp5.htm
+
+Por que deve-se criar indices para as FK´s? Resposta em:
+http://technet.oracle.com/doc/server.815/a68003/01_05dta.htm#1628
+
+Altera a exibição dos números
+SELECT TO_CHAR(1.2,'990D0','NLS_NUMERIC_CHARACTERS='',.''') FROM DUAL
+
+DECLARE  
+   fHandle UTL_FILE.FILE_TYPE;  
+   vText varchar2(10); 
+BEGIN  
+   fHandle := UTL_FILE.FOPEN('c:\','utlfile.txt','w');  
+   vText := 'TEST'; UTL_FILE.PUTF(fHandle,vText);        
+   UTL_FILE.FCLOSE(fHandle); 
+EXCEPTION WHEN UTL_FILE.INVALID_PATH THEN  
+   RAISE_APPLICATION_ERROR(-20100,'Invalid Path');  
+WHEN UTL_FILE.INVALID_MODE THEN  
+   RAISE_APPLICATION_ERROR(-20101,'Invalid Mode');  
+WHEN UTL_FILE.INVALID_OPERATION then  
+   RAISE_APPLICATION_ERROR(-20102,'Invalid Operation');  
+WHEN UTL_FILE.INVALID_FILEHANDLE then  
+   RAISE_APPLICATION_ERROR(-20103,'Invalid Filehandle');  
+WHEN UTL_FILE.WRITE_ERROR then  
+   RAISE_APPLICATION_ERROR(-20104,'Write Error');  
+WHEN UTL_FILE.READ_ERROR then  
+   RAISE_APPLICATION_ERROR(-20105,'Read Error');  
+WHEN UTL_FILE.INTERNAL_ERROR then  
+   RAISE_APPLICATION_ERROR(-20106,'Internal Error');  
+WHEN OTHERS THEN  
+   UTL_FILE.FCLOSE(fHandle); 
+END; 
+ 

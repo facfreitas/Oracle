@@ -1,0 +1,24 @@
+AM   - AM ou PM 
+CC   - Século 
+D    - Dia da semana (1-7) 
+DAY  - Dia da semana ('SUNDAY') 
+DD   - Dia do mês (1-31) 
+DDD  - Dia do ano 
+DY   - Dia da semana abreviado ('SUN') 
+FM   - Tira os blanks ou Zeros da esquerda 
+HH   - Hora do dia (0-12) 
+HH24 - Hora do dia (0-24) 
+MI   - Minutos da Hora 
+MM   - Mês com 2 dígitos 
+MON  - Mês abreviado ('NOV') 
+MONTH- Mês por extenso ('NOVEMBER') 
+PM   - AM ou PM 
+RR   - Ano com 2 dígitos - especial 
+RRRR - Ano com 4 dígitos 
+SS   - Segundos do minuto(0 - 59) 
+SSSSS- Segundos do dia 
+W    - Semana do Mês 
+WW   - Semana do Ano 
+YEAR - Ano por extenso 
+YY   - Ano com 2 dígitos 
+YYYY - Ano com 4 dígitos

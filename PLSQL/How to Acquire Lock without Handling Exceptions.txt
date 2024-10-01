@@ -1,0 +1,48 @@
+How to Acquire Lock without Handling Exceptions
+
+Normally I use FOR UPDATE NOWAIT to acquire a lock on rows. 
+This statement either locks all the selected rows or the 
+control is returned without acquiring any lock 
+(i.e. even on rows which are available for locking) after throwing an exception. 
+
+But there is an feature in Oracle Database, the clause FOR UPDATE SKIP LOCKED, which can be used to lock rows that are available for locking and skip the rows that have been locked by other sessions. This statement returns the control back without throwing an exception, even if all the rows are locked by another session. 
+
+To illustrate, I open two sessions. In the first session, I lock the row with deptno as 10 using FOR UPDATE NOWAIT. 
+
+
+Scott/SESH> SELECT * FROM dept WHERE deptno = 10 FOR UPDATE NOWAIT;
+
+    DEPTNO DNAME          LOC
+---------- -------------- -------------
+        10 ACCOUNTING     NEW YORK
+
+
+In the second session, I try to lock two rows (deptno 10 and 20) from the table dept using FOR UPDATE NOWAIT. An exception is thrown after executing the following statement because one of the row (i.e. deptno 10) out of the selected list is already locked by session 1. 
+
+
+Scott/SESH> SELECT * FROM dept WHERE deptno IN (10,20) FOR UPDATE
+NOWAIT;
+
+SELECT * FROM dept WHERE deptno IN (10,20) FOR UPDATE NOWAIT
+              *
+ERROR at line 1:
+ORA-00054: resource busy and acquire with NOWAIT specified
+
+Now I again try to lock two rows (deptno(s) 10 and 20) from the table dept but using the clause FOR UPDATE SKIP LOCKED instead of FOR UPDATE NOWAIT. As you can see the following statement has 
+1. returned the control without throwing an exception 
+
+2. acquired lock on the row (i.e. deptno 20) which is available for locking 
+
+3. skipped the row (i.e. deptno 10) that has been locked already by session 1 
+
+
+
+SQL> SELECT * FROM dept WHERE deptno IN (10,20) FOR UPDATE SKIP LOCKED;
+
+    DEPTNO DNAME          LOC
+---------- -------------- -------------
+        20 RESEARCH       DALLAS
+
+
+
+

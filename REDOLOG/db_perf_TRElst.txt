@@ -1,0 +1,131 @@
+
+===  Este a dá a indicação da eficiência do REDO LOG. O valor diferente de 0   ===
+===  indica que os processos estão esperando por espaço no REDO BUFFER.  ===
+===  Incremente o parâmetro LOG_BUFFER no INIT.ORA .  ===
+
+           Waits Name                                                           
+---------------- ------------------------------                                 
+               0 REDO LOG SPACE WAIT TIME                                       
+
+===  Se esse valor é alto, decremente o parâmetro LOG_BUFFER   ===
+
+               Value Name                                                       
+-------------------- ------------------------------                             
+          40,932,736 REDO WASTAGE                                               
+
+=== Este número (BUFFER_PCT) indica a eficiência do buffer pool   ===
+=== Se for menor que 85%, incremente o número do DB_BLOCK_BUFFERS    ===
+
+BUFFER_PCT                                                                      
+----------                                                                      
+71,5064492                                                                      
+
+
+=== A percentagem é derivada das seguintes estatisticas ===
+
+Name                                      VALUE                                 
+------------------------------ ----------------                                 
+DB BLOCK GETS                         1,224,227                                 
+CONSISTENT GETS                      18,472,207                                 
+PHYSICAL READS                        5,612,210                                 
+
+=== Este indica a eficiência da Library Cache, contem a área de SQL ===
+=== e as stored procedures. O % Misses deveria ser menor ===
+=== que 1%, se não incremente o tamanho da SHARED_POOL. ===
+
+            Hits  Misses % Misses                                               
+---------------- ------- --------                                               
+         796,349   1,326     .167                                               
+
+=== Este indica a eficiência da Shared Pool, contem a  ===
+=== Data Dictionary. O % Misses deveria ser menor que 15%, se não ===
+=== incremente o tamanho da SHARED_POOL. ===
+
+            Hits  Misses % Misses                                               
+---------------- ------- --------                                               
+       2,503,380   6,106     .244                                               
+
+=== Este indica a eficiência da SORT AREA.  Se o sort (disks) é ===
+=== diferente de 0 (zero), incremente o tamanho da SORT_AREA_SIZE. ==
+
+Name                                      VALUE                                 
+------------------------------ ----------------                                 
+SORTS (DISK)                                 48                                 
+SORTS (MEMORY)                           56,426                                 
+SORTS (ROWS)                          2,810,998                                 
+
+===  Se há excesso de WRAPS, o rollback segment é provavelmente pequeno ou,
+===  você precisa de mais rollback segments. Excesso de WRAPS provavelmente será
+===  acompanhado pelo erro "Snapshot Too Old".
+===  Se você tiver excesso de extents, o rollback segment é muito pequeno.
+===  Excesso de WAITS mostra que você precisa de mais rollback segments.
+
+ROLLBACK   CUR EXTENTS OPTL SIZE  SHRINKS AVE SHRINK  AVE TRANS                 
+---------- ----------- --------- -------- ---------- ----------                 
+RMODELO             20   4096000        0          0     201299                 
+R01                 34                  0          0     550249                 
+R02                 30                  0          0     550082                 
+R03                 38                  0          0     568883                 
+SYSTEM              34                  0          0          0                 
+
+ROLLBACK    EXTENTS    TRANS LARGEST TRANS  CUR SIZE  WAITS  WRAPS  EXTENDS     
+---------- -------- -------- ------------- --------- ------ ------ --------     
+RMODELO          20        5       4093952   4093952      6     35        0     
+R01              34        4      35858432  35858432      6      7        0     
+R02              30        4      31639552  31639552      7      7        0     
+R03              38        4      79767552  79767552      7      3        0     
+SYSTEM           34        0      24072192  24072192      0      0        0     
+
+===  Esta lista é o total de I/O por PHYSICAL DEVICE ===
+
+DRIVE                SUM(B.PHYRDS) SUM(B.PHYWRTS) Total I/O per Device          
+-------------------- ------------- -------------- --------------------          
+/ORA01/                       3229           3793                 7022          
+/ORA03/                    1894552          32228              1926780          
+
+===  Esta lista é o Total de I/O por DATAFILE  ===
+
+DRIVE/FILE                                   PHYRDS    PHYWRTS  Total I/O       
+---------------------------------------- ---------- ---------- ----------       
+/ORA01/ORADATA/ADM/IESTAT01.DBF                  46         44         90       
+/ORA01/ORADATA/ADM/IFOLHA01.DBF                  46         44         90       
+/ORA01/ORADATA/ADM/ISCAMEADM1.DBF                46         44         90       
+/ORA01/ORADATA/ADM/ISHDADM1.DBF                  46         44         90       
+/ORA01/ORADATA/ADM/ISPO01ADM.DBF                 46         44         90       
+/ORA01/ORADATA/ADM/ISPO2ADM1.DBF                 46         44         90       
+/ORA01/ORADATA/ADM/SPCE01ADM.DBF                 46         44         90       
+/ORA01/ORADATA/ADM/SPOE2002.DBF                  46         44         90       
+/ORA01/ORADATA/ADM/SPO01ADM.DBF                  46         44         90       
+/ORA01/ORADATA/ADM/SPO2ADM1.DBF                  46         44         90       
+/ORA01/ORADATA/ADM/SPO2003ADM.DBF               269         44        313       
+/ORA01/ORADATA/ADM/TEMP2ADM.DBF                2454       3265       5719       
+/ORA01/ORAIND/ADM/ISPO2003ADM.DBF                46         44         90       
+/ORA03/ORADATA/ADM/DRSYS.DBF                     67         46        113       
+/ORA03/ORADATA/ADM/ECO1ADM.DBF                   46         44         90       
+/ORA03/ORADATA/ADM/ESTAT01.DBF                   46         44         90       
+/ORA03/ORADATA/ADM/FOLHA01.DBF                   46         44         90       
+/ORA03/ORADATA/ADM/ISAD2ADM1.DBF               4464        228       4692       
+/ORA03/ORADATA/ADM/ISCPADM1.DBF                  46         44         90       
+/ORA03/ORADATA/ADM/ISFAEADM1.DBF              10188       8634      18822       
+/ORA03/ORADATA/ADM/ISIAADM1.DBF                  46         44         90       
+/ORA03/ORADATA/ADM/ISJUR1ADM.DBF                 46         44         90       
+/ORA03/ORADATA/ADM/ISPCE01ADM.DBF                46         44         90       
+/ORA03/ORADATA/ADM/ISPOE2002.DBF                 46         44         90       
+/ORA03/ORADATA/ADM/ISRH2ADM1.DBF                269         44        313       
+/ORA03/ORADATA/ADM/IUSRADM1.DBF                  46         44         90       
+/ORA03/ORADATA/ADM/RBS1ADM.DBF                  274      14455      14729       
+/ORA03/ORADATA/ADM/SAD2ADM1.DBF               42764        196      42960       
+/ORA03/ORADATA/ADM/SCAMEADM1.DBF                 46         44         90       
+/ORA03/ORADATA/ADM/SCPADM1.DBF                   46         44         90       
+/ORA03/ORADATA/ADM/SFAEADM1.DBF              480789        849     481638       
+/ORA03/ORADATA/ADM/SFAEADM2.DBF              663538       2003     665541       
+/ORA03/ORADATA/ADM/SFAEADM3.DBF              632656       2269     634925       
+/ORA03/ORADATA/ADM/SHDADM1.DBF                   46         44         90       
+/ORA03/ORADATA/ADM/SIAADM1.DBF                   46         44         90       
+/ORA03/ORADATA/ADM/SIACADM1.DBF                  46         44         90       
+/ORA03/ORADATA/ADM/SJUR1ADM.DBF                  46         44         90       
+/ORA03/ORADATA/ADM/SRH2ADM1.DBF               32786        103      32889       
+/ORA03/ORADATA/ADM/SYSTEMADM.DBF              24527        598      25125       
+/ORA03/ORADATA/ADM/TEMP1ADM.DBF                1446       2053       3499       
+/ORA03/ORADATA/ADM/TOOLADM1.DBF                  46         44         90       
+/ORA03/ORADATA/ADM/USERADM1.DBF                  48         46         94       

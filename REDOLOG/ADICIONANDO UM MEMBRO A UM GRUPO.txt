@@ -1,0 +1,1 @@
+alter database add logfile member 'path/log_3c.dbf' to group <NUM_GRUPO>;

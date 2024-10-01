@@ -1,0 +1,233 @@
+Date:    15/08/2003 14:28
+From:    Emerson
+To:      oracle@grupos.com.br
+Copy:    
+Subject: [Oracle] RES: Re: Re: RES: Re: ORACLE 8 - Problemas de  Ace    ntuação
+
+
+banco A
+SQL> select name, substr(value$,1,30) value from sys.props$;
+
+NAME                           VALUE
+------------------------------ ------------------------------
+DICT.BASE                      2
+NLS_LANGUAGE                   AMERICAN
+NLS_TERRITORY                  AMERICA
+NLS_CURRENCY                   $
+NLS_ISO_CURRENCY               AMERICA
+NLS_NUMERIC_CHARACTERS         .,
+NLS_CALENDAR                   GREGORIAN
+NLS_DATE_FORMAT                DD-MON-YY
+NLS_DATE_LANGUAGE              AMERICAN
+NLS_CHARACTERSET               US7ASCII
+NLS_SORT                       BINARY
+NLS_NCHAR_CHARACTERSET         US7ASCII
+NLS_RDBMS_VERSION              8.0.5.1.0
+GLOBAL_DB_NAME                 CEEEP.WORLD
+EXPORT_VIEWS_VERSION           7
+
+15 rows selected.
+
+
+BANCO B
+SQL> select name, substr(value$,1,30) value from sys.props$
+  2  ;
+
+NAME                           VALUE
+------------------------------ ------------------------------
+DICT.BASE                      2
+NLS_LANGUAGE                   AMERICAN
+NLS_TERRITORY                  AMERICA
+NLS_CURRENCY                   $
+NLS_ISO_CURRENCY               AMERICA
+NLS_NUMERIC_CHARACTERS         .,
+NLS_CHARACTERSET               WE8ISO8859P1
+NLS_CALENDAR                   GREGORIAN
+NLS_DATE_FORMAT                DD-MON-YY
+NLS_DATE_LANGUAGE              AMERICAN
+NLS_SORT                       BINARY
+NLS_NCHAR_CHARACTERSET         WE8ISO8859P1
+NLS_RDBMS_VERSION              8.0.6.3.0
+GLOBAL_DB_NAME                 SMKP.WORLD
+EXPORT_VIEWS_VERSION           7
+
+15 rows selected.
+
+> ----- Mensagem original -----
+> De:		FÁBIO SANTANA BISPO [SMTP:fabio@trt20.gov.br]
+> Enviada em:		Quinta-feira, 14 de Agosto de 2003 21:05
+> Para:		oracle@grupos.com.br
+> Assunto:		[Oracle] Re: Re: RES: Re: ORACLE 8 - Problemas de
+> Ace   ntuação
+> 
+> Dê o seguinte comando e me retorne:
+>  
+> select name, substr(value$,1,30) value from sys.props$
+>  
+> Fábio Bispo
+> DBA
+> 
+> 	----- Original Message ----- 
+> 	From: José Luiz Silveira Limeira <mailto:jslimeira@yahoo.com.br> 
+> 	To: oracle@grupos.com.br <mailto:oracle@grupos.com.br> 
+> 	Sent: Thursday, August 14, 2003 6:03 PM
+> 	Subject: [Oracle] Re: RES: Re: ORACLE 8 - Problemas de Ace ntuação
+> 
+> 	Emerson, é esse mesmo sim, olha abaixo os parâmetros que tenho no
+> meu banco, executa o mesmo select e depois manda prá lista que a gente dá
+> uma olhada no que pode estar errado.
+> 	 
+> 	SQL> SELECT * FROM NLS_SESSION_PARAMETERS; 
+> 	 
+> 	PARAMETER                      VALUE
+> 	------------------------------
+> ----------------------------------------
+> 	NLS_LANGUAGE                   AMERICAN
+> 	NLS_TERRITORY                  AMERICA
+> 	NLS_CURRENCY                   $
+> 	NLS_ISO_CURRENCY               AMERICA
+> 	NLS_NUMERIC_CHARACTERS         ,.
+> 	NLS_CALENDAR                   GREGORIAN
+> 	NLS_DATE_FORMAT                DD-MON-YY
+> 	NLS_DATE_LANGUAGE              AMERICAN
+> 	NLS_SORT                       WEST_EUROPEAN
+> 	NLS_TIME_FORMAT                HH.MI.SSXFF AM
+> 	NLS_TIMESTAMP_FORMAT           DD-MON-RR HH.MI.SSXFF AM
+> 	NLS_TIME_TZ_FORMAT             HH.MI.SSXFF AM TZR
+> 	NLS_TIMESTAMP_TZ_FORMAT        DD-MON-RR HH.MI.SSXFF AM TZR
+> 	NLS_DUAL_CURRENCY              $
+> 	NLS_COMP                       BINARY
+> 	NLS_LENGTH_SEMANTICS           BYTE
+> 	NLS_NCHAR_CONV_EXCP            FALSE
+> 	 
+> 	José Luiz Silveira Limeira
+> 	
+> 	 
+> 	----- Original Message ----- 
+> 	From: Emerson <mailto:emersonp@ceee.com.br> 
+> 	To: oracle@grupos.com.br <mailto:oracle@grupos.com.br> 
+> 	Sent: Thursday, August 14, 2003 4:37 PM
+> 	Subject: [Oracle] RES: Re: ORACLE 8 - Problemas de Acentuação
+> 
+> 
+> 	executei a linha mas os acentos continuam errados...
+> 	o set é este mesmo???
+> 	
+> 	ALTER SESSION SET NLS_SORT=WEST_EUROPEAN
+> 	
+> 	> ----- Mensagem original -----
+> 	> De: José Luiz Silveira Limeira [SMTP:jslimeira@yahoo.com.br]
+> 	> Enviada em: Quinta-feira, 14 de Agosto de 2003 15:13
+> 	> Para: oracle@grupos.com.br <mailto:oracle@grupos.com.br>
+> 	> Assunto: [Oracle] Re: ORACLE 8 - Problemas de  Acentuação
+> 	> 
+> 	> Execute o comando abaixo para sua sessão:
+> 	>  
+> 	> ALTER SESSION SET NLS_SORT=WEST_EUROPEAN;
+> 	>  
+> 	> José Luiz Silveira Limeira
+> 	> 
+> 	>  
+> 	> 
+> 	> ----- Original Message ----- 
+> 	> From: Emerson 
+> 	> To: oracle@grupos.com.br <mailto:oracle@grupos.com.br> 
+> 	> Sent: Thursday, August 14, 2003 2:44 PM
+> 	> Subject: [Oracle] ORACLE 8 - Problemas de Acentuação
+> 	> 
+> 	> 
+> 	> Srs,
+> 	> 
+> 	> Estou com a seguinte dúvida:
+> 	> 
+> 	> Tenho 2 bancos com linguagens diferentes, um deles traz os selects
+> com
+> 	> problemas de acento;
+> 	> 
+> 	> Alguem tem alguma dica?
+> 	> 
+> 	> --------------------------
+> 	> Banco de Dados Oracle
+> 	> 
+> 	>                Mensagens: oracle@grupos.com.br
+> <mailto:oracle@grupos.com.br>
+> 	> 
+> 	>                  Assinar: assinar-oracle@grupos.com.br
+> <mailto:assinar-oracle@grupos.com.br>
+> 	> 
+> 	>      Cancelar assinatura: cancelar-oracle@grupos.com.br
+> <mailto:cancelar-oracle@grupos.com.br>
+> 	> 
+> 	>    Moderadores do Grupo: moderadores-oracle@grupos.com.br
+> <mailto:moderadores-oracle@grupos.com.br>
+> 	> 
+> 	> Administradores do Grupo: administradores-oracle@grupos.com.br
+> <mailto:administradores-oracle@grupos.com.br>
+> 	> 
+> 	>    Endereço desta página: <
+> <http://www.grupos.com.br/grupos/oracle>> 
+> 	> -------------------------- 
+> 	>  < <http://banner.grupos.com.br/?214:62:1060884766:1>>
+> 	> <
+> <http://www.fulano.com.br/Scripts/Emailgrupos/Request_Email.asp?IDUsuario=
+> >
+> 	> -1&ID=696>
+> 	> 
+> 	> 
+> 	> Você se interessa por programação, hardware, sistemas
+> operacionais,
+> 	> tecnologia e redes? Então clique aqui
+> 	> < <http://www.grupos.com.br/grupos/?id_pai=3>> e conheça mais
+> grupos sobre
+> 	> esses assuntos. Tire dúvidas, envie dicas, troque informações com
+> pessoas
+> 	> que gostam do que você gosta. 
+> 	>  < <http://www.grupos.com.br>> 
+> 	> 
+> 	> cancelar assinatura - página do
+> 	> grupo < <http://www.grupos.com.br/grupos/oracle>> 
+> 	
+> 
+> --------------------------
+> Banco de Dados Oracle
+> 
+>                Mensagens: oracle@grupos.com.br
+> <mailto:oracle@grupos.com.br> 
+>                  Assinar: assinar-oracle@grupos.com.br
+> <mailto:assinar-oracle@grupos.com.br> 
+>      Cancelar assinatura: cancelar-oracle@grupos.com.br
+> <mailto:cancelar-oracle@grupos.com.br> 
+>     Moderadores do Grupo: moderadores-oracle@grupos.com.br
+> <mailto:moderadores-oracle@grupos.com.br> 
+> Administradores do Grupo: administradores-oracle@grupos.com.br
+> <mailto:administradores-oracle@grupos.com.br> 
+>    Endereço desta página: <http://www.grupos.com.br/grupos/oracle> 
+> -------------------------- 
+>   <http://banner.grupos.com.br/?214:62:1060905878:1>
+> <http://www.fulano.com.br/Scripts/Emailgrupos/Request_Email.asp?IDUsuario=
+> -1&ID=696>
+> 
+>  
+> <http://campanhas.grupos.com.br/click.phtml?campanha=microsoft.email02&id=
+> 1060905878&url=http://ad.adnetwork.com.br/mfa/go/img/;s=99;c=356;a=90;l=72
+> 8;p=3;sc=799;n=0>
+> <http://view.campanhas.grupos.com.br/?microsoft.email02|1060905878>
+>  <http://www.grupos.com.br>	 	
+> 	
+> cancelar assinatura <mailto:cancelar-oracle@grupos.com.br> - página do
+> grupo <http://www.grupos.com.br/grupos/oracle> 	
+--------------------------
+Banco de Dados Oracle
+
+               Mensagens: oracle@grupos.com.br 
+                 Assinar: assinar-oracle@grupos.com.br 
+     Cancelar assinatura: cancelar-oracle@grupos.com.br 
+    Moderadores do Grupo: moderadores-oracle@grupos.com.br 
+Administradores do Grupo: administradores-oracle@grupos.com.br 
+   Endereço desta página: http://www.grupos.com.br/grupos/oracle 
+--------------------------
+
+-----------------------------------------
+Grupos.com.br - A vida acontece em grupos
+
+

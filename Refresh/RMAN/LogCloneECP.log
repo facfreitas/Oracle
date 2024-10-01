@@ -1,0 +1,61 @@
+Inicio duplicação OnLine:  Fri Oct  9 09:26:25 BRT 2015
+------- Finalizando a instância Auxiliar - ECQ -------------
+
+SQL*Plus: Release 11.2.0.3.0 Production on Fri Oct 9 09:26:25 2015
+
+Copyright (c) 1982, 2011, Oracle.  All rights reserved.
+
+
+Connected to:
+Oracle Database 11g Enterprise Edition Release 11.2.0.3.0 - 64bit Production
+With the Partitioning, Automatic Storage Management, OLAP, Data Mining
+and Real Application Testing options
+
+Database closed.
+Database dismounted.
+ORACLE instance shut down.
+Disconnected from Oracle Database 11g Enterprise Edition Release 11.2.0.3.0 - 64bit Production
+With the Partitioning, Automatic Storage Management, OLAP, Data Mining
+and Real Application Testing options
+------- Inicializando a instância Auxiliar - ECQ ----------
+
+SQL*Plus: Release 11.2.0.3.0 Production on Fri Oct 9 09:26:37 2015
+
+Copyright (c) 1982, 2011, Oracle.  All rights reserved.
+
+Connected to an idle instance.
+
+ORA-32004: obsolete or deprecated parameter(s) specified for RDBMS instance
+ORACLE instance started.
+
+Total System Global Area 2639106048 bytes
+Fixed Size		    2231192 bytes
+Variable Size		 1325401192 bytes
+Database Buffers	 1291845632 bytes
+Redo Buffers		   19628032 bytes
+Disconnected from Oracle Database 11g Enterprise Edition Release 11.2.0.3.0 - 64bit Production
+With the Partitioning, OLAP, Data Mining and Real Application Testing options
+-------- conexão nas instâncias ECQ e ECP --------------------
+-------- Refresh do banco de Homologacao ECQ ----------------
+
+Recovery Manager: Release 11.2.0.3.0 - Production on Fri Oct 9 09:26:40 2015
+
+Copyright (c) 1982, 2011, Oracle and/or its affiliates.  All rights reserved.
+
+connected to target database: ECP (DBID=1765003515)
+connected to auxiliary database: ECQ (not mounted)
+
+RMAN> run {
+2> SET NEWNAME FOR DATABASE TO '+dg_ecp_data/ecq/datafile/%U';
+3> duplicate target database to ECQ from active database;
+4> }
+5> exit
+executing command: SET NEWNAME
+
+Starting Duplicate Db at 09-OCT-15
+using target database control file instead of recovery catalog
+allocated channel: ORA_AUX_SBT_TAPE_1
+channel ORA_AUX_SBT_TAPE_1: SID=325 device type=SBT_TAPE
+channel ORA_AUX_SBT_TAPE_1: Veritas NetBackup for Oracle - Release 7.7 (2015062002)
+allocated channel: ORA_AUX_DISK_1
+channel ORA_AUX_DISK_1: SID=4 device type=DISK

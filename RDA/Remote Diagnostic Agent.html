@@ -1,0 +1,60 @@
+<html>
+<CENTER><H3>Remote Diagnostic Agent (RDA)</H3>
+<h4>for Windows</h4>
+Current Version:  2.0.0
+</CENTER>
+
+<H3>1. System Requirements</H3>
+The following items are needed to run RDA for Windows:
+<OL>
+ <LI>A local connection to the server.  RDA <b><i>must</i></b> be run 
+     locally on the server itself; it is not designed to be run from a client workstation.
+ <LI>If collecting database information, RDA supports Oracle database versions 8.0 and higher.
+ <LI>If collecting database information, you must have an Oracle Client V8.0 or later installed on the machine running RDA. 
+ <LI>Microsoft Windows NT 4.0, Windows 2000, or Windows XP
+ <LI>Windows Script (including VBScript) version 5.6 or higher.<br><br>
+     If Windows Script isn't already installed on the server, it can be downloaded from: <A href="http://msdn.microsoft.com/library/default.asp?url=/nhp/Default.asp?contentid=28001169" target=_new>http://msdn.microsoft.com/library/default.asp?url=/nhp/Default.asp?contentid=28001169</A>.<br><br>
+ <LI>Netscape 4.x (or higher), or Microsoft Internet Explorer 4.x (or higher).
+</OL>
+
+<H3>2. Installing and Executing Remote Diagnostic Agent for Windows</H3>
+ 
+Follow these steps to install and execute RDA:
+
+<OL>
+ <LI><A HREF=http://metalink.oracle.com/cgi-bin/cr/getfile_cr.cgi?282435>Click here to download</A> and expand the downloaded ZIP file to a new directory.  If transferring the zip file from one machine to another, remember to transfer it in binary mode.
+ <LI>If you wish to collect database information, ensure that the target database, the one you want to diagnose, is currently running.
+ <LI>From the new directory, double-click on the RDA program file (RDA.VBE).
+ <LI>RDA will prompt you for your Oracle home directory. Enter a valid directory path. (i.e. d:\oracle\ora81)
+ <LI>RDA will run Microsoft's WinMsd utility (MSInfo32 on Windows 2000). This process will take a few minutes on Windows 2000 because it gathers more information than the Windows NT version.
+ <LI>RDA will prompt you for a database connect string which includes the SQL*Plus username and password, and the TNS Alias. A SQL*Plus username must be entered.  <B>This is a required field. The username entered must have DBA privileges on the target database.</B> If the TNS Alias is not specified then RDA will connect to the default database.  The default database is determined by the setting of the Oracle_Home and Oracle_Sid Windows registries.  
+ <LI>RDA will display a message indicating that it is finished.  The message will include the path for the RDA report files.
+</OL>
+ 
+<p><b>Important Note: If you experience difficulties or see errors please
+do not call Oracle Support or log an iTAR for this issue. Instead, send
+feedback to <a href="mailto:st-automation_ww@oracle.com ?SUBJECT=Windows RDA Feedback:  ">st-automation_ww@oracle.com</a>
+so that we can correct the problem.</b></ul>
+<pre>
+
+
+<H3>3. Viewing RDA Report Files</H3>
+
+You can view the RDA report files using almost any web browser.  We recommend using Netscape 4.x (or higher), or Internet Explorer 4.x (or higher).
+
+<H3>4. Sending Report Files to Oracle Support</H3>
+
+Oracle Support may request that you run the RDA utility and upload the resulting report files. To do so, simply compress all of the files in the RDA output directory using Winzip, or any other utility that supports the zip format. 
+<i><u>Please name the zip file "RDA.ZIP" as it will help Oracle Support to quickly identify that RDA output is attached to the iTAR.</u></i> The resulting zip file can be uploaded via Oracle Metalink at: 
+<p>
+<A href="http://metalink.oracle.com/">http://metalink.oracle.com/</A>
+</p>
+
+NOTE:  If the RDA.ZIP file is transferred from one machine to another, remember to transfer it in binary mode.
+
+<a href="showdoc?db=NOT&id=225559.1&blackframe=0"
+TARGET="corner"><b>Legal Notices and Terms of Use</a>
+
+</body>
+</html>
+

@@ -1,0 +1,42 @@
+rman TARGET sys/sipsysatlanta@sip   CATALOG rman/backup_online@rep
+run { set archivelog destination to 'd:\temp';
+	  allocate channel t1 type 'sbt_tape' parms 'ENV=(OB2BARTYPE=Oracle8,OB2APPNAME=SIP,OB2BARLIST=SIP Prod Online Diario)';
+	  restore archivelog from logseq = 8910 until logseq = 8929 thread = 1;
+	  release channel t11;
+	  release channel t12;
+}
+
+
+
+rman TARGET sys/segsysatlanta@seg   CATALOG rman/backup_online@rep
+run { set archivelog destination to 'd:\temp';
+	  allocate channel t1 type 'sbt_tape' parms 'ENV=(OB2BARTYPE=Oracle8,OB2APPNAME=SEG,OB2BARLIST=SEG Prod Online Diario)';
+	  allocate channel t2 type 'sbt_tape' parms 'ENV=(OB2BARTYPE=Oracle8,OB2APPNAME=SEG,OB2BARLIST=SEG Prod Online Diario)';
+	  allocate channel t3 type 'sbt_tape' parms 'ENV=(OB2BARTYPE=Oracle8,OB2APPNAME=SEG,OB2BARLIST=SEG Prod Online Diario)';
+	  restore archivelog from logseq = 3501 until logseq = 3503 thread = 1;
+	  release channel t1;
+	  release channel t2;
+	  release channel t3;
+}
+
+
+
+rman TARGET sys/satsysatlanta@sat2   CATALOG rman/backup_online@rep
+run { set archivelog destination to 'G:\archive\sat\restore';
+	  allocate channel t21 type 'sbt_tape' parms 'ENV=(OB2BARTYPE=Oracle8,OB2APPNAME=SAT,OB2BARLIST=SAT Prod Online Diario)';
+	  allocate channel t22 type 'sbt_tape' parms 'ENV=(OB2BARTYPE=Oracle8,OB2APPNAME=SAT,OB2BARLIST=SAT Prod Online Diario)';
+	  allocate channel t23 type 'sbt_tape' parms 'ENV=(OB2BARTYPE=Oracle8,OB2APPNAME=SAT,OB2BARLIST=SAT Prod Online Diario)';
+	  restore archivelog from logseq = 30681 until logseq = 30704 thread = 1;
+	  release channel t21;
+	  release channel t22;
+	  release channel t23;
+}
+
+rman TARGET sys/satsysatlanta@sat2   CATALOG rman/backup_online@rep
+run { set archivelog destination to 'G:\archive\sat\restore';
+	  allocate channel t21 type 'sbt_tape' parms 'ENV=(OB2BARTYPE=Oracle8,OB2APPNAME=SAT,OB2BARLIST=SAT Prod Online Diario)';
+	  restore archivelog from logseq = 30600 until logseq = 30611 thread = 1;
+	  release channel t21;
+}
+
+

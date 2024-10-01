@@ -1,0 +1,12 @@
+Exemplos para Definir uma Exception 
+
+DECLARE
+   insufficient_privileges EXCEPTION;
+   PRAGMA EXCEPTION_INIT (insufficient_privileges, -1031);
+BEGIN
+   /*  executables  */
+EXCEPTION
+   WHEN insufficient_privileges THEN
+     /*  error handling  */
+END;
+

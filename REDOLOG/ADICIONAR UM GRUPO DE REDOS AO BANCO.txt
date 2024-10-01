@@ -1,0 +1,2 @@
+alter database add logfile group <NUM_GROUP>
+('path1/LOG.dbf','path2/MIRROR.dbf') size <TAM K|M>;

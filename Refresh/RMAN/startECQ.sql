@@ -1,0 +1,2 @@
+STARTUP NOMOUNT
+exit

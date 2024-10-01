@@ -1,0 +1,5 @@
+select 'ALTER TABLE tsinmetro'||'.'||segment_name||' DEALLOCATE UNUSED;' from dba_segments
+where owner = 'TSINMETRO'
+and segment_name in (select table_name segment_name from dba_tables
+                     where owner = 'TSINMETRO'
+                     and num_rows = 0)

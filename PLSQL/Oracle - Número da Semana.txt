@@ -1,0 +1,16 @@
+select to_number(to_char( seu_campo_data, 'W' )) from tabela.
+
+Lembre-se: 1 é domingo.
+
+Você pode fazer que funciona:
+
+select to_number(to_char( SYSDATE, 'W' )) from SYS.DUAL;
+
+Ele vai retornar, no caso hoje, quinta, o número 5.
+
+Boa Sorte
+
+
+
+
+

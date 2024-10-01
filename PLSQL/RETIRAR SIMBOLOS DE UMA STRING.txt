@@ -1,0 +1,7 @@
+Declare
+vResp Varchar2(200);
+Begin
+vResp:=Translate( '.:: SUA STRING ::.'
+                 , 'ãÃõÕçÇüÜâÂêÊôÔáÁàÀéÉíÍóÓúÚ!@#$%&*()_+=[]{}/\?:<>|'
+                 , 'aAoOcCuUaAeEoOaAaAeEiIoOuU                       ');
+End;
