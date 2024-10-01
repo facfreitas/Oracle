@@ -1,0 +1,9 @@
+expdp "'/ as sysdba'" directory=DATA_PUMP_DIR dumpfile=20150504_epccq.dmp logfile=20150504_epccq.log schemas=epccq EXCLUDE=TABLE:\"IN \(\'HISTORICO\'\)\"
+
+
+exp eep_tecnologia@devbox file=DEVBOX_TA_eep_tecnologia.dmp log=DEVBOX_TA_eep_tecnologia.log tables=TA_CRAFT,TA_TEAM,TA_TEAM_X_CRAFT,TA_TIMESHEET_HISTORY,TA_TIMESHEET_TEMPLATE,TA_UA
+
+
+expdp "'/ as sysdba'" directory=DATA_PUMP_DIR dumpfile=11_04_15_FULL_cju01.dmp logfile=11_04_15_FULL_cju01.log full=y
+
+

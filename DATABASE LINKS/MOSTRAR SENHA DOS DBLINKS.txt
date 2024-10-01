@@ -1,0 +1,5 @@
+select u.name, l.name, 
+       l.userid,l.password, 
+       l.host, l.ctime
+from sys.link$ l, sys.user$ u
+where l.owner# = u.user#;

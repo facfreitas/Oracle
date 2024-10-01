@@ -1,0 +1,9 @@
+select 'alter table '||owner||'.'||table_name||' enable constraint '||constraint_name||';'
+from user_constraints
+where constraint_type = 'P'
+and status != 'ENABLED';
+UNION
+select 'alter table '||owner||'.'||table_name||' enable constraint '||constraint_name||';'
+from user_constraints
+where constraint_type = 'R'
+and status != 'ENABLED';

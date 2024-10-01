@@ -1,0 +1,5 @@
+select OWNER,table_name, constraint_name, constraint_type, status
+from DBA_constraints
+where constraint_type = 'P'
+AND STATUS = 'DISABLE'
+order by OWNER,table_name, constraint_name

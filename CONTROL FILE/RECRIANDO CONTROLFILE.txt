@@ -1,0 +1,29 @@
+# The following commands will create a new control file and use it to open the database.
+# Data used by the recovery manager will be lost. 
+# Additional logs may be required for media recovery of offline data files. Use this only if the current version
+# of all online logs are available.
+
+STARTUP NOMOUNT PFILE=G:\ORACLE\ADMIN\BACK\PFILE\INIT.ORA
+CREATE CONTROLFILE SET DATABASE <NM_DB> RESETLOGS NOARCHIVELOG
+    MAXLOGFILES 32
+    MAXLOGMEMBERS 2
+    MAXDATAFILES 32
+    MAXINSTANCES 16
+    MAXLOGHISTORY 1630
+LOGFILE
+  GROUP 1 'G:\ORACLE\ORADATA\BACK\REDO04.LOG'  SIZE 1M,
+  GROUP 2 'G:\ORACLE\ORADATA\BACK\REDO03.LOG'  SIZE 1M,
+  GROUP 3 'G:\ORACLE\ORADATA\BACK\REDO02.LOG'  SIZE 1M,
+  GROUP 4 'G:\ORACLE\ORADATA\BACK\REDO01.LOG'  SIZE 1M
+DATAFILE
+  'G:\ORACLE\ORADATA\BACK\SYSTEM01.DBF',
+  'G:\ORACLE\ORADATA\BACK\USERS01.DBF',
+  'G:\ORACLE\ORADATA\BACK\RBS01.DBF',
+  'G:\ORACLE\ORADATA\BACK\TEMP01.DBF'
+CHARACTER SET WE8ISO8859P1
+;
+# Recovery is required if any of the datafiles are restored backups,or if the last shutdown was not normal or immediate.
+# RECOVER DATABASE
+# Database can now be opened normally.
+# ALTER DATABASE OPEN;
+# No tempfile entries found to add.

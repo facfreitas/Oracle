@@ -1,0 +1,11 @@
+SELECT 'expdp system@banco directory=DATA_PUMP_DIR dumpfile=dump.log logfile=log.log schemas=' || LISTAGG(username, ',') WITHIN GROUP (ORDER BY username) || ';' AS export_command
+FROM dba_users
+WHERE account_status = 'OPEN'
+  AND username NOT IN (
+    'SYS', 'SYSTEM', 'DBSNMP', 'OUTLN', 'EXFSYS', 'CTXSYS', 'APEX_PUBLIC_USER',
+    'APEX_040000', 'APEX_040200', 'APEX_050000', 'APEX_050100', 'APEX_180100',
+    'ANONYMOUS', 'XDB', 'ORDSYS', 'ORDPLUGINS', 'SI_INFORMTN_SCHEMA', 'MDSYS',
+    'OLAPSYS', 'ORDDATA', 'GSMADMIN_INTERNAL', 'DIP', 'TSMSYS', 'WMSYS', 'WK_TEST',
+    'WKSYS', 'WKPROXY', 'SPATIAL_CSW_ADMIN_USR', 'SPATIAL_WFS_ADMIN_USR',
+    'ORACLE_OCM', 'XS$NULL', 'APEX_REST_PUBLIC_USER'
+  );

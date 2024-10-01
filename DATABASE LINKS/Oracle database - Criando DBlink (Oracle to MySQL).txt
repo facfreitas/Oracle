@@ -1,0 +1,170 @@
+Quase sem espaço de armazenamento … Se você atingir o limite, não será possível criar, editar ou fazer upload de arquivos.
+Oracle database: Criando DBlink (Oracle to MySQL)
+
+- Ambiente
+ORIGEM -
+		S.O: Oracle Linux 8
+		SGBD: Oracle 19c 
+		Single Instance sem Multitenant (NonCDB)
+
+DESTINO - 
+		S.O: Oracle Linux 7
+		SGBD: MySQL 8
+
+
+--> Definição 
+
+	Para ess tipo de comunicação vamos usar o "Heterogeneous Services (HS)" que é um componente integrado no banco de dados oracle que fornece acesso genérico a sistemas non-Oracle.
+	Pode-se, utilizar a conectividade genérica para acessar bancos de dados não Oracle, como os protocolos ODBC ou OLE DB, através do uso dos Heterogeneous Services ODBC e OLE-DB, sem a necessidade de adquirir e configurar um agente específico (Ex: Oracle Database Gateway) para o banco de dados que se deseja acessar.
+
+
+--> MySQL (DESTINO)
+
+-- Criar usuario que ser usado no dblink
+	nome: oracledblink
+	senha: my3ql_Us 
+		
+CREATE USER 'oracledblink'@'%' IDENTIFIED WITH mysql_native_password BY 'my3ql_Us';
+GRANT SELECT on aplicacao.* TO 'oracledblink'@'%';
+SHOW GRANTS FOR 'oracledblink'@'%';
+SELECT user FROM mysql.user;
+
+mysql -u oracledblink -p
+use aplicacao;
+select * from EMPREGADOS;
+
+
+--> Oracle (ORIGEM)
+
+-- Instalar pacotes do odbc e mysqlodbc (root)
+
+yum install unixODBC unixODBC-devel -y
+
+Download driver 8: http://web.archive.org/web/20161017103202/http://dev.mysql.com/downloads/connector/odbc
+rpm -ivh mysql-connector-odbc-8.0.23-1.el8.x86_64.rpm
+
+
+-- Validar configuração no arquivo odbcinst.ini (root)
+
+cat /etc/odbcinst.ini
+
+
+-- Criar e adicionar entradas no arquivo odbc.ini (root)
+
+DSN (Domain Source Name)
+
+vim /etc/odbc.ini
+
+[MySQL]
+Driver      = MySQL ODBC 8.0 Unicode Driver
+DATABASE    = aplicacao
+DESCRIPTION = MySQL ODBC 8.0 Unicode Driver
+PORT        = 3306
+SERVER      = 192.168.1.10
+CHARSET     = latin1
+TRACEFILE   = /tmp/myodbc-demodsn.trc
+TRACE       = OFF
+
+
+-- Testando configuração odbc (root)
+
+isql MySQL oracledblink my3ql_Us -v
+
+
+-- Configurar listener com entrada estatica (oracle)
+
+vi /u01/app/oracle/product/19.3.0.0/dbhome_1/network/admin/listener.ora
+
+LISTENER =
+  (DESCRIPTION_LIST =
+    (DESCRIPTION =
+      (ADDRESS = (PROTOCOL = TCP)(HOST = orclhost)(PORT = 1522))
+      (ADDRESS = (PROTOCOL = IPC)(KEY = EXTPROC1522))
+    )
+   )
+   
+SID_LIST_LISTENER =
+  (SID_LIST =
+	(SID_DESC=
+	 (SID_NAME=MySQL) 
+     (ORACLE_HOME=/u01/app/oracle/product/19.3.0.0/dbhome_1)
+     (PROGRAM=dg4odbc)
+	 (ENVS=LD_LIBRARY_PATH=/u01/app/oracle/product/19.3.0.0/dbhome_1/lib:/usr/lib64)
+    )
+   )
+   
+lsnrctl status
+lsnrctl stop
+lsnrctl start 
+
+
+-- Criar entrada tnsnames (oracle)
+
+vi /u01/app/oracle/product/19.3.0.0/dbhome_1/network/admin/tnsnames.ora
+
+MySQL =
+   (DESCRIPTION =
+     (ADDRESS = (PROTOCOL = TCP)(HOST=localhost)(PORT=1521))
+     (CONNECT_DATA=
+       (SID=MySQL))
+       (HS=OK)
+    )
+	
+tnsping MySQL
+
+
+-- Criando o init no Oracle (oracle)
+
+vim $ORACLE_HOME/hs/admin/initMySQL.ora
+
+HS_FDS_CONNECT_INFO=MySQL
+HS_FDS_TRACE_LEVEL=0
+HS_FDS_SHAREABLE_NAME=/usr/lib64/libodbc.so
+HS_LANGUAGE=AMERICAN_AMERICA.WE8ISO8859P15
+#HS_NLS_NCHAR=AL32UTF8
+HS_NLS_NCHAR=UCS2
+#
+# ODBC specific environment variables
+#
+set ODBCINI = /etc/odbc.ini
+set LD_LIBRARY_PATH="/u01/app/oracle/product/19.3.0.0/dbhome_1/lib:/usr/lib64"
+
+
+-- Ver dblinks existentes (oracle)
+
+connect hr/hr
+
+SET linesize 300 
+SET pagesize 1000 
+col owner FOR a20 
+col db_link FOR a20 
+col username FOR a20 
+col host FOR a20 
+SELECT owner, 
+       db_link, 
+       username, 
+       host, 
+       To_char(created, 'MM/DD/YYYY HH24:MI:SS') Criacao 
+FROM   all_db_links 
+--WHERE db_link = 'DBLINK_NAME'
+--WHERE username = 'USERNAME'
+ORDER  BY owner, db_link; 
+
+
+-- Criando o dblink no Oracle (oracle)
+
+connect hr/hr
+
+ALTER SESSION SET GLOBAL_NAMES=FALSE;
+CREATE DATABASE LINK mysql CONNECT TO "oracledblink" IDENTIFIED BY "my3ql_Us" USING 'MySQL';
+
+
+-- Consultando (oracle)
+
+connect hr/hr
+
+select count(*) from empregados@MySQL;
+select "nome" from empregados@MySQL;
+
+
+-- Desafio: case sensitive

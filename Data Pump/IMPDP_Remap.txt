@@ -1,0 +1,3 @@
+impdp system schemas=EEP_DBA directory=DUMP_DIR dumpfile=20140416_EEPDBA.DMP logfile=IMP_20140416_EEPDBA.log remap_schema=EEP_DBA:EDBA remap_tablespace=TS_EEP_DBA:TS_EDBA
+
+impdp system schemas=EEP_FINANCE_TCG directory=DUMP_DIR dumpfile=20140411_TCG.DMP logfile=IMP_20140411_TCG.log remap_schema=EEP_FINANCE_TCG:TCG remap_tablespace=TS_EEP_FINANCE_TCG:TS_EGDOC

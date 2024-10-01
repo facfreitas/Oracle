@@ -1,0 +1,13 @@
+-- PARADA DO SERVIÇO
+
+net stop OracleServiceTESTE02
+
+-- Start do BD
+sqlplus /nolog @E:\Oracle\scripts\create_control_teste01hml.sql
+
+-- Open resetlogs
+sqlplus /nolog @E:\Oracle\scripts\open_resetlogs.sql
+
+-- START DO SERVIÇO
+
+net start OracleServiceTESTE02

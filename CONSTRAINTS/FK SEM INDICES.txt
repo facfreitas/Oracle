@@ -1,0 +1,19 @@
+ttitle 'Foreign Keys with Indexes Missing on Child Table' 
+SELECT acc.owner||'-> '||acc.constraint_name||'('||acc.column_name
+||'['||acc.position||'])'||' ***** Missing Index' "Missing Index"
+FROM all_cons_columns acc, all_constraints ac
+WHERE ac.constraint_name = acc.constraint_name
+AND ac.constraint_type = 'R'
+and acc.owner not in ('SYS','SYSTEM')
+AND (acc.owner, acc.table_name, acc.column_name, acc.position) 
+IN
+(SELECT acc.owner, acc.table_name, acc.column_name, acc.position 
+FROM all_cons_columns acc, all_constraints ac
+WHERE ac.constraint_name = acc.constraint_name
+AND ac.constraint_type = 'R'
+MINUS
+SELECT table_owner, table_name, column_name, column_position
+FROM all_ind_columns)
+ORDER BY acc.owner, acc.constraint_name, 
+acc.column_name, acc.position;
+ttitle off

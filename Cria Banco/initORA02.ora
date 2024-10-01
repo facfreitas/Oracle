@@ -1,0 +1,22 @@
+# Database initialization file built by TOAD
+
+db_name = ORA02
+compatible = 9.2.0
+db_block_size = 8192
+remote_login_passwordfile = exclusive
+control_files = ("E:\oracle\ora92\oradata\ORA02\control_01.ctl", "E:\oracle\ora92\oradata\ORA02\control_02.ctl")
+
+# define directories to store trace and alert files
+background_dump_dest = E:\oracle\ora92\admin\ORA02\bdump
+user_dump_dest = E:\oracle\ora92\admin\ORA02\bdump
+timed_statistics = TRUE
+
+# define parameters affecting SGA memory use
+processes = 20
+db_cache_size = 65536
+shared_pool_size = 134217728
+log_buffer = 1048576
+
+# System Managed Undo and Rollback Segments
+undo_management = AUTO
+undo_tablespace = UNDO
