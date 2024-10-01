@@ -1,0 +1,22 @@
+SELECT   DECODE ( TRUNC (  ( T1.OCUPACAO / T0.BYTES ) * 10 ),
+                  9, 'Critico',
+                  8, 'Problema Grave',
+                  7, 'Problema',
+                  6, 'Monitorar Urgente',
+                  5, 'Monitorar',
+                  'OK'
+                ) ANALISE,
+         T0.TABLESPACE_NAME,
+         T0.FILE_NAME,
+         ROUND(T0.BYTES/1024/1024,2) "ALOCADO(MB)",
+         ROUND(T1.OCUPACAO/1024/1024,2) "OCUPADO(MB)",
+         ROUND((T0.BYTES - T1.OCUPACAO )/1024/1024,2) "LIVRE(MB)"
+FROM     DBA_DATA_FILES T0,
+         ( SELECT  TABLESPACE_NAME,
+                   SUM ( BYTES ) OCUPACAO
+          FROM     DBA_SEGMENTS
+          GROUP BY TABLESPACE_NAME ) T1
+WHERE    T0.TABLESPACE_NAME = T1.TABLESPACE_NAME
+ORDER BY ANALISE
+
+

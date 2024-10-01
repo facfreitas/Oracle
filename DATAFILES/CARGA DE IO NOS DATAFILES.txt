@@ -1,0 +1,13 @@
+SELECT C.TABLESPACE_NAME "Tablespace",
+       B.NAME "File Name",
+       A.PHYBLKRD + A.PHYBLKWRT "Total",
+       A.PHYRDS "Physical|Reads  ",
+       A.PHYWRTS "Physical| Writes ",
+       A.PHYBLKRD "Physical  |Block Reads",
+       A.PHYBLKWRT "Physical  |Block Writes",
+       ((A.READTIM / DECODE(A.PHYRDS, 0, 1, A.PHYBLKRD)) / 100) "Average |Read Time|Per Block",
+       ((A.WRITETIM / DECODE(A.PHYWRTS, 0, 1, A.PHYBLKWRT)) / 100) "Average |Write Time|Per Block"
+FROM V$FILESTAT A, V$DATAFILE B, SYS.DBA_DATA_FILES C
+WHERE B.FILE# = A.FILE#
+AND B.FILE# = C.FILE_ID
+ORDER BY "Tablespace"

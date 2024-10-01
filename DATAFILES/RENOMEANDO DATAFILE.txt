@@ -1,0 +1,25 @@
+alter database rename file
+ '<PATH/ARQ.dbf>' to  '<PATH/ARQ.dbf>';
+
+EX 2:
+
+alter tablespace <NM_TS> rename datafile
+'<PATH/ARQ.dbf>' to  '<PATH/ARQ.dbf>';
+
+
+/* Formatted on 2008/08/12 10:19 (Formatter Plus v4.8.8) */
+SELECT    'alter database rename file '''
+       || file_name
+       || ''' to  '''
+       || '''L:\Oracle\STG\Data\'
+       || SUBSTR (file_name, 16, 16)
+       || ''''
+       || ';'
+  FROM dba_data_files
+
+SELECT    'alter database rename file '''
+       || MEMBER
+       || ''' to ''M:\Oracle\STG\DATA\redo'
+       || SUBSTR (MEMBER, 12, 15)
+       || ''';'
+  FROM v$logfile

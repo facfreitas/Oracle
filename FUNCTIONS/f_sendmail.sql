@@ -1,0 +1,16 @@
+CREATE OR REPLACE FUNCTION f_sendmail (SMTPServerName 	IN STRING, 
+		                      Sender 		IN STRING, 
+                		      Recipient 	IN STRING, 
+		                      CcRecipient 	IN STRING, 
+		                      BccRecipient 	IN STRING, 
+		                      Subject 		IN STRING, 
+		                      Body 		IN STRING, 
+                		      Attachments 	IN STRING) RETURN NUMBER IS 
+   LANGUAGE JAVA NAME 'sendmail.Send(java.lang.String, 
+   				     java.lang.String, 
+		                     java.lang.String, 
+                  		     java.lang.String, 
+		                     java.lang.String, 
+                		     java.lang.String, 
+		                     java.lang.String, 
+		                     java.lang.String) return int'; 

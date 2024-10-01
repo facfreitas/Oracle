@@ -1,0 +1,1 @@
+expdp userid=system@DEVBOX_ORAEEP dumpfile=expdp_export.dmp logfile=expdp_export.log schemas=EEP_TECNOLOGIA directory=C:EEP\dmp

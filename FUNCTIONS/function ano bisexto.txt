@@ -1,0 +1,27 @@
+
+/* 
+   Script Description: This function will check if a year is a leap year
+
+   Output file:        N/A
+
+   Prepared By:        TheOracleResourceStop Script Archive
+                       www.orsweb.com
+
+   Usage Information:  SQLPLUS SYS/pswd
+                       @leapyear.sql
+*/
+
+create or replace function LEAPYEAR(year varchar2)
+return varchar2
+is
+leap_year_indicator varchar2(20);
+begin
+select decode( mod(year, 4), 0,
+          decode( mod(year, 400), 0, 'Leap Year',
+             decode( mod(year, 100), 0, 'Not a Leap Year', 'Leap Year')
+          ), 'Not a Leap Year'
+       ) into leap_year_indicator
+from   dual;
+return  leap_year_indicator;
+end LEAPYEAR;
+/

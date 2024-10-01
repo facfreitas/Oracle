@@ -1,0 +1,20 @@
+Taí uma função não documentada: 
+
+Código: 
+SQL> select reverse('123456789') from dual; 
+
+REVERSE(' 
+--------- 
+987654321 
+
+SQL> select reverse('bom dia!') from dual; 
+
+REVERSE( 
+-------- 
+!aid mob 
+
+SQL> select reverse('GLUFKE') from dual; 
+
+REVERS 
+------ 
+EKFULG 

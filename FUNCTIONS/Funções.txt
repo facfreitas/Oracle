@@ -1,0 +1,223 @@
+CREATE OR REPLACE FUNCTION STAB.f_bairro_cod_ctrt (P_CTRC   NUMBER)
+RETURN VARCHAR2 IS
+
+-- PL/SQL Specification
+------------------------------------------------------------------------------------
+-- Empresa:        
+-- Desenvolvedor:  Ricardo Guedes
+-- Data:           03/01/2001
+-- Objetivo:       Retornar o bairro dado um código de contrato.
+------------------------------------------------------------------------------------
+-- Histórico de Atualizações
+-- Data         Empresa     Implementador      Descrição da Alteração
+------------------------------------------------------------------------------------
+
+CURSOR C1  IS
+    select des_loc  -- bairro
+    from stab.localidades
+    where (cod_uf,cod_loc) =
+            (select cod_uf, cod_loc 
+            from stab.contratos_consumidores
+            where cod_ctrc = P_CTRC);
+
+            
+W_DES_LOC varchar2(45);
+            
+BEGIN
+ OpeN C1;
+ Fetch C1 into W_DES_LOC;
+ Close C1;
+ Return W_DES_LOC;
+END;
+/
+
+
+CREATE OR REPLACE FUNCTION STAB.F_DES_COMT_SET
+ (P_NSEQ_SET STAB.CODIGO_SETORES.NSEQ_SET%TYPE)
+ return VARCHAR2 IS
+
+CURSOR C_DES IS
+Select  S.DES_COMT_SET
+From STAB.V_SETORES S
+Where S.NSEQ_SET = P_NSEQ_SET;
+
+W_DESCRICAO STAB.HISTORICO_SETORES.DES_COMT_SET%TYPE;
+
+-- PL/SQL Block
+Begin
+
+Open C_DES;
+Fetch C_DES into W_DESCRICAO;
+Close C_DES;
+Return W_DESCRICAO;
+END;
+/
+
+
+CREATE OR REPLACE FUNCTION STAB.F_DES_REDZ_SET
+ (P_NSEQ_SET STAB.CODIGO_SETORES.NSEQ_SET%TYPE)
+ return VARCHAR2 IS
+
+CURSOR C_DES IS
+Select  S.DES_REDZ_SET
+From STAB.V_SETORES S
+Where S.NSEQ_SET = P_NSEQ_SET;
+
+W_DESCRICAO STAB.HISTORICO_SETORES.DES_REDZ_SET%TYPE;
+
+-- PL/SQL Block
+Begin
+
+Open C_DES;
+Fetch C_DES into W_DESCRICAO;
+Close C_DES;
+Return W_DESCRICAO;
+END;
+/
+
+
+CREATE OR REPLACE FUNCTION STAB.f_localidade_cod_ctrt (P_CTRC   NUMBER)
+RETURN VARCHAR2 IS
+
+-- PL/SQL Specification
+------------------------------------------------------------------------------------
+-- Empresa:        
+-- Desenvolvedor:  Ricardo Guedes
+-- Data:           03/01/2001
+-- Objetivo:       Retornar o localidade dado um código de contrato.
+------------------------------------------------------------------------------------
+-- Histórico de Atualizações
+-- Data         Empresa     Implementador      Descrição da Alteração
+------------------------------------------------------------------------------------
+
+CURSOR C1  IS
+    select des_loc  -- localidade
+    from stab.localidades
+    where (cod_uf,cod_loc) =
+        (select cod_uf, cod_muni||cod_loca||'000' cod_loc -- localidade
+        from stab.localidades
+        where (cod_uf,cod_loc) =
+                (select cod_uf, cod_loc 
+                from stab.contratos_consumidores
+                where cod_ctrc = P_CTRC));
+            
+W_DES_LOC varchar2(45);
+            
+BEGIN
+ OpeN C1;
+ Fetch C1 into W_DES_LOC;
+ Close C1;
+ Return W_DES_LOC;
+END;
+/
+
+
+CREATE OR REPLACE FUNCTION STAB.F_MUNICIPIO_COD_CTRT (P_CTRC   NUMBER)
+RETURN VARCHAR2 IS
+
+-- PL/SQL Specification
+------------------------------------------------------------------------------------
+-- Empresa:        
+-- Desenvolvedor:  Ricardo Guedes
+-- Data:           03/01/2001
+-- Objetivo:       Retornar o municipio dado um código de contrato.
+------------------------------------------------------------------------------------
+-- Histórico de Atualizações
+-- Data         Empresa     Implementador      Descrição da Alteração
+------------------------------------------------------------------------------------
+
+CURSOR C1  IS
+    select des_loc  -- municipio
+    from stab.localidades
+    where (cod_uf,cod_loc) =
+    (select cod_uf, cod_muni||'00000'  -- municipio
+    from stab.localidades
+    where (cod_uf,cod_loc) =
+        (select cod_uf, cod_muni||cod_loca||'000' cod_loc -- localidade
+        from stab.localidades
+        where (cod_uf,cod_loc) =
+                (select cod_uf, cod_loc 
+                from stab.contratos_consumidores
+                where cod_ctrc = P_CTRC)));
+            
+W_DES_LOC varchar2(45);
+            
+BEGIN
+ OpeN C1;
+ Fetch C1 into W_DES_LOC;
+ Close C1;
+ Return W_DES_LOC;
+END;
+/
+
+
+CREATE OR REPLACE FUNCTION STAB.F_NOME_CONSUMIDOR (P_COD_CTRC   NUMBER)
+RETURN VARCHAR2 IS
+-- PL/SQL Specification
+------------------------------------------------------------------------------------
+-- Empresa:        Sysdesign
+-- Desenvolvedor:  Ricardo Guedes
+-- Data:           15/07/2003
+-- Objetivo:       Retornar o nome de um consumidor passando o numero do contrato
+------------------------------------------------------------------------------------
+-- Histórico de Atualizações
+-- Data         Empresa     Implementador      Descrição da Alteração
+------------------------------------------------------------------------------------
+
+CURSOR C_NOME_CONS (W_COD_CTRC number) IS
+	Select CONS.NOM_CONS
+	from stab.consumidores cons, stab.contratos_consumidores ctrc
+	where CONS.COD_CONS = CTRC.COD_CONS
+	and CTRC.COD_CTRC = W_COD_CTRC;
+
+W_DATA STAB.CONSUMIDORES.NOM_CONS%TYPE;
+
+BEGIN
+ OpeN C_NOME_CONS (P_COD_CTRC);
+ Fetch C_NOME_CONS into W_DATA;
+ Close C_NOME_CONS;
+ Return W_DATA;
+END;
+/
+
+
+CREATE OR REPLACE FUNCTION STAB.F_VALID_CONTRATO_SAP
+ (P_NUM_CTR VARCHAR2
+ )
+ RETURN INTEGER
+ IS
+-- PL/SQL Specification
+------------------------------------------------------------------------------------
+-- Empresa:        Sysdesign
+-- Desenvolvedor:  Ana RIta Cardoso
+-- Data:           05/12/2000
+-- Objetivo:    Valida se o contrato está ou não cadastrado no SAP
+------------------------------------------------------------------------------------
+-- Histórico de Atualizações
+-- Data         Empresa     Implementador      Descrição da Alteração
+-------------------------------------------------------------------------------------
+
+Cursor C_EXIST_CTR IS
+Select 'x'
+from SAPR3.ZV_FI_CONTRATOS@CBP CTR
+Where CTR.COD_CTR = P_NUM_CTR;
+
+W_VAR VARCHAR2(1);
+
+-- PL/SQL Block
+BEGIN
+Open C_EXIST_CTR;
+Fetch C_EXIST_CTR into W_VAR;
+If C_EXIST_CTR%FOUND Then
+  Return 0;
+Else
+ Return 1;
+End If;
+Close C_EXIST_CTR;
+END;
+/
+
+
+GRANT EXECUTE ON  STAB.F_NOME_CONSUMIDOR TO GRC;
+
+GRANT EXECUTE ON  STAB.F_NOME_CONSUMIDOR TO MDF WITH GRANT OPTION;

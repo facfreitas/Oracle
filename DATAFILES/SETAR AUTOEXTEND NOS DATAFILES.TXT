@@ -1,0 +1,6 @@
+select 'alter database datafile '''||file_name||''' autoextend ON next 2m maxsize 400m;'
+from dba_data_files
+where tablespace_name != 'SYSTEM'
+and tablespace_name != 'TEMP'
+and tablespace_name != 'RBS'
+

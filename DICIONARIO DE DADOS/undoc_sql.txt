@@ -1,0 +1,12 @@
+This script will give you all the Oracle UNDOCUMENTED parameters 
+Must be connect as sys 
+
+
+
+select rpad (a.indx ,10) "number"
+, rpad (b.KSPPINM ,50) "name"
+, rpad (a.KSPPSTVL,50) "value"
+, rpad (a.KSPPSTDF,10) "default"
+from x$KSPPCV a
+, X$KSPPI b
+where a.indx = b.indx; 

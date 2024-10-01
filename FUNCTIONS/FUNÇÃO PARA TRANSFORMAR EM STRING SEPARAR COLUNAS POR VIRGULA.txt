@@ -1,0 +1,34 @@
+Essa função é bem interessante. Pega todas linhas de uma determinada consulta e retorna uma string. Confira! 
+
+Código: 
+SQL> CREATE OR REPLACE FUNCTION rowtocol ( 
+  2     p_slct IN VARCHAR2, 
+  3     p_dlmtr IN VARCHAR2 DEFAULT ',' ) 
+  4  RETURN VARCHAR2 
+  5     AUTHID CURRENT_USER AS 
+  6     TYPE c_refcur IS REF CURSOR; 
+  7     lc_str VARCHAR2(4000); 
+  8     lc_colval VARCHAR2(4000); 
+  9     c_dummy c_refcur; 
+ 10     l number; 
+ 11  BEGIN 
+ 12     OPEN c_dummy FOR p_slct; 
+ 13     LOOP 
+ 14       FETCH c_dummy INTO lc_colval; 
+ 15       EXIT WHEN c_dummy%NOTFOUND; 
+ 16       lc_str := lc_str || p_dlmtr || lc_colval; 
+ 17     END LOOP; 
+ 18     CLOSE c_dummy; 
+ 19     RETURN SUBSTR(lc_str,2); 
+ 20  END; 
+ 21  / 
+
+Function created. 
+
+SQL> SELECT ROWTOCOL('SELECT ENAME FROM EMP') FROM DUAL; 
+
+ROWTOCOL('SELECTENAMEFROMEMP') 
+------------------------------------------------------------------ 
+SMITE,ALLEN,WARD,JONES,MARTIN,BLAKE,SCOTT,TURNER,ADAMS,JAMES,FORD 
+
+SQL>  
