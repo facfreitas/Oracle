@@ -1,0 +1,9 @@
+Dois selects simples para você encontrar registros duplicados e não duplicados em uma tabela do Oracle. No primeiro select, ele seleciona todos os registros que o ID estão cadastrados mais de uma vez, e no segundo caso os registros que estão cadastrados uma única vez.
+
+1- Consulta em uma tabela, registros que estão duplicados.
+
+SELECT ID FROM TABELA GROUP BY ID HAVING Count(*)>1 
+
+2- Consulta em uma tabela, registro que não estão duplicados.
+
+SELECT ID FROM TABELA GROUP BY ID HAVING Count(*)=1   

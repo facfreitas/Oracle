@@ -1,0 +1,96 @@
+sp_change_users_login
+
+  New Information - SQL Server 2000 SP3.
+
+Maps an existing user in a database to a Microsoft® SQL Server™ login.
+Syntax
+
+sp_change_users_login [ @Action = ] 'action'
+    [ , [ @UserNamePattern = ] 'user' ]
+    [ , [ @LoginName = ] 'login' ]
+    [ , [ @Password = ] 'password' ]
+Arguments
+
+[@Action =] 'action'
+
+Describes the action to be performed by the procedure. action is varchar(10), and can be one of these values.
+Value 	Description
+Auto_Fix 	Links a user entry in the sysusers table in the current database to a login of the same name in sysxlogins. You should check the result from the Auto_Fix statement to confirm that the correct link is in fact made. Avoid using Auto_Fix in security-sensitive situations.
+
+When using Auto_Fix, you must specify user and password; login must be NULL. user must be a valid user in the current database.
+Report 	Lists the users and corresponding security identifiers (SID) in the current database that are not linked to any login.
+
+user, login, and password must be NULL or not specified.
+Update_One 	Links the specified user in the current database to login. login must already exist. user and login must be specified. password must be NULL or not specified.
+
+[@UserNamePattern =] 'user'
+
+Is the name of a SQL Server user in the current database. user is sysname, with a default of NULL.
+
+[@LoginName =] 'login'
+
+Is the name of a SQL Server login. login is sysname, with a default of NULL.
+
+[@Password =] 'password'
+
+Is the password assigned to a new SQL Server login created by Auto_Fix. If a matching login already exists, the user and login are mapped and password is ignored. If a matching login does not exist, sp_change_users_login creates a new SQL Server login and assigns password as the password for the new login. password is sysname, with a default of NULL.
+Return Code Values
+
+0 (success) or 1 (failure)
+Result Sets
+Column name 	Data type 	Description
+UserName 	sysname 	Login name.
+UserSID 	varbinary(85) 	Login security identifier.
+
+Remarks
+
+Use this procedure to link the security account for a user in the current database with a login. If the login for a user has changed, use sp_change_users_login to link the user to the new login without losing the user's permissions.
+
+sp_change_users_login can be used only for SQL Server logins; it cannot be used with Windows logins.
+
+login cannot be sa, and user cannot be the dbo, guest, or INFORMATION_SCHEMA users.
+
+sp_change_users_login cannot be executed within a user-defined transaction.
+Permissions
+
+Any member of the public role can execute sp_change_users_login with the Report option. Only members of the sysadmin fixed server role can specify the Auto_Fix option. Only members of the sysadmin or db_owner roles can specify the Update_One option.
+Examples
+A. Show a report of the current user to login mappings
+
+This example produces a report of the users in the current database and their security identifiers.
+
+EXEC sp_change_users_login 'Report'
+
+B. Change the login for a user
+
+This example changes the link between user Mary in the pubs database and the existing login, to the new login NewMary (added with sp_addlogin).
+
+--Add the new login.
+USE master
+go
+EXEC sp_addlogin 'NewMary'
+go
+
+--Change the user account to link with the 'NewMary' login.
+USE pubs
+go
+EXEC sp_change_users_login 'Update_One', 'Mary', 'NewMary'
+
+C. Automatically map a user to a login, creating a new login if necessary
+
+This example shows how to use the Auto_Fix option to map an existing user to a login with the same name, or create the SQL Server login Mary with the password B3r12-36 if the login Mary does not exist.
+
+USE pubs
+go
+EXEC sp_change_users_login 'Auto_Fix', 'Mary', NULL, 'B3r12-36'
+go
+
+See Also
+
+sp_addlogin
+
+sp_adduser
+
+sp_helplogins
+
+System Stored Procedures

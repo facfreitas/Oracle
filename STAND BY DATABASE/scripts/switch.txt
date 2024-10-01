@@ -1,0 +1,7 @@
+-- primario
+
+alter system set remote_archive_enable=receive scope=memory;
+
+-- standby
+
+alter system set remote_archive_enable=send scope=memory;

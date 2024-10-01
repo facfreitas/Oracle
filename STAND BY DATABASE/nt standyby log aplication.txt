@@ -1,0 +1,79 @@
+
+rem----------------------------------------------------------------------------------
+rem  Name: standby_log_appl.bat
+rem
+rem  Purpose:
+rem  This script will apply archive logs to an NT Standby database
+rem
+rem   Prepared/
+rem   CopyRighted By: theOracleResourceStop Script Archive
+rem                   http://www.orsweb.com
+rem
+rem  Dependancies:   It is necessary to replace the following:
+rem
+rem                  {oracle db} --> Change to the oracle sid of the standby database
+rem                  {lagtime} --> Change to the number of hours of "lag"
+rem                  {script directory} --> Change to the temp directory for files
+rem                  
+rem                  The STANDBY_RECOVER.SQL script is required to derive the recover
+rem                  statement                        
+rem
+rem  Assumptions: None
+rem
+rem  Parameters:  None
+rem
+rem  Output:  None
+rem
+rem  Exceptions:  None
+rem----------------------------------------------------------------------------------
+
+rem -- Set Database SID ---
+set ORACLE_SID={oracle db}
+rem -- Set Lag Time --
+set LAGTIME={lagtime}
+rem -- Set Script Location --
+set SCRPTLOC={script directory}
+
+rem -- Test connect to database ---
+sqlplus internal/{password} @%SCRPTLOC%\standby_recover.sql %LAGTIME% 1 > %SCRPTLOC%\sby.log
+svrmgrl @c:\temp\recover.sql >> %SCRPTLOC%\sby.log
+
+if {%ERRORLEVEL%} == {0} (
+   echo Database %ORACLE_SID% is available
+) else (
+   echo Database %ORACLE_SID% is NOT available
+)
+rem -- Cleanup -- 
+del c:\temp\recover.sql
+
+
+STANDBY_RECOVER.SQL
+-----------------------------------------------------------------------------------------
+/*  
+   Script Description: This script will dynamically derive a timed recovery based off of 
+                       the LAGTIME variable passed.
+
+   Output file:        recover.sql
+
+   Prepared/
+   CopyRighted By:     theOracleResourceStop Script Archive
+                       http://www.orsweb.com
+
+   Usage Information:  SQLPLUS SYS/pswd
+                       @standby_recover.sql
+*/
+
+set trimspool on linesize 200 head off feedback off sqlprompt "--" verify off 
+ 
+spool c:\temp\recover.sql
+
+select 'connect internal'||chr(10)||
+       'set autorecovery on'||chr(10)||
+       'recover standby database until time '''|| 
+ to_char(sysdate - &1,'YYYY-MM-DD:HH24:MI:SS')||''';' from dual; 
+
+spool off 
+ 
+exit 
+
+

@@ -1,0 +1,43 @@
+
+rem Script Description: This script performs dynamic defragmentation of all tablespaces 
+rem                     except SYSTEM.
+rem
+rem Prepared By:        Oracle Resource Stop
+rem                     www.theoracleresourcestop.com
+rem
+rem Usage Information:  See Below  
+rem
+
+CREATE OR REPLACE PROCEDURE dynamic_defrag AS
+
+	cursor get_tbsp is
+	    select ts#
+	    from sys.ts$
+          where name != 'SYSTEM';
+
+	    l_sql varchar2(254);
+	    cursor_id integer;
+	    result integer;
+
+  	    tbsp_rec  get_tbsp%ROWTYPE;
+
+BEGIN
+    cursor_id:=dbms_sql.open_cursor;
+
+-- Defragging Tablespaces --
+
+    FOR tbsp_rec in get_tbsp LOOP
+	l_sql := 'Alter session set events '||'''immediate trace name coalesce level'''||tbsp_rec.ts#;
+      dbms_sql.parse(cursor_id,l_sql,1);
+	result := dbms_sql.execute(cursor_id);
+
+     END LOOP;
+     dbms_sql.close_cursor(cursor_id);
+END;
+/
+*********************************************************************************************
+Rem  The following is a sample of possible usage for the dynamic_defrag procedure
+********************************************************************************************
+SQLPLUS> set verify off;
+SQLPLUS> set serveroutput on;
+SQLPLUS> execute dynamic_defrag;

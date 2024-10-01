@@ -1,0 +1,4 @@
+select 'alter trigger '||owner||'.'||trigger_name||' ENABLE;'
+from all_triggers
+where owner not in ('SYS','SYSTEM')
+and status = 'DISABLED';

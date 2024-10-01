@@ -1,0 +1,348 @@
+--Vejamos alguns requisitos que eu montei:
+--
+--Ser compatível com pelo menos o Oracle 8 em diante;
+--Armazenar todas informações num tablespace separado, para que a coleta de dados não influencie nos demais tablespaces;
+--Utilizar um esquema separado para a criação de todos os objetos envolvidos. O usuário em questão deverá ser bloqueado e ter o mínimo de privilégios necessários;
+--Criar uma tabela para registrar a data de duração no disparo de cada script e outra para os erros que por ventura venham a ocorrer;
+--Coletar as seguintes informações com as respectivas periodicidades:
+--Dados sobre o tamanho dos tablespaces uma vez por mês;
+--Dados sobre a quantidade e tipo de objetos por esquema uma vez por dia, atualizando apenas as mudanças ocorridas;
+--Nome dos objetos inválidos auma vez por dia, atualizando apenas as mudanças ocorridas;
+--Tamanhode objetos que ocupem mais de 64MB ou tenham mais de 50 extents ou mais de um milhão de registros uma vez por semana, atualizando apenas as mudanças ocorridas;
+
+CREATE TABLESPACE TS128KDS_LOGDBA_SGA DATAFILE 
+  'S:\Oracle\<SID>\TS128KDS_LOGDBA_SGA01.DBF' SIZE 30M AUTOEXTEND OFF
+NOLOGGING
+ONLINE
+PERMANENT
+EXTENT MANAGEMENT LOCAL UNIFORM SIZE 128K
+BLOCKSIZE 8K
+SEGMENT SPACE MANAGEMENT AUTO;
+
+CREATE USER user_dba IDENTIFIED BY "xgrlsashiyalcbnr"
+    DEFAULT TABLESPACE TS128KDS_LOGDBA_SGA
+    temporary tablespace temp
+    QUOTA UNLIMITED ON TS128KDS_LOGDBA_SGA
+    ACCOUNT LOCK;
+
+GRANT CREATE PROCEDURE TO user_dba;
+GRANT CREATE TABLE TO user_dba;
+
+-- Executar como SYSDBA
+GRANT SELECT ON dba_objects TO user_dba;
+GRANT SELECT ON dba_segments TO user_dba;
+GRANT SELECT ON dba_data_files TO user_dba;
+GRANT SELECT ON dba_free_space TO user_dba;
+GRANT SELECT ON dba_tables TO user_dba;
+
+CREATE SEQUENCE user_dba.log_seq;
+ 
+CREATE TABLE user_dba.log(
+    id_log      number(10),
+    rotina      varchar2(100),
+    usuario     varchar2(30) DEFAULT USER,
+    inicio      date DEFAULT SYSDATE,
+    fim         date,
+    CONSTRAINT  log_pk PRIMARY KEY(id_log)
+);
+ 
+CREATE TABLE user_dba.erros (
+    id_log      number(10),
+    cod_erro    number(10),
+    mensagem     varchar2(64),
+    DATA        TIMESTAMP DEFAULT SYSTIMESTAMP
+);
+ 
+CREATE TABLE user_dba.tablespace (
+    nome        varchar2(30),
+    maximo      number(8) NOT NULL,
+    alocado     number(8) NOT NULL,
+    utilizado   number(8) NOT NULL,
+    livre       number(8) NOT NULL,
+    DATA        date DEFAULT SYSDATE,
+    CONSTRAINT tablespaces_pk PRIMARY KEY (nome,DATA)
+);
+
+CREATE OR REPLACE PROCEDURE user_dba.tablespace_load AS
+  v_log_seq number(10);
+  v_code number(10);
+  v_errm varchar2(64);
+BEGIN
+ 
+  SELECT user_dba.log_seq.NEXTVAL INTO v_log_seq FROM dual;
+  INSERT INTO user_dba.log (id_log, rotina) VALUES (v_log_seq,'tablespace_load');
+ 
+  INSERT INTO user_dba.tablespace (nome, maximo, alocado, utilizado, livre)
+    SELECT
+      u.tablespace_name,
+      m.maximo,
+      m.alocado,
+      u.utilizado,
+      l.livre
+      FROM
+        (SELECT tablespace_name, CEIL (SUM (bytes) / 1048576) utilizado
+           FROM dba_segments
+           GROUP BY tablespace_name) u,
+        (SELECT
+           tablespace_name,
+           CEIL (SUM (bytes) / 1048576) alocado,
+           CEIL (SUM (DECODE (autoextensible, 'NO', bytes, maxbytes)) / 1048576) maximo
+           FROM dba_data_files
+           GROUP BY tablespace_name) m,
+        (SELECT
+           tablespace_name,
+           CEIL (SUM (bytes) / 1048576) livre
+           FROM dba_free_space
+           GROUP BY tablespace_name) l
+      WHERE
+        l.tablespace_name = u.tablespace_name AND
+        l.tablespace_name = m.tablespace_name
+    ;
+  UPDATE user_dba.log SET fim = SYSDATE WHERE id_log = v_log_seq;
+  COMMIT;
+ 
+  EXCEPTION
+    WHEN OTHERS THEN
+      v_code := SQLCODE;
+      v_errm := SUBSTR(SQLERRM, 1 , 64);
+      INSERT INTO user_dba.erros (id_log, cod_erro, mensagem) VALUES (v_log_seq, v_code, v_errm);
+END;
+/
+
+CREATE TABLE user_dba.objeto_qt (
+    tipo        varchar2(19),
+    esquema     varchar2(30),
+    STATUS      varchar2(7),
+    qt          number(5) NOT NULL,
+    DATA        date DEFAULT SYSDATE,
+    CONSTRAINT objeto_qt_pk PRIMARY KEY (tipo, esquema, STATUS, DATA)
+);
+
+CREATE OR REPLACE PROCEDURE user_dba.objeto_qt_load AS
+  v_log_seq number(10);
+  v_code number(10);
+  v_errm varchar2(64);
+BEGIN
+  SELECT user_dba.log_seq.NEXTVAL INTO v_log_seq FROM dual;
+  INSERT INTO user_dba.log (id_log, rotina) VALUES (v_log_seq,'objeto_qt_load');
+ 
+  INSERT INTO user_dba.objeto_qt (tipo, esquema, STATUS, qt)
+    SELECT b.tipo, b.esquema, b.STATUS, b.qt
+      FROM
+        (SELECT object_type tipo, owner esquema, STATUS FROM dba_objects
+           MINUS
+           SELECT tipo, esquema, STATUS FROM user_dba.objeto_qt) a,
+        (SELECT object_type tipo, owner esquema, STATUS, count(*) qt
+           FROM dba_objects
+           GROUP BY owner, object_type, STATUS) b
+      WHERE
+        a.tipo = b.tipo AND
+        a.esquema = b.esquema AND
+        a.STATUS = b.STATUS
+      ORDER BY esquema, tipo, STATUS
+   ;
+ 
+  INSERT INTO user_dba.objeto_qt (tipo, esquema, STATUS, qt)
+    SELECT o.tipo, o.esquema, o.STATUS, o.qt
+      FROM
+        user_dba.objeto_qt q,
+        (SELECT object_type tipo, owner esquema, STATUS, count(*) qt
+           FROM dba_objects
+           GROUP BY owner, object_type, STATUS) o,
+        (SELECT tipo, esquema, STATUS, max(DATA) DATA
+           FROM user_dba.objeto_qt
+           GROUP BY tipo, esquema, STATUS) d
+      WHERE
+        o.tipo = q.tipo AND
+        o.tipo = d.tipo AND
+        o.esquema = q.esquema AND
+        o.esquema = d.esquema AND
+        o.STATUS = q.STATUS AND
+        o.STATUS = d.STATUS AND
+        q.DATA = d.DATA AND
+        o.qt != q.qt
+        ORDER BY o.esquema, o.tipo, o.STATUS
+  ;
+  UPDATE user_dba.log SET fim = SYSDATE WHERE id_log = v_log_seq;
+  COMMIT;
+ 
+  EXCEPTION
+    WHEN OTHERS THEN
+      v_code := SQLCODE;
+      v_errm := SUBSTR(SQLERRM, 1 , 64);
+      INSERT INTO erros (id_log, cod_erro, mensagem) VALUES (v_log_seq, v_code, v_errm);
+END;
+/
+
+CREATE TABLE user_dba.objeto_invalido (
+    tipo        varchar2(19),
+    esquema     varchar2(30),
+    nome        varchar2(128),
+    DATA        date DEFAULT SYSDATE,
+    CONSTRAINT objeto_invalido_pk PRIMARY KEY (tipo, esquema, nome, DATA)
+);
+
+CREATE OR REPLACE PROCEDURE user_dba.objeto_invalido_load AS
+  v_log_seq number(10);
+  v_code number(10);
+  v_errm varchar2(64);
+ 
+BEGIN
+  SELECT user_dba.log_seq.NEXTVAL INTO v_log_seq FROM dual;
+  INSERT INTO user_dba.log (id_log, rotina) VALUES (v_log_seq,'objeto_invalido_load');
+  INSERT INTO user_dba.objeto_invalido (tipo, esquema, nome)
+    SELECT object_type tipo, owner esquema, object_name nome
+      FROM dba_objects
+      WHERE STATUS != 'VALID'
+    MINUS
+    SELECT tipo, esquema, nome FROM user_dba.objeto_invalido
+  ;
+  UPDATE user_dba.log SET fim = SYSDATE WHERE id_log = v_log_seq;
+  COMMIT;
+ 
+  EXCEPTION
+    WHEN OTHERS THEN
+      v_code := SQLCODE;
+      v_errm := SUBSTR(SQLERRM, 1 , 64);
+      INSERT INTO user_dba.erros (id_log, cod_erro, mensagem) VALUES (v_log_seq, v_code, v_errm);
+END;
+/
+
+CREATE TABLE user_dba.objeto_tamanho (
+    tipo        varchar2(19),
+    tablespace  varchar2(30),
+    esquema     varchar2(30),
+    nome_part   varchar2(112),
+    tamanho     number(8),
+    extents     number(5),
+    num_reg     number(10),
+    DATA        date DEFAULT SYSDATE,
+    CONSTRAINT objetos_tamanho_pk PRIMARY KEY (tipo, esquema, nome_part, DATA)
+);
+
+CREATE OR REPLACE PROCEDURE user_dba.objeto_tamanho_load AS
+  v_log_seq number(10);
+  v_code number(10);
+  v_errm varchar2(64);
+ 
+BEGIN
+ 
+  SELECT user_dba.log_seq.NEXTVAL INTO v_log_seq FROM dual;
+  INSERT INTO user_dba.log (id_log, rotina) VALUES (v_log_seq,'objeto_tamanho_load');
+ 
+  INSERT INTO user_dba.objeto_tamanho 
+    (tipo, tablespace, esquema, nome_part, tamanho, extents, num_reg)
+    SELECT b.tipo, b.tablespace, b.esquema, b.nome_part, b.tamanho, b.extents, b.num_reg
+    FROM
+      (SELECT
+         segment_type tipo,
+         owner esquema,
+         NVL2(partition_name, segment_name || '/' || partition_name, segment_name) nome_part
+         FROM dba_segments
+      MINUS
+      SELECT tipo, esquema, nome_part FROM user_dba.objeto_tamanho) a,
+      (SELECT
+        s.segment_type tipo,
+        s.tablespace_name tablespace,
+        s.owner esquema,
+        NVL2(s.partition_name, s.segment_name || '/' || s.partition_name, s.segment_name) nome_part,
+        CEIL(s.bytes/1048576) tamanho,
+        s.extents,
+        t.num_rows num_reg
+        FROM
+          dba_segments s,
+          dba_tables t
+       WHERE
+         (s.bytes > 67108864 OR s.extents > 50 OR t.num_rows > 1000000) AND
+          s.owner = t.owner (+)AND
+          s.segment_name = t.table_name (+)) b
+    WHERE
+      a.tipo = b.tipo AND
+      a.esquema = b.esquema AND
+      a.nome_part = b.nome_part
+  ;    
+ 
+  INSERT INTO user_dba.objeto_tamanho 
+    (tipo, tablespace, esquema, nome_part, tamanho, extents, num_reg)
+    SELECT o.tipo, o.tablespace, o.esquema, o.nome_part, o.tamanho, o.extents, o.num_reg
+      FROM
+        user_dba.objeto_tamanho l,
+        (SELECT tipo, esquema, nome_part, max(DATA) DATA
+          FROM user_dba.objeto_tamanho
+          GROUP BY tipo, esquema, nome_part) d,
+        (SELECT
+          s.segment_type tipo,
+          s.tablespace_name tablespace,
+          s.owner esquema,
+          NVL2(s.partition_name, s.segment_name || '/' || s.partition_name, s.segment_name) nome_part,
+          CEIL(s.bytes/1048576) tamanho,
+          s.extents,
+          t.num_rows num_reg
+          FROM
+            dba_segments s,
+            dba_tables t
+          WHERE
+            (s.bytes > 67108864 OR s.extents > 50 OR t.num_rows > 1000000) AND
+            s.owner = t.owner (+)AND
+            s.segment_name = t.table_name (+)) o
+      WHERE
+        l.tipo = d.tipo AND
+        l.tipo = o.tipo AND
+        l.esquema = d.esquema AND
+        l.esquema = o.esquema AND
+        l.nome_part = d.nome_part AND
+        l.nome_part = o.nome_part AND
+        l.DATA = d.DATA AND
+        (o.tamanho != CEIL(l.tamanho) OR l.extents != o.extents OR l.num_reg != o.num_reg)
+      ORDER BY o.esquema, o.tablespace, o.tipo DESC
+  ;
+  UPDATE user_dba.log SET fim = SYSDATE WHERE id_log = v_log_seq;
+  COMMIT;
+ 
+  EXCEPTION
+    WHEN OTHERS THEN
+      v_code := SQLCODE;
+      v_errm := SUBSTR(SQLERRM, 1 , 64);
+      INSERT INTO user_dba.erros (id_log, cod_erro, mensagem) VALUES (v_log_seq, v_code, v_errm);
+END;
+/
+
+VARIABLE jobno NUMBER;
+BEGIN
+  DBMS_JOB.SUBMIT(:jobno, 'BEGIN USER_DBA.OBJETO_QT_LOAD; END;',
+    TRUNC(SYSDATE) + 1/24, 'TRUNC(SYSDATE) + 1/24 + 30');
+  COMMIT;
+END;
+/
+ 
+VARIABLE jobno NUMBER;
+BEGIN
+  DBMS_JOB.SUBMIT(:jobno, 'BEGIN USER_DBA.TABLESPACE_LOAD; END;',
+    TRUNC(SYSDATE) + 1/24, 'TRUNC(SYSDATE + 30,''MONTH'') + 1/24');
+  COMMIT;
+END;
+/
+ 
+VARIABLE jobno NUMBER;
+BEGIN
+  DBMS_JOB.SUBMIT(:jobno, 'BEGIN USER_DBA.OBJETO_TAMANHO_LOAD; END;',
+    TRUNC(SYSDATE) + 1/24, 'NEXT_DAY(TRUNC(SYSDATE), ''SABADO'') + 1/24');
+  COMMIT;
+END;
+/
+ 
+VARIABLE jobno NUMBER;
+BEGIN
+  DBMS_JOB.SUBMIT(:jobno, 'BEGIN USER_DBA.OBJETO_INVALIDO_LOAD; END;',
+    TRUNC(SYSDATE) + 1/24, 'TRUNC(SYSDATE) + 25/24');
+  COMMIT;
+END;
+/
+ 
+VARIABLE jobno NUMBER;
+BEGIN
+  DBMS_JOB.SUBMIT(:jobno, 'BEGIN USER_DBA.OBJETO_QT_LOAD; END;',
+    TRUNC(SYSDATE) + 1/24, 'TRUNC(SYSDATE) + 25/24');
+  COMMIT;
+END;
+/

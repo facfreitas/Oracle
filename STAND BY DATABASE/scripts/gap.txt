@@ -1,0 +1,1 @@
+select thread#, low_sequence#, high_sequence# from v$archive_gap;

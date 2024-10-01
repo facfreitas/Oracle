@@ -1,0 +1,3 @@
+SELECT 'alter user ' || USERNAME || ' quota 0 on SYSTEM;'
+FROM DBA_USERS
+WHERE USERNAME NOT IN ('SYS','SYSTEM')

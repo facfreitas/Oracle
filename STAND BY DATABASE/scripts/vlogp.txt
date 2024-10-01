@@ -1,0 +1,5 @@
+-- verificar log no primário
+
+select destination, status, archived_thread#, archived_seq#
+from v$archive_dest_status
+where status <> 'DEFERRED' and status <> 'INACTIVE';

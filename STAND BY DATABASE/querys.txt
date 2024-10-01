@@ -1,0 +1,170 @@
+#### COMANDOS RMAN ####
+
+DUPLICATE TARGET DATABASE
+  FOR STANDBY
+  FROM ACTIVE DATABASE
+  DORECOVER
+  NOFILENAMECHECK;
+
+run {
+allocate channel prmy1 type disk;
+allocate channel prmy2 type disk;
+allocate channel prmy3 type disk;
+allocate channel prmy4 type disk;
+allocate auxiliary channel stby type disk;
+duplicate target database for standby from active database nofilenamecheck dorecover;
+}
+
+RUN {
+ALLOCATE CHANNEL ch00 TYPE 'SBT_TAPE' PARMS 'SBT_LIBRARY=/usr/openv/netbackup/bin/libobk.so64';
+SEND 'NB_ORA_CLIENT=ldcdbdev01,NB_ORA_SID=CRP01DEV,NB_ORA_SERV=wdcbkp01,NB_ORA_POLICY=Policy_DC_Oracle_DES_CRP01DEV';
+restore controlfile from tag=TAG20170701T005724;
+release CHANNEL ch00;
+}
+
+
+run
+ {
+ALLOCATE CHANNEL ch00 TYPE 'SBT_TAPE' PARMS'SBT_LIBRARY=/usr/openv/netbackup/bin/libobk.so64';
+SEND 'NB_ORA_CLIENT=ldcdbdev01,NB_ORA_SID=CRP01DEV,NB_ORA_SERV=wdcbkp01,NB_ORA_POLICY=Policy_DC_Oracle_DES_CRP01DEV';
+RESTORE DATABASE from tag=TAG20170701T005724;
+alter database open;
+release CHANNEL ch00;
+}
+
+run
+ {
+ALLOCATE auxiliary CHANNEL ch00 TYPE 'SBT_TAPE' PARMS'SBT_LIBRARY=/usr/openv/netbackup/bin/libobk.so64';
+SEND 'NB_ORA_CLIENT=ldcrac01-bkp.intranet.local,NB_ORA_SID=ECP1,NB_ORA_SERV=wdcbkp01,NB_ORA_POLICY=Policy_DC_Oracle_PRD_ECP';
+duplicate target database for standby nofilenamecheck dorecover;
+release CHANNEL ch00;
+}
+
+run
+ {
+ALLOCATE CHANNEL ch00 TYPE 'SBT_TAPE' PARMS 'SBT_LIBRARY=/usr/openv/netbackup/bin/libobk.so64';
+SEND 'NB_ORA_CLIENT=ldcrac01-bkp.intranet.local,NB_ORA_SID=ECP1,NB_ORA_SERV=wdcbkp01,NB_ORA_POLICY=Policy_DC_Oracle_PRD_ECP';
+restore archivelog FROM SEQUENCE 170247 UNTIL SEQUENCE 170264 thread 2;
+release CHANNEL ch00;
+}
+ 
+#### #### #### #### ####
+
+#### Verifica erro no PRIMARY #### 
+SELECT * FROM V$archive_dest
+where dest_name = 'LOG_ARCHIVE_DEST_2'
+
+select * from v$dataguard_status
+where dest_id = 2
+order by timestamp desc
+#### #### #### #### #### #### ####
+
+############################################## executa no STBY ############################################## 
+select PROCESS,STATUS, THREAD#,SEQUENCE#, BLOCK#, BLOCKS 
+from v$managed_standby ;
+############################################################################################################# 
+
+
+SELECT SEQUENCE#,APPLIED FROM V$ARCHIVED_LOG ORDER BY SEQUENCE#;
+
+SELECT * FROM V$ARCHIVE_GAP;
+
+SELECT thread#,   Max(sequence#) "Last Standby Seq Applied" FROM   v$archived_log   WHERE  applied = 'YES'  GROUP  BY thread#   ORDER  BY 1;
+
+select GROUP#,DBID, THREAD#,STATUS from v$standby_log ;
+
+recover managed standby database using current logfile disconnect ;
+
+ALTER DATABASE RECOVER MANAGED STANDBY DATABASE DISCONNECT FROM SESSION;
+
+SELECT SEQUENCE#,APPLIED FROM V$ARCHIVED_LOG ORDER BY SEQUENCE#;
+
+### Determine the “gap-range” by using this query on the standby database ### 
+
+ SELECT high.thread#, "LowGap#", "HighGap#"
+ FROM
+      (SELECT thread#, MIN(sequence#)-1 "HighGap#"
+      FROM
+      (SELECT a.thread#, a.sequence#
+          FROM
+          (SELECT * FROM v$archived_log) a,
+          (SELECT thread#, MAX(next_change#)gap1
+              FROM v$log_history
+              GROUP BY thread#
+          ) b
+          WHERE a.thread# = b.thread#
+          AND a.next_change# > gap1
+      )
+      GROUP BY thread#
+  ) high,
+  (SELECT thread#, MIN(sequence#) "LowGap#"
+      FROM
+      (SELECT thread#, sequence#
+          FROM v$log_history, v$datafile
+          WHERE checkpoint_change# <= next_change#
+          AND checkpoint_change# >= first_change#
+      )
+      GROUP BY thread#
+  ) low
+  WHERE low.thread# = high.thread#
+
+
+### To determine the last received and applied log file from the primary, run this query on  the STANDBY ### 
+
+SELECT 'Last Applied : ' Logs,
+TO_CHAR(next_time,'DD-MON-YY:HH24:MI:SS') TIME,thread#,sequence#
+FROM v$archived_log
+WHERE sequence# =
+(SELECT MAX(sequence#) FROM v$archived_log WHERE applied='YES'
+)
+UNION
+SELECT 'Last Received : ' Logs,
+TO_CHAR(next_time,'DD-MON-YY:HH24:MI:SS') TIME,thread#,sequence#
+FROM v$archived_log
+WHERE sequence# =
+(SELECT MAX(sequence#) FROM v$archived_log );
+
+
+### To determine the “queue” on the PRIMARY database ### 
+
+SELECT
+ (SELECT name FROM V$DATABASE
+ ) name,
+ (SELECT MAX (sequence#) FROM v$archived_log WHERE dest_id = 1
+ ) Current_primary_seq,
+ (SELECT MAX (sequence#)
+ FROM v$archived_log
+ WHERE TRUNC(next_time) > SYSDATE - 1
+ AND dest_id = 2
+ ) max_stby,
+ (SELECT NVL (
+ (SELECT MAX (sequence#) - MIN (sequence#)
+ FROM v$archived_log
+ WHERE TRUNC(next_time) > SYSDATE - 1
+ AND dest_id = 2
+ AND applied = 'NO'
+ ), 0)
+ FROM DUAL
+ ) "To be applied",
+ (
+ (SELECT MAX (sequence#) FROM v$archived_log WHERE dest_id = 1
+ ) -
+ (SELECT MAX (sequence#) FROM v$archived_log WHERE dest_id = 2
+ )) "To be Shipped"
+FROM DUAL;
+
+
+set lines 200
+col type format a30
+col ITEM format a20
+col comments format a20
+select * from v$recovery_progress;
+
+
+### To check what MRP process is waiting ###
+
+select a.event, a.wait_time, a.seconds_in_wait from gv$session_wait a, gv$session b where a.sid=b.sid and b.sid=(select SID from v$session where PADDR=(select PADDR from v$bgprocess where NAME='MRP0'))
+
+EVENT                                           WAIT_TIME SECONDS_IN_WAIT
+---------------------------------------------- ---------- ---------------
+parallel recovery control message reply                 0               0

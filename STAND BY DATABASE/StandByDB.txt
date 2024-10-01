@@ -1,0 +1,58 @@
+REM===========================================================================
+REM Copywright 2003, Chet West
+REM============================================================================
+REM DESCRIPTION - Steps I used to create a StandBy database
+REM               You will also have to automate the move and recovery of
+REM               the archive logs.
+REM
+REM    NOTE - This works for Oracle 8.1.7. Standard Edition.  
+REM           I have not tested anywhere else. 
+REM============================================================================
+REM MODIFICATION HISTORY
+REM Person      Date       Comments
+REM ---------   ---------- -------------------------------------------
+REM Chet West   10/22/2002 Initial Creation; 
+REM Chet West   02/04/2003 Minor updates and Syntax corrections.
+REM============================================================================
+
+
+
+1. Shutdown Normal the primary database
+2. Copy all of the tablespace datafiles to the standby datafile directory
+   Note: This may take a long time depending on datafile size and network traffic
+   OS>COPY <drive>:\Oracle\ORADATA\<sid>\*.dbf <drive>:\Oracle\ORADATA\STANDBY\*.*
+   OS>COPY *.arc <drive>:\Oracle\ORADATA\STANDBY\Archive\*.*
+3. Ensure the following INIT.ORA parameters are set on the primary DB:
+   LOG_ARCHIVE_DEST = "<drive>:\Oracle\ORADATA\<sid>\Archive"
+   LOG_ARCHIVE_FORMAT = "LOG%s%t.ARC"
+   LOG_ARCHIVE_START = TRUE
+4. StartUp the primary DB with archive logging turned on
+   SVRMGRL>connect internal
+   SVRMGRL>startup mount <sid>;
+   SVRMGRL>alter database archivelog;
+   SVRMGRL>archive log start;
+   SVRMGRL>alter database open;
+5. create a standby control file
+   SVRMGRL>alter database create standby controlfile as '<drive>:\Oracle\ORADATA\STANDBY\standbycf.ctl';
+   MOVE standbycf.ctl control01.ctl 
+   COPY control01.ctl control02.ctl 
+   COPY control01.ctl control03.ctl 
+6. Update and/or Create TNSNAMES.ora and LISTENER.ora files to include standby db
+7. Copy the \Oracle\Admin\<sid> directory to the corresponding standby db directory
+8. Modify the init.ora file as follows:
+   DB_NAME must remain the same as the primary database's entry
+   STANDBY_ARCHIVE_DEST = "<drive>:\Oracle\ORADATA\STANDBY\Archive"
+   LOG_ARCHIVE_DEST = "<drive>:\Oracle\ORADATA\STANDBY\Archive"
+   LOCK_NAME_SPACE = STANDBY
+   DB_FILE_NAME_CONVERT = ('<drive>:\Oracle\ORADATA\<sid>\','<drive>:\Oracle\ORADATA\STANDBY\')
+   LOG_FILE_NAME_CONVERT = ('<drive>:\Oracle\ORADATA\<sid>\Archive','<drive>:\Oracle\ORADATA\STANDBY\Archive')
+9. Use ORADIM to create StandBy Oracle DB service 
+10. Copy the password file PWD<sid>.ora to PWDSTANDBY.ora
+11. SVRMGRL>Connect sys/change_on_install@standby
+12. SVRMGRL>STARTUP NOMOUNT pfile=\Oracle\STANDBY\Admin\PFile\init.ora;
+13. SVRMGRL>ALTER DATABASE MOUNT STANDBY DATABASE;
+14. SVRMGRL>ALTER DATABASE RENAME FILE 'old_name' TO 'new_name';
+15. Copy over any archive log files
+16. SVRMGRL>RECOVER STANDBY DATABASE;
+17. SVRMGRL> <Ret> | FILENAME | AUTO | CANCEL
+

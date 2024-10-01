@@ -1,0 +1,30 @@
+
+rem Script Description: This script generates a script of DROP Commands for invalid synonyms
+
+set echo on;
+set wrap on;
+set ver off;
+set lin 132;
+set newpage 0;
+set null '';
+set heading off;
+
+spool syndrop.sql
+
+select 'DROP '||decode(owner,'PUBLIC','PUBLIC SYNONYM ','SYNONYM '||owner||'.')||
+              synonym_name||';' 
+from all_synonyms
+where owner != 'SYS'
+and (table_name,table_owner) not in
+         (select object_name,owner
+          from all_objects
+          where object_type != 'SYNONYM');
+
+spool off;
+set heading on;
+set feedback on;
+set ver on;
+set wrap off;
+set pages 24;
+set lin 80;
+

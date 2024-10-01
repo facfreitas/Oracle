@@ -1,0 +1,44 @@
+
+# Oracle: start, stop or restart the listener and databases in Oracle9i
+# Salvador - Bahia
+# 21/10/2002
+# Edson Tanajura Vaz
+# Netra Tecnologia LTDA
+# Source function library.
+. /etc/rc.d/init.d/functions
+ECHO_N="echo -n"
+ECHO_C=""
+
+# See how we were called.
+case "$1" in
+        start)
+                echo SEMMSL_value SEMMNS_value SEMOPM_value SEMMNI_value > /proc/sys/kernel/sem
+                echo 250 32000 100 128 > /proc/sys/kernel/sem
+                echo 536870912 > /proc/sys/kernel/shmmax
+                echo 4096 > /proc/sys/kernel/shmmni
+                echo 2097152 > /proc/sys/kernel/shmall
+                su - oracle9i -c "/home/oracle9i/start_db.sh"
+        ;;
+
+        stop)
+                su - oracle9i -c "/home/oracle9i/stop_db.sh"
+        ;;
+
+        restart)
+                echo SEMMSL_value SEMMNS_value SEMOPM_value SEMMNI_value > /proc/sys/kernel/sem
+                echo 250 32000 100 128 > /proc/sys/kernel/sem
+                echo 536870912 > /proc/sys/kernel/shmmax
+                echo 4096 > /proc/sys/kernel/shmmni
+                echo 2097152 > /proc/sys/kernel/shmall
+                su - oracle9i -c "/home/oracle9i/restart_db.sh"
+        ;;
+
+        *)
+                echo $"Usage: $0 {start|stop|restart}"
+                exit 1
+
+        ;;
+esac
+
+exit 0
+

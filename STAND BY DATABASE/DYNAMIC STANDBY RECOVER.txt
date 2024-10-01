@@ -1,0 +1,27 @@
+/* Script Description: This script permits dynamic recovery of a standby database.
+
+
+   Usage Information:  SQLPLUS SYS/pswd
+                       @standbyrecover.sql
+*/
+
+spool on
+set linesize 200
+set head off
+set feedback off
+set sqlprompt "--"
+set verify off
+
+column date_later noprint new_value LOGLAG
+select to_char(sysdate,'YYYY-MM-DD:HH24:MI:SS') date_later from dual;
+select 'recover standby database until time '''||'&LOGLAG'||''';' from dual
+
+spool sbyrec.sql
+/
+spool off
+
+set feedback on
+set sqlprompt "SQL>"
+set autorecovery on;
+
+@sbyrec.sql

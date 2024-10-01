@@ -1,0 +1,529 @@
+﻿<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.0 Transitional//EN">
+<!-- saved from url=(0058)http://www.oracle-base.com/articles/8i/StandbyDatabase.php -->
+<?xml version="1.0" encoding="utf-8"?><HTML 
+xmlns="http://www.w3.org/1999/xhtml"><HEAD><TITLE>ORACLE-BASE - Oracle8i Standby Database</TITLE><!-- End of HtmlHeader.php --><!-- Start of Title and Meta -->
+<META content="ORACLE-BASE - Oracle8i Standby Database" name=description>
+<META 
+content="oracle, oracle8i, 8i, standby database, new features, articles, certification" 
+name=keywords>
+<META content="index, follow" name=robots>
+<META http-equiv=Content-Type content="text/html; charset=utf-8"><!-- End of Title and Meta --><!-- Start of PageHeader.php --><LINK 
+href="ORACLE-BASE - Oracle8i Standby Database_arquivos/Style.css" type=text/css 
+rel=stylesheet>
+<SCRIPT language=javascript 
+src="ORACLE-BASE - Oracle8i Standby Database_arquivos/common.js" 
+type=text/javascript></SCRIPT>
+
+<META content="MSHTML 6.00.2800.1400" name=GENERATOR></HEAD>
+<BODY>
+<TABLE width="100%" align=center border=0>
+  <TBODY>
+  <TR>
+    <TD vAlign=bottom align=left><A 
+      href="http://www.oracle-base.com/Index.php"><IMG height=43 alt="" 
+      src="ORACLE-BASE - Oracle8i Standby Database_arquivos/Title.gif" width=243 
+      border=0></A> </TD>
+    <TD vAlign=center align=right width=730>
+      <SCRIPT type=text/javascript><!--
+        google_ad_client = "pub-9901106718381505";
+        google_ad_width = 728;
+        google_ad_height = 90;
+        google_ad_format = "728x90_as";
+        google_color_border = "C0C0C1";
+        google_color_bg = "FFFFFF";
+        google_color_link = "666699";
+        google_color_url = "666699";
+        google_color_text = "404040";
+        //--></SCRIPT>
+
+      <SCRIPT src="ORACLE-BASE - Oracle8i Standby Database_arquivos/show_ads.js" 
+      type=text/javascript>
+        </SCRIPT>
+    </TD></TR></TBODY></TABLE>
+<TABLE cellSpacing=0 cellPadding=0 width="100%" align=center border=0>
+  <TBODY>
+  <TR>
+    <TD class=line align=middle width=1 height=1 rowSpan=3><IMG height=1 
+      alt="" 
+      src="ORACLE-BASE - Oracle8i Standby Database_arquivos/Transparent.gif" 
+      width=1></TD>
+    <TD class=line vAlign=bottom align=right colSpan=4><IMG height=1 alt="" 
+      src="ORACLE-BASE - Oracle8i Standby Database_arquivos/Transparent.gif" 
+      width="100%"></TD>
+    <TD class=line align=middle width=1 height=1 rowSpan=3><IMG height=1 
+      alt="" 
+      src="ORACLE-BASE - Oracle8i Standby Database_arquivos/Transparent.gif" 
+      width=1></TD></TR>
+  <TR>
+    <TD class=menu vAlign=top width=135><!-- Toolbar *************************************************************************************  -->
+      <TABLE class=menu cellSpacing=1 cellPadding=0 width="100%" align=center 
+      border=0>
+        <TBODY>
+        <TR>
+          <TD class=menutitle align=middle width="100%">This Site</TD></TR>
+        <TR>
+          <TD class=line width="100%"><IMG height=1 alt="" 
+            src="ORACLE-BASE - Oracle8i Standby Database_arquivos/Transparent.gif" 
+            width="100%"></TD></TR>
+        <TR>
+          <TD class=menu width="100%">&nbsp;<A class=menu 
+            href="http://www.oracle-base.com/Index.php">Home</A></TD></TR>
+        <TR>
+          <TD class=menu width="100%">&nbsp;<A class=menu 
+            href="http://www.oracle-base.com/dba/DBACategories.php">DBA 
+            Scripts</A></TD></TR>
+        <TR>
+          <TD class=menu width="100%">&nbsp;<A class=menu 
+            href="http://www.oracle-base.com/articles/8i/Articles8i.php">Oracle 
+            8i Articles</A></TD></TR>
+        <TR>
+          <TD class=menu width="100%">&nbsp;<A class=menu 
+            href="http://www.oracle-base.com/articles/9i/Articles9i.php">Oracle 
+            9i Articles</A></TD></TR>
+        <TR>
+          <TD class=menu width="100%">&nbsp;<A class=menu 
+            href="http://www.oracle-base.com/articles/10g/Articles10g.php">Oracle 
+            10g Articles</A></TD></TR>
+        <TR>
+          <TD class=menu width="100%">&nbsp;<A class=menu 
+            href="http://www.oracle-base.com/articles/Misc/ArticlesMisc.php">Miscellaneous 
+            Articles</A></TD></TR>
+        <TR>
+          <TD class=menu width="100%">&nbsp;<A class=menu 
+            href="http://www.oracle-base.com/articles/Linux/ArticlesLinux.php">Linux 
+            Articles</A></TD></TR>
+        <TR>
+          <TD class=menu width="100%">&nbsp;<A class=menu 
+            href="http://www.oracle-base.com/articles/External/Articles.php">External 
+            Articles</A></TD></TR>
+        <TR>
+          <TD class=menu width="100%">&nbsp;<A class=menu 
+            href="http://www.oracle-base.com/misc/OCPCertification9i.php">Oracle 
+            Certification</A></TD></TR>
+        <TR>
+          <TD class=menu width="100%">&nbsp;<A class=menu 
+            href="http://www.oracle-base.com/forum/ForumsList.php">Forums</A></TD></TR>
+        <TR>
+          <TD class=menu width="100%">&nbsp;<A class=menu 
+            href="http://www.oracle-base.com/misc/MailingLists.php">Mailing 
+            Lists</A></TD></TR>
+        <TR>
+          <TD class=menu width="100%">&nbsp;<A class=menu 
+            href="http://www.oracle-base.com/books/Books.php">Book 
+        Store</A></TD></TR>
+        <TR>
+          <TD class=menu width="100%">&nbsp;<A class=menu 
+            href="http://www.oracle-base.com/misc/IndustryNews.php">Industry 
+            News</A></TD></TR>
+        <TR>
+          <TD class=menu width="100%">&nbsp;<A class=menu 
+            href="http://www.oracle-base.com/misc/TSHSQL.php">TSHSQL 
+          Download</A></TD></TR>
+        <TR>
+          <TD class=menu width="100%">&nbsp;<A class=menu 
+            href="http://www.oracle-base.com/tools/Tools.php">Tools &amp; 
+            Utilities</A></TD></TR>
+        <TR>
+          <TD class=menu width="100%">&nbsp;<A class=menu 
+            href="http://www.oracle-base.com/misc/CompanyInfo.php">Company 
+            Info</A></TD></TR>
+        <TR>
+          <TD class=menu width="100%">&nbsp;<A class=menu 
+            href="http://www.oracle-base.com/links/Links.php">Links</A></TD></TR>
+        <TR>
+          <TD class=line width="100%"><IMG height=1 alt="" 
+            src="ORACLE-BASE - Oracle8i Standby Database_arquivos/Transparent.gif" 
+            width="100%"></TD></TR>
+        <TR>
+          <TD class=menutitle align=middle width="100%">Oracle Sites</TD></TR>
+        <TR>
+          <TD class=line width="100%"><IMG height=1 alt="" 
+            src="ORACLE-BASE - Oracle8i Standby Database_arquivos/Transparent.gif" 
+            width="100%"></TD></TR>
+        <TR>
+          <TD class=menu width="100%">&nbsp;<A class=menu 
+            href="http://www.oracle.com/" target=_new>Oracle 
+        Corporation</A></TD></TR>
+        <TR>
+          <TD class=menu width="100%">&nbsp;<A class=menu 
+            href="http://www.oracle.com/uk/" target=_new>Oracle UK</A></TD></TR>
+        <TR>
+          <TD class=menu width="100%">&nbsp;<A class=menu 
+            href="http://technet.oracle.com/" target=_new>Technology 
+          Network</A></TD></TR>
+        <TR>
+          <TD class=menu width="100%">&nbsp;<A class=menu 
+            href="http://metalink.oracle.com/" target=_new>Oracle 
+        Metalink</A></TD></TR>
+        <TR>
+          <TD class=menu width="100%">&nbsp;<A class=menu 
+            href="http://www.oracle.com/education/certification/" 
+            target=_new>Oracle Certification</A></TD></TR>
+        <TR>
+          <TD class=menu width="100%">&nbsp;<A class=menu 
+            href="http://ilearning.oracle.com/" target=_new>Oracle Learning 
+            Network</A></TD></TR>
+        <TR>
+          <TD class=menu width="100%">&nbsp;<A class=menu 
+            href="http://www.oracle.com/oramag/" target=_new>Oracle 
+          Magazine</A></TD></TR>
+        <TR>
+          <TD class=menu width="100%">&nbsp;<A class=menu 
+            href="http://asktom.oracle.com/" target=_new>Ask Tom</A></TD></TR>
+        <TR>
+          <TD class=menu width="100%">&nbsp;<A class=menu 
+            href="http://www.dbasupport.com/" 
+        target=_new>DBASupport.com</A></TD></TR>
+        <TR>
+          <TD class=menu width="100%">&nbsp;<A class=menu 
+            href="http://tahiti.oracle.com/pls/tahiti/tahiti.homepage" 
+            target=_new>Oracle 8i Docs</A></TD></TR>
+        <TR>
+          <TD class=menu width="100%">&nbsp;<A class=menu 
+            href="http://tahiti.oracle.com/pls/db92/db92.homepage" 
+            target=_new>Oracle 9i Docs</A></TD></TR>
+        <TR>
+          <TD class=menu width="100%">&nbsp;<A class=menu 
+            href="http://otn.oracle.com/pls/db10g/portal.portal_demo3?selected=1" 
+            target=_new>Oracle 10g Docs</A></TD></TR>
+        <TR>
+          <TD class=menu width="100%">&nbsp;<A class=menu 
+            href="http://otn.oracle.com/docs/products/ias/doc_library/90200doc_otn/index.htm" 
+            target=_new>Oracle 9iAS Docs</A></TD></TR>
+        <TR>
+          <TD class=menu width="100%">&nbsp;<A class=menu 
+            href="http://download-west.oracle.com/docs/cd/B10464_01/index.htm" 
+            target=_new>Oracle AS10g Docs</A></TD></TR>
+        <TR>
+          <TD class=line width="100%"><IMG height=1 alt="" 
+            src="ORACLE-BASE - Oracle8i Standby Database_arquivos/Transparent.gif" 
+            width="100%"></TD></TR>
+        <TR>
+          <TD class=menu width="100%"><BR><!-- Error Messages -->
+            <SCRIPT language=javascript type=text/javascript>
+                <!--
+                function fnErrorMessageGo() {
+                  var error_url;
+                  for (var i=0; i < document.ErrorMessage.error_url.length; i++) {
+                    if (document.ErrorMessage.error_url[i].checked)
+                      error_url = document.ErrorMessage.error_url[i].value + document.ErrorMessage.search.value;
+                  }
+                  window.location = error_url;
+                } 
+                -->
+              </SCRIPT>
+
+            <FORM name=ErrorMessage action="" method=post target=_top>
+            <TABLE cellSpacing=0 cellPadding=1 align=center border=0>
+              <TBODY>
+              <TR>
+                <TD class=banner>
+                  <TABLE cellSpacing=0 cellPadding=0 width=120 align=center 
+                  border=0>
+                    <TBODY>
+                    <TR>
+                      <TD class=small align=middle>Error Messages </TD></TR>
+                    <TR>
+                      <TD class=small align=middle><INPUT class=small 
+                        maxLength=255 size=12 value=ORA- name=search> <INPUT class=smallbtn onclick=javascript:fnErrorMessageGo() type=button value=Go><BR><INPUT 
+                        type=radio 
+                        value=http://tahiti.oracle.com/pls/tahiti/tahiti.error_search?search= 
+                        name=error_url>8i <INPUT type=radio CHECKED 
+                        value=http://tahiti.oracle.com/pls/db92/db92.error_search?search= 
+                        name=error_url>9i <INPUT type=radio 
+                        value=http://otn.oracle.com/pls/db10g/db10g.error_search?search= 
+                        name=error_url>10g <BR><INPUT type=radio 
+                        value=http://tahiti.oracle.com/pls/ias902/ias902.error_search?search= 
+                        name=error_url>9iAS <INPUT type=radio 
+                        value=http://otn.oracle.com/pls/ias904/ias904.error_search?search= 
+                        name=error_url>AS10g 
+            </TD></TR></TBODY></TABLE></TD></TR></TBODY></TABLE></FORM><!-- Error Messages --></TD></TR>
+        <TR>
+          <TD class=menu width="100%"><!-- Search Documentation -->
+            <SCRIPT language=javascript type=text/javascript>
+                <!--
+                function fnDocSearchGo() {
+                  var doc_url;
+                  for (var i=0; i < document.DocSearch.doc_url.length; i++) {
+                    if (document.DocSearch.doc_url[i].checked)
+                      doc_url = document.DocSearch.doc_url[i].value + document.DocSearch.word.value;
+                  }
+                  window.location = doc_url;
+                } 
+                -->
+              </SCRIPT>
+
+            <FORM name=DocSearch action="" method=post target=_top>
+            <TABLE cellSpacing=0 cellPadding=1 align=center border=0>
+              <TBODY>
+              <TR>
+                <TD class=banner>
+                  <TABLE cellSpacing=0 cellPadding=0 width=120 align=center 
+                  border=0>
+                    <TBODY>
+                    <TR>
+                      <TD class=small align=middle>Search Docs </TD></TR>
+                    <TR>
+                      <TD class=small align=middle><INPUT class=small 
+                        maxLength=255 size=12 name=word> <INPUT class=smallbtn onclick=javascript:fnDocSearchGo() type=button value=Go><BR><INPUT 
+                        type=radio 
+                        value=http://tahiti.oracle.com/pls/tahiti/tahiti.drilldown?word= 
+                        name=doc_url>8i <INPUT type=radio CHECKED 
+                        value=http://tahiti.oracle.com/pls/db92/db92.drilldown?word= 
+                        name=doc_url>9i <INPUT type=radio 
+                        value=http://otn.oracle.com/pls/db10g/db10g.drilldown?word= 
+                        name=doc_url>10g 
+            </TD></TR></TBODY></TABLE></TD></TR></TBODY></TABLE></FORM><!-- Search Documentation --></TD></TR>
+        <TR>
+          <TD class=menu width="100%"><!-- Search Google -->
+            <FORM action=http://www.google.com/custom method=get target=_top>
+            <TABLE cellSpacing=0 cellPadding=1 align=center border=0>
+              <TBODY>
+              <TR>
+                <TD class=banner>
+                  <TABLE cellSpacing=0 cellPadding=0 width=120 align=center 
+                  border=0>
+                    <TBODY>
+                    <TR>
+                      <TD align=middle><A href="http://www.google.com/custom" 
+                        target=_top><IMG alt="" 
+                        src="ORACLE-BASE - Oracle8i Standby Database_arquivos/Google.gif" 
+                        border=0></A> </TD></TR>
+                    <TR>
+                      <TD class=small align=middle><INPUT class=small id=q 
+                        maxLength=255 size=12 name=q> <INPUT class=smallbtn id=sa type=submit value=Go name=sa> 
+                        <INPUT type=hidden 
+                        value=LW:243;L:http://www.oracle-base.com/images/Title.gif;LH:43;BGC:ffffff;AH:middle;AWFID:a956ced78dbd7c21; 
+                        name=cof> <INPUT type=hidden value=oracle-base.com 
+                        name=domains><BR><INPUT type=radio CHECKED value="" 
+                        name=sitesearch>Web <INPUT type=radio 
+                        value=oracle-base.com name=sitesearch>Site 
+                  </TD></TR></TBODY></TABLE></TD></TR></TBODY></TABLE></FORM><!-- Search Google --></TD></TR></TBODY></TABLE><BR></TD>
+    <TD class=line vAlign=top width=1>&nbsp;</TD>
+    <TD vAlign=top width=5>&nbsp;</TD>
+    <TD vAlign=top><!-- End of PageHeader.php --><!-- Start of Content --><A 
+      name=Top></A>
+      <H1>Standby Database</H1>
+      <UL>
+        <LI><A 
+        href="http://www.oracle-base.com/articles/8i/StandbyDatabase.php#Primary">Primary 
+        Database Setup</A> 
+        <LI><A 
+        href="http://www.oracle-base.com/articles/8i/StandbyDatabase.php#Standby">Standby 
+        Database Setup</A> 
+        <LI><A 
+        href="http://www.oracle-base.com/articles/8i/StandbyDatabase.php#Recovery">Standby 
+        Recovery</A> 
+        <LI><A 
+        href="http://www.oracle-base.com/articles/8i/StandbyDatabase.php#Managed">Managed 
+        Standby Recovery</A> 
+        <LI><A 
+        href="http://www.oracle-base.com/articles/8i/StandbyDatabase.php#ReadOnly">Read 
+        Only Database</A> 
+        <LI><A 
+        href="http://www.oracle-base.com/articles/8i/StandbyDatabase.php#Backup">Standby 
+        Database Backup</A> </LI></UL>
+      <FORM name=blank action=# method=post><A name=Primary></A>
+      <H2>Primary Database Setup</H2>
+      <UL>
+        <LI>Shutdown the database using: <B>SHUTDOWN IMMEDIATE</B> 
+        <LI>Backup all database files. 
+        <LI>Add an entry for the standby server into the <B>tnsnames.ora</B> 
+        file: </LI></UL>
+      <BLOCKQUOTE><PRE>STBY=
+  (DESCRIPTION =
+    (ADDRESS_LIST =
+      (ADDRESS = (PROTOCOL = TCP)(HOST = myServerName)(PORT = 1512))
+    )
+    (CONNECT_DATA =
+      (SERVICE_NAME = STBY.world)
+    )
+  )</PRE></BLOCKQUOTE>
+      <UL>
+        <LI>Assuming your database in already in ARCHIVELOG mode the first four 
+        of the following init.ora paramters will already be set. Add the last 
+        two entires:<BR></LI></UL>
+      <BLOCKQUOTE><PRE>log_archive_start = true
+log_archive_dest_1 = "location=c:\Oracle\oradata\SID\archive mandatory reopen=5"
+log_archive_dest_state_1 = enable
+log_archive_format = %%ORACLE_SID%%T%TS%S.ARC
+
+log_archive_dest_2 = "service=STBY optional reopen=5"
+log_archive_dest_state_2 = enable</PRE></BLOCKQUOTE>
+      <UL>
+        <LI>Startup the database using: <B>STARTUP 
+        PFILE=C:\Oracle\Admin\SID\PFile\init.ora</B> 
+        <LI>Create standby database controlfile using: <B>ALTER DATABASE CREATE 
+        STANDBY CONTROLFILE AS 'c:\stbycf.f';</B> </LI></UL><A name=Standby></A>
+      <H2>Standby Database Setup</H2>
+      <UL>
+        <LI>Copy the production backup files to the standby server. 
+        <LI>Copy the standby controlfile to the standby server. 
+        <LI>Alter the control_files and archive parameters of the 
+        <B>init.ora</B> as follows: </LI></UL>
+      <BLOCKQUOTE><PRE>#use the standby service name
+service_names = STBY.world
+
+#reference the standby controlfile
+control_files = ("c:\Oracle\oradata\SID\stbycf.f")
+
+#switch archiving and reference archive directory
+log_archive_start = false
+log_archive_dest = c:\Oracle\oradata\SID\archive
+standby_archive_dest = c:\Oracle\oradata\SID\archive
+log_archive_format = %%ORACLE_SID%%T%TS%S.ARC</PRE></BLOCKQUOTE>
+      <UL>
+        <LI>Add the following entries into the <B>listener.ora</B> file: 
+</LI></UL>
+      <BLOCKQUOTE><PRE>(ADDRESS_LIST =
+  (ADDRESS = (PROTOCOL = TCP)(HOST = ntfm451)(PORT = 1512))
+)
+
+STANDBY_LISTENER = (ADDRESS_LIST=
+ (ADDRESS=(PROTOCOL=tcp)(PORT=1512)(HOST=myHost))
+)</PRE></BLOCKQUOTE>The file should resemble the following:<BR><BR>
+      <BLOCKQUOTE><PRE># LISTENER.ORA Network Configuration File: C:\Oracle\Ora817\network\admin\listener.ora
+# Generated by Oracle configuration tools.
+
+LISTENER =
+  (DESCRIPTION_LIST =
+    (DESCRIPTION =
+      (ADDRESS_LIST =
+        (ADDRESS = (PROTOCOL = IPC)(KEY = EXTPROC0))
+      )
+      (ADDRESS_LIST =
+        (ADDRESS = (PROTOCOL = TCP)(HOST = myHost)(PORT = 1521))
+      )
+      (ADDRESS_LIST =
+        (ADDRESS = (PROTOCOL = TCP)(HOST = myHost)(PORT = 1512))
+      )
+    )
+    (DESCRIPTION =
+      (PROTOCOL_STACK =
+        (PRESENTATION = GIOP)
+        (SESSION = RAW)
+      )
+      (ADDRESS = (PROTOCOL = TCP)(HOST = myHost)(PORT = 2481))
+    )
+  )
+
+STANDBY_LISTENER = (ADDRESS_LIST=
+ (ADDRESS=(PROTOCOL=tcp)(PORT=1512)(HOST=myHost))
+)
+
+
+
+SID_LIST_LISTENER =
+  (SID_LIST =
+    (SID_DESC =
+      (SID_NAME = PLSExtProc)
+      (ORACLE_HOME = C:\Oracle\Ora817)
+      (PROGRAM = extproc)
+    )
+    (SID_DESC =
+      (ORACLE_HOME = C:\Oracle\Ora817)
+      (SID_NAME = PGOAL1)
+    )
+  )</PRE></BLOCKQUOTE>
+      <UL>
+        <LI>Reload the listener file using <B>lsnrctl reload</B> from the 
+        command prompt. 
+        <LI>Add the following entry into the <B>tnsnames.ora</B> file: </LI></UL>
+      <BLOCKQUOTE><PRE>STBY=
+  (DESCRIPTION =
+    (ADDRESS_LIST =
+      (ADDRESS = (PROTOCOL = TCP)(HOST = myServerName)(PORT = 1512))
+    )
+    (CONNECT_DATA =
+      (SERVICE_NAME = STBY.world)
+    )
+  )</PRE></BLOCKQUOTE>At this point the recovery process can start.<BR><A 
+      name=Recovery></A>
+      <H2>Standby Recovery</H2>Regular recovery requires archive logs to be 
+      copied manually between the server and user initiation of the recovery 
+      process.<BR>
+      <UL>
+        <LI>Copy all archive logs from the primary to the standby server. 
+        <LI>From sqlplus do the following: </LI></UL>
+      <BLOCKQUOTE><PRE>SQL&gt; CONNECT sys/password AS SYSDBA
+SQL&gt; STARTUP NOMOUNT PFILE=C:\Oracle\Admin\SID\PFile\init.ora
+SQL&gt; ALTER DATABASE MOUNT STANDBY DATABASE;
+SQL&gt; RECOVER STANDBY DATABASE;</PRE></BLOCKQUOTE>This process must be 
+      repeated every time archive logs are manually transfered.<BR><A 
+      name=Managed></A>
+      <H2>Managed Standby Recovery</H2>During managed recovery the transfer of 
+      archivelogs is controlled by the servers without user 
+intervention.<BR><BR>
+      <UL>
+        <LI>Copy all archive logs from the primary to the standby server. This 
+        is the only time you should need to do this. 
+        <LI>From sqlplus do the following: </LI></UL>
+      <BLOCKQUOTE><PRE>SQL&gt; CONNECT sys/password AS SYSDBA
+SQL&gt; STARTUP NOMOUNT PFILE=C:\Oracle\Admin\SID\PFile\init.ora
+SQL&gt; ALTER DATABASE MOUNT STANDBY DATABASE;
+SQL&gt; RECOVER MANAGED STANDBY DATABASE;</PRE></BLOCKQUOTE>This window 
+      will then hang indefinitely while it continues to look for archive logs to 
+      apply. To stop the recovery open another sqlplus session and type:<BR><BR>
+      <BLOCKQUOTE><PRE>SQL&gt; RECOVER MANAGED STANDBY DATABASE CANCEL;</PRE></BLOCKQUOTE><A 
+      name=ReadOnly></A>
+      <H2>Read Only Database</H2>The standby database can be opened in read only 
+      mode at any point. While open in this mode new archive logs are not 
+      applied to the database.<BR><BR>
+      <BLOCKQUOTE><PRE>SQL&gt; -- Cancel recovery if necessary
+SQL&gt; RECOVER MANAGED STANDBY DATABASE CANCEL;
+SQL&gt; ALTER DATABASE OPEN READ ONLY;</PRE></BLOCKQUOTE>The database can 
+      subsequently be switched back to recovery mode as follows:<BR><BR>
+      <BLOCKQUOTE><PRE>SQL&gt; CONNECT sys/password AS SYSDBA
+SQL&gt; SHUTDOWN IMMEDIATE
+SQL&gt; STARTUP NOMOUNT PFILE=C:\Oracle\Admin\SID\PFile\init.ora
+SQL&gt; ALTER DATABASE MOUNT STANDBY DATABASE;
+SQL&gt; RECOVER MANAGED STANDBY DATABASE;</PRE></BLOCKQUOTE><A 
+      name=Backup></A>
+      <H2>Backup Standby Database</H2>Backups of the standby database can only 
+      be performed if the database is shut down or in read only mode. Read only 
+      mode is best for managed recovery systems as archive logs will still be 
+      transfered during the backup process, thus preventing gap sequences. Once 
+      the server is in the desired mode simple copy the appropriate database 
+      files.<BR><BR>Hope this helps. Regards <B>Tim...</B><BR><BR><A 
+      href="http://www.oracle-base.com/articles/8i/StandbyDatabase.php#Top">Back 
+      to the Top.</A><BR></FORM><!-- End of Content --><!-- Start of PageFooter.php --></TD></TR>
+  <TR>
+    <TD class=line align=middle colSpan=4 height=1><IMG height=1 alt="" 
+      src="ORACLE-BASE - Oracle8i Standby Database_arquivos/Transparent.gif" 
+      width="100%"></TD></TR></TBODY></TABLE>
+<TABLE cellSpacing=0 cellPadding=0 width=760 align=center border=0>
+  <TBODY>
+  <TR>
+    <TD align=middle width="100%" colSpan=5><BR>
+      <TABLE width="100%" border=0>
+        <TBODY>
+        <TR>
+          <TD align=left><A href="http://validator.w3.org/check/referer" 
+            target=_new><IMG height=31 alt=Validate 
+            src="ORACLE-BASE - Oracle8i Standby Database_arquivos/vxhtml.gif" 
+            width=88 border=0></A> </TD>
+          <TD align=middle><A href="http://www.ultraedit.com/index.html" 
+            target=_new><IMG height=31 alt=UltraEdit 
+            src="ORACLE-BASE - Oracle8i Standby Database_arquivos/UltraEdit.gif" 
+            width=88 border=0></A> </TD>
+          <TD align=right><A 
+            href="http://jigsaw.w3.org/css-validator/check/referer" 
+            target=_new><IMG height=31 alt=Validate 
+            src="ORACLE-BASE - Oracle8i Standby Database_arquivos/vcss.gif" 
+            width=88 border=0></A> </TD></TR></TBODY></TABLE></TD></TR></TBODY></TABLE>
+<H1 class=hidden>oracle dba, developer, sql, plsql, scripts, articles, tuning, 
+books, help</H1><A class=hidden href="http://www.oracle.com/">oracle</A> <A 
+class=hidden href="http://www.dba.com/">dba</A> <A class=hidden 
+href="http://www.sql.com/">sql</A> <A class=hidden 
+href="http://www.plsql.com/">plsql</A> <A class=hidden 
+href="http://www.scripts.com/">scripts</A> <A class=hidden 
+href="http://www.oracle8i.com/">8i</A> <A class=hidden 
+href="http://www.oracle9i.com/">9i</A> <A class=hidden 
+href="http://www.oracle10g.com/">10g</A> <A class=hidden 
+href="http://www.8i.com/">8i</A> <A class=hidden 
+href="http://www.9i.com/">9i</A> <A class=hidden 
+href="http://www.10g.com/">10g</A> <A class=hidden 
+href="http://www.articles.com/">articles</A> <A class=hidden 
+href="http://www.tuning.com/">tuning</A> <A class=hidden 
+href="http://www.books.com/">books</A> <A class=hidden 
+href="http://www.help.com/">help</A> <!-- End of PageFooter.php --><!-- Start of HtmlFooter.php --></BODY></HTML>

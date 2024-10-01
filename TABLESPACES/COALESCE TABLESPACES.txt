@@ -1,0 +1,6 @@
+alter tablespace <NM_TS> coalesce;
+
+EX 2: 
+
+SELECT 'alter tablespace ' || TABLESPACE_NAME || ' coalesce;'
+FROM DBA_TABLESPACES

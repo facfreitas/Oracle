@@ -1,0 +1,3 @@
+# Parar o managed recovery
+
+alter database recover managed standby database cancel;

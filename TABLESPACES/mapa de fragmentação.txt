@@ -1,0 +1,326 @@
+
+/*   Script Description: This script generates a mapping of the space usage
+                        (free space vs used) in a tablespace.  It graphically
+                        shows segment and free space fragmentation. It determines which
+                        database objects are barriers between free extents
+
+   Output file:        {tablespace}.map.lis
+
+   Prepared/
+   CopyRighted By:     theOracleResourceStop Script Archive
+                       www.orsweb.com
+
+   Usage Information:  SQLPLUS SYS/pswd
+                       @mapper.sql {tablespace}
+*/
+set newpage 0;
+set pagesize 60;
+set lines 132;
+set verify off;
+
+spool &&1.map.lis
+
+TTITLE  skip 1 center  tab 2 'Free Space Mapper Report' -
+left 'Tablespace Name: '&&1   skip 4;
+
+select 'Free Space' owner, null object,file_id,block_id,blocks
+from dba_free_space
+union
+select substr(owner,1,20), substr(segment_name,1,32),file_id,block_id,blocks
+from dba_extents
+where tablespace_name = upper('&&1')
+order by 3,4;
+
+spool off;
+
+set pagesize 24;
+set lines 80;
+set heading on;
+clear breaks;
+clear columns;
+set feedback on;
+set ver on;
+set echo on;
+set wrap off;
+ttitle off;
+/*----------------------------------------------------------------------------------------*/
+/*  Script Description: This script automatically generates and runs the create table
+                        and drop table scripts that will force the database to combine
+                        the available free space in a designated tablespace.
+   
+    Output file:        {tablespace}.cre.sql & {tablespace}.drp.sql
+   
+    Prepared/
+    CopyRighted By:     theOracleResourceStop Script Archive
+                        www.orsweb.com
+   
+    Usage Information:  SQLPLUS SYS/pswd
+                        @gencre.sql {tablespace}
+*/
+
+set verify off;
+set echo off;
+set heading off;
+set pages 0;
+set lines 150;
+set feedback off;
+set newpage 0;
+
+spool &&1.cre.sql
+
+select 'CREATE TABLE  '||'&&1'||ROWNUM||
+'(DUMMY    CHAR(1)) '||
+' STORAGE(INITIAL  '||SUM_BYTES||
+'  NEXT   '||SUM_BYTES||
+'  MINEXTENTS 1 MAXEXTENTS 1) '||
+'  TABLESPACE '||'&&1'||';'  X
+from space_check
+where tablespace_name = upper('&&1')
+order by sum_bytes desc;
+
+spool off;
+
+spool &&1.drp.sql
+
+select 'DROP TABLE  '||'&&1'||ROWNUM||';'
+from space_check
+where tablespace_name = upper('&&1');
+
+spool off;
+
+set echo on;
+set verify on;
+set feedback on;
+set heading on;
+set pages 24;
+
+START &&1.cre.sql
+START &&1.drp.sql
+
+commit;
+/*----------------------------------------------------------------------------------------*/
+/*  Script Description: This script measures the fragmentation of free space
+                        in all of the tablespaces in a database and scores them
+                        according to an arbitrary index for comparison.
+   
+    Output file:        lfi.lis
+   
+    Prepared/
+    CopyRighted By:     theOracleResourceStop Script Archive
+                        www.orsweb.com
+   
+    Usage Information:  SQLPLUS SYS/pswd
+                        @lfi.sql
+*/
+
+set newpage 0;
+set pagesize 60;
+
+TTITLE  skip 1 center  tab 2 'Loney Fragementation Index (LFI) Report';
+
+spool lfi.lis
+
+select tablespace_name,
+          sqrt(max(blocks) / sum(blocks)) *
+                 (100/sqrt(sqrt(count(blocks)))) lfi
+from dba_free_space
+group by tablespace_name
+order by 1;
+
+spool off;
+
+set heading on;
+clear breaks;
+clear columns;
+set feedback on;
+set ver on;
+set echo on;
+set wrap off;
+ttitle off;
+
+/*----------------------------------------------------------------------------------------*/
+/*  Script Description: This file creates a view of the CONTIG_SPACE table
+                        that shows what the free space would look like
+                        if all contiguous free space was combined.
+                        This view will be used to evaluate whether the operation
+                        will yield any benefit.
+   
+    Prepared/
+    CopyRighted By:     theOracleResourceStop Script Archive
+                        www.orsweb.com
+   
+    Usage Information:  SQLPLUS SYS/pswd
+                        @spacechk.sql
+*/
+
+DROP VIEW space_check;
+CREATE VIEW space_check
+as SELECT 
+      tablespace_name,
+      starting_file_id,
+      starting_block_id,
+      sum(blocks) sum_blocks,
+      count(blocks) count_blocks,
+      max(blocks) max_blocks,
+      sum(bytes) sum_bytes
+FROM contig_space
+GROUP BY 
+      tablespace_name, 
+      starting_file_id,
+      starting_block_id;
+
+/*----------------------------------------------------------------------------------------*/
+/*   Script Description: This script creates and populates a table called CONTIG_SPACE.
+                        It evaluates the starting position and length of each free extent
+                        and compares that to the starting position of the next extent
+                        to determine if the two extents are contiguous.
+   	
+    Prepared/
+    CopyRighted By:     theOracleResourceStop Script Archive
+                        www.orsweb.com
+   
+    Usage Information:  SQLPLUS SYS/pswd
+                        @contigsp.sql
+*/
+
+DROP TABLE contig_space;
+CREATE TABLE contig_space
+(tablespace_name 	char(30),
+ file_id			number,
+ block_id			number,
+ starting_file_id		number,
+ starting_block_id	number,
+ blocks			number,
+ bytes			number)
+TABLESPACE TEMP;
+
+declare
+   cursor cur1 is
+      select *
+      from dba_free_space
+      order by tablespace_name,file_id,block_id;
+
+      this_row              cur1%ROWTYPE;
+      previous_row          cur1%ROWTYPE;
+      old_file_id           integer;
+      old_block_id          integer;
+      cntr                  number := 0;
+begin
+     if cur1%ISOPEN  then
+          close cur1;
+     end if;
+
+     open cur1;
+
+     fetch cur1 into this_row;
+     previous_row := this_row;
+
+      old_file_id := previous_row.file_id;
+      old_block_id := previous_row.block_id;
+ 
+     while cur1%FOUND Loop
+
+         if  this_row.file_id = previous_row.file_id and
+             this_row.block_id = previous_row.block_id + previous_row.blocks
+         then
+              insert into contig_space
+               (tablespace_name,file_id,block_id,starting_file_id,
+                starting_block_id,blocks,bytes)
+              values
+               (previous_row.tablespace_name,previous_row.file_id, this_row.block_id, 
+                old_file_id,old_block_id,this_row.blocks,this_row.bytes);
+         else
+              insert into contig_space
+               (tablespace_name,file_id,block_id,starting_file_id,starting_block_id,blocks,
+                bytes)
+              values
+               (this_row.tablespace_name,this_row.file_id, this_row.block_id, this_row.file_id,
+                this_row.block_id,this_row.blocks,this_row.bytes);
+         end if;
+
+         if cntr = 1000
+         then
+              cntr := 0;
+              commit;
+         else
+              cntr := cntr + 1;
+         end if;
+
+         previous_row := this_row;
+         fetch cur1 into this_row;
+     end loop;   /* End Loop for Cursor# 1 */
+    commit;
+close cur1;
+end;
+/
+
+/*----------------------------------------------------------------------------------------*/
+/* Script Description: This SQL*Plus script evaluates a target tablespace to determine
+                        the potential benefit of coalescing the neighboring free space
+                        extents.  If the "New FSFI" value is beneath your threshold,
+                        then the tablespace must be defragmented.
+   
+    Output file:        befaft.lis
+   
+    Prepared/
+    CopyRighted By:     theOracleResourceStop Script Archive
+                        www.orsweb.com
+   
+    Usage Information:  SQLPLUS SYS/pswd
+                        @befaft.sql {tablespace}
+*/
+
+set echo off;
+set ver off;
+set lin 100;
+set pages 60;
+
+spool befaft.lis;
+
+TTITLE  skip 1 center  tab 2 'Before-After Changes Report' -
+left 'Tablespace Name : '&&1   skip 4;
+
+column new_length format 99999999;
+column num_fragments  format 99999999;
+column current_top    format 99999999;
+
+break on starting_file_id skip 1;
+
+select starting_file_id,
+       starting_block_id,
+       sum(blocks)  new_length,
+       count(blocks) num_fragments,
+       max(blocks)  current_top
+from contig_space
+where tablespace_name = upper('&&1')
+group by starting_file_id,starting_block_id
+having count(*) > 1
+order by 1,2;
+
+TTITLE  skip 1  'Old LFI rating for '&&1 skip 2;
+column lfi format 999,999;
+
+select sqrt(max(blocks)/sum(blocks))*
+             (100/sqrt(sqrt(count(blocks)))) lfi
+from dba_free_space
+where tablespace_name = upper('&&1');
+
+TTITLE  skip 1  'New LFI rating for '&&1 skip 2;
+column new_lfi format 999,999;
+
+select sqrt(max(sum_blocks)/sum(sum_blocks))*
+             (100/sqrt(sqrt(count(sum_blocks)))) new_lfi
+from space_check
+where tablespace_name = upper('&&1');
+
+spool off;
+set heading on;
+clear breaks;
+clear columns;
+set feedback on;
+set ver on;
+set echo on;
+set wrap off;
+ttitle off;
+
+

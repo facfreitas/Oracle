@@ -1,0 +1,910 @@
+SQL> help @
+
+ @ ("at" sign)
+ -------------
+
+ Runs the specified command file.
+
+ @ file_name[.ext] [arg...]
+
+
+ @@ (double "at" sign)
+ ---------------------
+
+ Runs the specified command file. This command is identical to the @
+ command except that it looks for the specified command file in the
+ same path as the command file from which it was called.
+
+ @@ file_name[.ext]
+
+
+SQL> 
+SQL> help COPY
+
+ COPY
+ ----
+
+ COPY copies data from a query to a table in a local or remote
+ database.
+
+ COPY {FROM database | TO database | FROM database TO database}
+            {APPEND|CREATE|INSERT|REPLACE} destination_table
+            [(column, column, column, ...)] USING query
+
+ where database has the following syntax:
+     username[/password]@net_service_name
+
+
+SQL> 
+SQL> help PAUSE
+
+ PAUSE
+ -----
+
+ Displays an empty line followed by a line containing text, then
+ waits for the user to press RETURN, or displays two empty lines,
+ and waits for the user's response.
+
+ PAU[SE] [text]
+
+
+SQL> 
+SQL> help SHUTDOWN
+
+ SHUTDOWN
+ --------
+
+ Shuts down a currently running Oracle instance, optionally closing
+ and dismounting a database.
+
+ SHUTDOWN [ABORT|IMMEDIATE|NORMAL]
+
+
+SQL> 
+SQL> help @@
+
+ @@ (double "at" sign)
+ ---------------------
+
+ Runs the specified command file. This command is identical to the @
+ command except that it looks for the specified command file in the
+ same path as the command file from which it was called.
+
+ @@ file_name[.ext]
+
+
+SQL> 
+SQL> help DEFINE
+
+ DEFINE
+ ------
+
+ Specifies a user variable and assigns it a CHAR value, or
+ lists the value and variable type of a single variable or all
+ variables.
+
+ DEF[INE] [variable] | [variable = text]
+
+
+SQL> 
+SQL> help PRINT
+
+ PRINT
+ -----
+
+ Displays the current value of bind variables.
+
+ PRI[NT] [variable ...]
+
+
+SQL> 
+SQL> help SPOOL
+
+ SPOOL
+ -----
+
+ Stores query results in an operating system file, or sends the
+ file to a printer.
+
+ SPO[OL] [file_name[.ext] | OFF | OUT]
+
+
+SQL> 
+SQL> help /
+
+ / (slash)
+ ---------
+
+ Executes a SQL command or PL/SQL block in the SQL buffer. Use
+ slash (/) at the command prompt or at a line number prompt.
+
+ /
+
+
+SQL> 
+SQL> help DEL
+
+ DEL
+ ---
+
+ Deletes one or more lines of the buffer.
+
+ DEL [n | n m | n * | n LAST | * | * n | * LAST | LAST]
+
+
+SQL> 
+SQL> help PROMPT
+
+ PROMPT
+ ------
+
+ Sends the specified message or a blank line to the user's
+ screen.
+
+ PRO[MPT] [text]
+
+
+SQL> 
+SQL> help SQLPLUS
+
+ SQLPLUS
+ -------
+
+ Starts SQL*Plus from the operating system prompt.
+
+ SQLPLUS [ [option] [logon] [start] ]
+
+ where option has the following syntax:
+     - | -? | [ [-M[ARKUP] markup_option] [-R[ESTRICT] level] [-S[ILENT]] ]
+
+ and where markup_option has the following syntax:
+     HTML [ON|OFF] [HEAD text] [BODY text] [ENTMAP {ON|OFF}]
+       [SPOOL {ON|OFF}]  [PRE[FORMAT] {ON|OFF}]
+
+ and where logon has the following syntax:
+     username[/password][@net_service_name] | / | /NOLOG
+
+ and where start has the following syntax:
+     @filename[.ext] [parameter ...]
+
+
+SQL> 
+SQL> help ACCEPT
+
+ ACCEPT
+ ------
+
+ Reads a line of input and stores it in a given user variable.
+
+ ACC[EPT] variable [NUM[BER] | CHAR | DATE] [FOR[MAT] format]
+   [DEF[AULT] default] [PROMPT text | NOPR[OMPT]] [HIDE]
+
+
+SQL> 
+SQL> help DESCRIBE
+
+ DESCRIBE
+ --------
+
+ Lists the column definitions for a table, view, or synonym,
+ or the specifications for a function or procedure.
+
+ DESC[RIBE] {[schema.]object[@database_link_name]}
+
+
+SQL> 
+SQL> help QUIT
+
+ QUIT
+ ----
+
+ Terminates SQL*Plus and returns control to the operating system.
+
+ Enter HELP EXIT for QUIT command syntax.
+
+
+
+SQL> 
+SQL> help START
+
+ START
+ -----
+
+ Executes the contents of a command file.
+
+ STA[RT] file_name[.ext] [arg ...]
+
+
+ STARTUP
+ -------
+
+ Starts an Oracle instance with several options, including mounting,
+ and opening a database.
+
+ STARTUP [FORCE] [RESTRICT] [PFILE=filename] [EXCLUSIVE]
+   [PARALLEL [RETRY]] [SHARED [RETRY]]
+   [MOUNT [dbname] | OPEN [open_options] [dbname] | NOMOUNT]
+
+ where open_options has the following syntax:
+     READ {ONLY|WRITE [RECOVER]} | RECOVER
+
+
+SQL> 
+SQL> help APPEND
+
+ APPEND
+ ------
+
+ Adds text to the end of the current line in the SQL
+ buffer.
+
+ A[PPEND] text
+
+
+SQL> 
+SQL> help DISCONNECT
+
+ DISCONNECT
+ ----------
+
+ Commits pending changes to the database and logs the current
+ username out of Oracle, but does not exit SQL*Plus. Use EXIT or
+ QUIT to log out of Oracle and return control to your host
+ computer's operating system.
+
+ DISC[ONNECT]
+
+
+SQL> 
+SQL> help RECOVER
+
+ RECOVER
+ -------
+
+ Performs media recovery on one or more tablespaces, one or more
+ datafiles, or the entire database.
+
+ RECOVER {general | managed} [parallel]
+
+ where the general clause has the following syntax:
+     [AUTOMATIC] [FROM location]
+     {[STANDBY] DATABASE [ [UNTIL {CANCEL | CHANGE integer | TIME date}
+                           | USING BACKUP CONTROLFILE]...]
+      | STANDBY {DATAFILE datafilename [, DATAFILE datafilename...]
+                 | TABLESPACE tablespace [, TABLESPACE tablespace ...]}
+          UNTIL [CONSISTENT] [WITH] CONTROLFILE
+      | TABLESPACE tablespace [, tablespace ...]
+      | DATAFILE datafilename [, datafilename ...]
+      | LOGFILE filename
+      | CONTINUE [DEFAULT]
+      | CANCEL}
+
+ and where the managed clause has the following syntax:
+     MANAGED STANDBY DATABASE {TIMEOUT integer | CANCEL [IMMEDIATE]}
+
+ and where the parallel clause has the following syntax:
+     {PARALLEL [integer]} | NOPARALLEL
+
+
+SQL> 
+SQL> help STARTUP
+
+ STARTUP
+ -------
+
+ Starts an Oracle instance with several options, including mounting,
+ and opening a database.
+
+ STARTUP [FORCE] [RESTRICT] [PFILE=filename] [EXCLUSIVE]
+   [PARALLEL [RETRY]] [SHARED [RETRY]]
+   [MOUNT [dbname] | OPEN [open_options] [dbname] | NOMOUNT]
+
+ where open_options has the following syntax:
+     READ {ONLY|WRITE [RECOVER]} | RECOVER
+
+
+SQL> 
+SQL> help ARCHIVE LOG
+
+ ARCHIVE LOG
+ -----------
+
+ Starts or stops automatic archiving of online redo log files,
+ manually (explicitly) archives specified redo log files, or displays
+ information about redo log files.
+
+ ARCHIVE LOG {LIST|STOP} | {START|NEXT|ALL|integer} [TO destination]
+
+
+SQL> 
+SQL> help EDIT
+
+ EDIT
+ ----
+
+ Invokes a host operating system text editor on the contents of
+ the specified file or on the contents of the buffer.
+
+ ED[IT] [file_name[.ext]]
+
+
+SQL> 
+SQL> help REMARK
+
+ REMARK
+ ------
+
+ Begins a comment in a command file.
+
+ REM[ARK]
+
+
+SQL> 
+SQL> help STORE
+
+ STORE
+ -----
+
+ Saves attributes of the current SQL*Plus environment in a host
+ operating system file (a command file).
+
+ STORE {SET} file_name[.ext] [CRE[ATE]|REP[LACE] | APP[END]]
+
+
+SQL> 
+SQL> help ATTRIBUTE
+
+ ATTRIBUTE
+ ---------
+
+ Specifies display characteristics for a given attribute of
+ an Object Type column, such as format for NUMBER data.
+
+ Also lists the current display characteristics for a single
+ attribute or all attributes.
+
+ ATTRIBUTE [type_name.attribute_name [option... ]]
+
+ where option is one of the following terms or clauses:
+     ALI[AS] alias
+     CLE[AR]
+     FOR[MAT] format
+     LIKE {type_name.attribute_name | alias}
+     ON|OFF
+
+
+SQL> 
+SQL> help EXECUTE
+
+ EXECUTE
+ -------
+
+ Executes a single PL/SQL statement. The EXECUTE command is
+ often useful when you want to execute a PL/SQL statement that
+ references a stored procedure.
+
+ EXEC[UTE] statement
+
+
+SQL> 
+SQL> help REPFOOTER
+
+ REPFOOTER
+ ---------
+
+ Places and formats a footer at the bottom of a report, or lists the
+ REPFOOTER definition.
+
+ REPF[OOTER] [PAGE] [printspec [text|variable] ...] | [OFF|ON]
+
+ where printspec is one or more of the following clauses:
+     COL n          LE[FT]        BOLD
+     S[KIP] [n]     CE[NTER]      FORMAT text
+     TAB n          R[IGHT]
+
+
+SQL> 
+SQL> help TIMING
+
+ TIMING
+ ------
+
+ Records timing data for an elapsed time period, lists the
+ current timer's name and timing data, or lists the number of active
+ timers.
+
+ TIMI[NG] [START text|SHOW|STOP]
+
+
+SQL> 
+SQL> help BREAK
+
+ BREAK
+ -----
+
+ Specifies where and how to make format changes to a report.
+
+ BRE[AK] [ON report_element [action [action]]] ...
+
+ where report_element has the following syntax:
+     {column | expression | ROW | REPORT}
+
+ and where action has the following syntax:
+     [SKI[P] n | [SKI[P]] PAGE] [NODUP[LICATES] | DUP[LICATES]]
+
+
+SQL> 
+SQL> help EXIT
+
+ EXIT
+ ----
+
+ Terminates SQL*Plus and returns control to the operating
+ system.
+
+ {EXIT|QUIT} [SUCCESS|FAILURE|WARNING|n|variable|:BindVariable]
+   [COMMIT|ROLLBACK]
+
+
+SQL> 
+SQL> help REPHEADER
+
+ REPHEADER
+ ---------
+
+ Places and formats a header at the top of a report, or lists the
+ REPHEADER definition.
+
+ REPH[EADER] [PAGE] [printspec [text|variable] ...] | [OFF|ON]
+
+ where printspec is one or more of the following clauses:
+     COL n          LE[FT]        BOLD
+     S[KIP] [n]     CE[NTER]      FORMAT text
+     TAB n          R[IGHT]
+
+
+SQL> 
+SQL> help TTITLE
+
+ TTITLE
+ ------
+
+ Places and formats a title at the top of each report page.
+ Enter TTITLE with no clause to list its current definition.
+
+ The old form of TTITLE is used if only a single word or
+ a string in quotes follows the TTITLE command.
+
+ TTI[TLE] [printspec [text|variable] ...] | [OFF|ON]
+
+ where printspec is one or more of the following clauses:
+
+     COL n          LE[FT]        BOLD
+     S[KIP] [n]     CE[NTER]      FORMAT text
+     TAB n          R[IGHT]
+
+
+SQL> 
+SQL> help BTITLE
+
+ BTITLE
+ ------
+
+ Places and formats a title at the bottom of each report page,
+ or lists the current BTITLE definition.
+
+ BTI[TLE] [printspec [text|variable] ...] | [OFF|ON]
+
+
+SQL> 
+SQL> help GET
+
+ GET
+ ---
+
+ Loads a host operating system file into the SQL buffer.
+
+ GET file_name[.ext] [LIS[T] | NOL[IST]]
+
+
+SQL> 
+SQL> help RESERVED WORDS (SQL)
+
+ RESERVED WORDS (SQL)
+ --------------------
+
+ SQL Reserved Words have special meaning in SQL, and may not be used for
+ identifier names unless enclosed in "quotes".
+
+ An asterisk (*) indicates words are also ANSI Reserved Words.
+
+ Oracle prefixes implicitly generated schema object and subobject names
+ with "SYS_". To avoid name resolution conflict, Oracle discourages you
+ from prefixing your schema object and subobject names with "SYS_".
+
+ ACCESS          CHAR*           DEFAULT*         FROM*           INTEGER*
+ ADD*            CHECK*          DELETE*          GRANT*          INTERSECT*
+ ALL*            CLUSTER         DESC*            GROUP*          INTO*
+ ALTER*          COLUMN          DISTINCT*        HAVING*         IS*
+ AND*            COMMENT         DROP*            IDENTIFIED      LEVEL*
+ ANY*            COMPRESS        ELSE*            IMMEDIATE*      LIKE*
+ AS*             CONNECT*        EXCLUSIVE        IN*             LOCK
+ ASC*            CREATE*         EXISTS           INCREMENT       LONG
+ AUDIT           CURRENT*        FILE             INDEX           MAXEXTENTS
+ BETWEEN*        DATE*           FLOAT*           INITIAL         MINUS
+ BY*             DECIMAL*        FOR*             INSERT*         MLSLABEL
+
+ MODE            ONLINE          REVOKE*         START           UPDATE*
+ MODIFY          OPTION*         ROW             SUCCESSFUL      USER*
+ NOAUDIT         OR*             ROWID           SYNONYM         VALIDATE
+ NOCOMPRESS      ORDER*          ROWNUM          SYSDATE         VALUES*
+ NOT*            PCTFREE         ROWS*           TABLE*          VARCHAR*
+ NOWAIT          PRIOR*          SELECT*         THEN*           VARCHAR2
+ NULL*           PRIVILEGES*     SESSION*        TO*             VIEW*
+ NUMBER          PUBLIC*         SET*            TRIGGER         WHENEVER*
+ OF*             RAW             SHARE           UID             WHERE
+ OFFLINE         RENAME          SIZE*           UNION*          WITH*
+ ON*             RESOURCE        SMALLINT*       UNIQUE*
+
+
+SQL> 
+SQL> help UNDEFINE
+
+ UNDEFINE
+ --------
+
+ Deletes one or more user variables that you defined either
+ explicitly (with the DEFINE command), or implicitly (with a START
+ command argument).
+
+ UNDEF[INE] variable ...
+
+
+SQL> 
+SQL> help CHANGE
+
+ CHANGE
+ ------
+
+ Changes the first occurrence of the specified text on
+ the current line of the buffer.
+
+ C[HANGE] sepchar old [sepchar [new[sepchar]]]
+
+
+SQL> 
+SQL> help RESERVED WORDS (PL/SQL)
+
+ RESERVED WORDS (PL/SQL)
+ -----------------------
+
+ PL/SQL Reserved Words have special meaning in PL/SQL, and may not be used
+ for identifier names (unless enclosed in "quotes").
+
+ An asterisk (*) indicates words are also SQL Reserved Words.
+
+ ALL*            BULK            CURRVAL         EXCEPTION       HAVING*
+ ALTER*          BY*             CURSOR          EXCLUSIVE*      HEAP
+ AND*            CHAR*           DATE*           EXECUTE         HOUR
+ ANY*            CHAR_BASE       DAY             EXISTS*         IF
+ ARRAY           CHECK*          DECLARE         EXIT            IMMEDIATE*
+ AS*             CLOSE           DECIMAL*        EXTENDS         IN*
+ ASC*            CLUSTER*        DEFAULT*        FALSE           INDEX*
+ AT              COLLECT         DELETE*         FETCH           INDICATOR
+ AUTHID          COMMENT*        DESC*           FLOAT*          INSERT*
+ AVG             COMMIT          DISTINCT*       FOR*            INTEGER*
+ BEGIN           COMPRESS*       DO              FORALL          INTERFACE
+ BETWEEN*        CONNECT*        DROP*           FROM*           INTERSECT*
+ BINARY_INTEGER  CONSTANT        ELSE*           FUNCTION        INTERVAL
+ BODY            CREATE*         ELSIF           GOTO            INTO*
+ BOOLEAN         CURRENT*        END             GROUP*          IS*
+
+ ISOLATION       NOWAIT*         PRAGMA          SELECT*         TRUE
+ JAVA            NULL*           PRIOR*          SEPERATE        TYPE
+ LEVEL*          NUMBER*         PRIVATE         SET*            UID*
+ LIKE*           NUMBER_BASE     PROCEDURE       SHARE*          UNION*
+ LIMITED         OCIROWID        PUBLIC*         SMALLINT*       UNIQUE*
+ LOCK*           OF*             RAISE           SPACE           UPDATE*
+ LONG*           ON*             RANGE           SQL             USE
+ LOOP            OPAQUE          RAW*            SQLCODE         USER*
+ MAX             OPEN            REAL            SQLERRM         VALIDATE*
+ MIN             OPERATOR        RECORD          START*          VALUES*
+ MINUS*          OPTION*         REF             STDDEV          VARCHAR*
+ MINUTE          OR*             RELEASE         SUBTYPE         VARCHAR2*
+ MLSLABEL*       ORDER*          RETURN          SUCCESSFUL*     VARIANCE
+ MOD             ORGANIZATION    REVERSE         SUM             VIEW*
+ MODE*           OTHERS          ROLLBACK        SYNONYM*        WHEN
+ MONTH           OUT             ROW*            SYSDATE*        WHENEVER*
+ NATURAL         PACKAGE         ROWID*          TABLE*          WHERE*
+ NATURALN        PARTITION       ROWLABEL        THEN*           WHILE
+ NEW             PCTFREE*        ROWNUM*         TIME            WITH*
+ NEXTVAL         PLS_INTEGER     ROWTYPE         TIMESTAMP       WORK
+ NOCOPY          POSITIVE        SAVEPOINT       TO*             WRITE
+ NOT*            POSITIVEN       SECOND          TRIGGER*        YEAR      ZONE
+
+
+SQL> 
+SQL> help VARIABLE
+
+ VARIABLE
+ --------
+
+ Declares a bind variable that can then be referenced in PL/SQL.
+ VARIABLE with no arguments displays a list of all variables declared
+ in the session. VARIABLE followed by a name lists that variable.
+
+ VAR[IABLE] [variable [NUMBER | CHAR | CHAR (n) | NCHAR | NCHAR (n) |
+   VARCHAR2 (n) | NVARCHAR2 (n) | CLOB | NCLOB | REFCURSOR]]
+
+
+SQL> 
+SQL> help CLEAR
+
+ CLEAR
+ -----
+
+ Resets or erases the current value or setting for the option,
+
+ CL[EAR] option ...
+
+ where option is one of the following clauses:
+     BRE[AKS]
+     BUFF[ER]
+     COL[UMNS]
+     COMP[UTES]
+     SCR[EEN]
+     SQL
+     TIMI[NG]
+
+
+SQL> 
+SQL> help HOST
+
+ HOST
+ ----
+
+ Executes a host operating system command without leaving
+ SQL*Plus.
+
+ HO[ST] [command]
+
+
+SQL> 
+SQL> help RUN
+
+ RUN
+ ---
+
+ Lists and executes the SQL command or PL/SQL block currently in
+ the SQL buffer.
+
+ R[UN]
+
+
+SQL> 
+SQL> help WHENEVER OSERROR
+
+ WHENEVER OSERROR
+ ----------------
+
+ Exits SQL*Plus if an operating system error occurs,
+ (such as a file I/O error).
+
+ WHENEVER OSERROR {EXIT [SUCCESS|FAILURE|n|variable|:BindVariable]
+                   [COMMIT|ROLLBACK] | CONTINUE [COMMIT|ROLLBACK|NONE]}
+
+
+SQL> 
+SQL> help WHENEVER SQLERROR
+
+ WHENEVER SQLERROR
+ -----------------
+
+ Exits SQL*Plus if a SQL command or PL/SQL block generates an error.
+
+ WHENEVER SQLERROR {EXIT [SUCCESS|FAILURE|WARNING|n|variable|:BindVariable]
+                    [COMMIT|ROLLBACK] | CONTINUE [COMMIT|ROLLBACK|NONE]}
+
+
+SQL> 
+SQL> help COLUMN
+
+ COLUMN
+ ------
+
+ Specifies display attributes for a given column, such as:
+     - column heading text
+     - column heading alignment
+     - NUMBER data format
+     - column data wrapping
+
+ Also lists the current display attributes for a single column
+ or all columns.
+
+ COL[UMN] [{column | expr} [option...] ]
+
+ where option is one of the following clauses:
+     ALI[AS] alias
+     CLE[AR]
+     FOLD_A[FTER]
+     FOLD_B[EFORE]
+     FOR[MAT] format
+     HEA[DING] text
+     JUS[TIFY] {L[EFT] | C[ENTER] | C[ENTRE] | R[IGHT]}
+     LIKE {expr | alias}
+     NEWL[INE]
+     NEW_V[ALUE] variable
+     NOPRI[NT] | PRI[NT]
+     NUL[L] text
+     OLD_V[ALUE] variable
+     ON|OFF
+     WRA[PPED] | WOR[D_WRAPPED] | TRU[NCATED]
+
+
+SQL> 
+SQL> help INPUT
+
+ INPUT
+ -----
+
+ Adds one or more lines of text after the current line in the
+ buffer.
+
+ I[NPUT] [text]
+
+
+SQL> 
+SQL> help SAVE
+
+ SAVE
+ ----
+
+ Saves the contents of the SQL buffer in a host operating system
+ command file.
+
+ SAV[E] file_name[.ext] [CRE[ATE] | REP[LACE] | APP[END]]
+
+
+SQL> 
+SQL> help COMPUTE
+
+ COMPUTE
+ -------
+
+ Calculates and prints summary lines, using various standard
+ computations, on subsets of selected rows. It also lists all
+ COMPUTE definitions.
+
+ COMP[UTE] [function [LAB[EL] text] ...
+   OF {expr|column|alias} ...
+   ON {expr|column|alias|REPORT|ROW} ...]
+
+
+SQL> 
+SQL> help LIST
+
+ LIST
+ ----
+
+ Lists one or more lines of the SQL buffer. Enter LIST with no
+ clauses to list all lines.
+
+ L[IST] [n | n m | n  * | n LAST | * | * n | * LAST | LAST]
+
+
+SQL> 
+SQL> help SET
+
+ SET
+ ---
+
+ Sets a system variable to alter the SQL*Plus environment settings
+ for your current session, for example:
+     -   display width for NUMBER data
+     -   display width for LONG data
+     -   enabling or disabling printing of column headings
+     -   number of lines per page
+
+ SET system_variable value
+
+ where system_variable and value represent one of the following clauses:
+
+   APPI[NFO]{ON|OFF|text}                   NEWP[AGE] {1|n|NONE}
+   ARRAY[SIZE] {15|n}                       NULL text
+   AUTO[COMMIT] {OFF|ON|IMM[EDIATE]|n}      NUMF[ORMAT] format
+   AUTOP[RINT] {OFF|ON}                     NUM[WIDTH] {10|n}
+   AUTORECOVERY {ON|OFF}                    PAGES[IZE] {24|n}
+   AUTOT[RACE] {OFF|ON|TRACE[ONLY]}         PAU[SE] {OFF|ON|text}
+     [EXP[LAIN]] [STAT[ISTICS]]             RECSEP {WR[APPED] |
+   BLO[CKTERMINATOR] {.|c}                    EA[CH]|OFF}
+   CMDS[EP] {;|c|OFF|ON}                    RECSEPCHAR { |c}
+   COLSEP  {_|text}                         SEVEROUT[PUT] {OFF|ON}
+   COM[PATIBILITY] {V7|V8|NATIVE}             [SIZE n] [FOR[MAT]
+   CON[CAT] {.|c|OFF|ON}                      {WRA[PPED] |
+   COPYC[OMMIT] {0|n}                         WOR[D_WRAPPED] |
+   COPYTYPECHECK {OFF|ON}                     TRU[NCATED]}]
+   DEF[INE] {'&'|c|OFF|ON}                  SHIFT[INOUT] {VIS[IBLE] |
+   DESCRIBE [DEPTH {1|n|ALL}]                 INV[ISIBLE]}
+     [LINENUM {ON|OFF}] [INDENT {ON|OFF}]   SHOW[MODE] {OFF|ON}
+   ECHO {OFF|ON}                            SQLBL[ANKLINES] {ON|OFF}
+   EDITF[ILE] file_name[.ext]               SQLC[ASE] {MIX[ED] |
+   EMB[EDDED] {OFF|ON}                        LO[WER] | UP[PER]}
+   ESC[APE] {\|c|OFF|ON}                    SQLCO[NTINUE] {> | text}
+   FEED[BACK] {6|n|OFF|ON}                  SQLN[UMBER] {OFF|ON}
+   FLAGGER {OFF|ENTRY|INTERMED[IATE]|FULL}  SQLPRE[FIX] {#|c}
+   FLU[SH] {OFF|ON}                         SQLP[ROMPT] {SQL>|text}
+   HEA[DING] {OFF|ON}                       SQLT[ERMINATOR]
+   HEADS[EP] {||c|OFF|ON}                     {;|c|OFF|ON}
+   INSTANCE [instance_path|LOCAL]           SUF[FIX] {SQL|text}
+   LIN[ESIZE] {80|n}                        TAB {OFF|ON}
+   LOBOF[FSET] {n|1}                        TERM[OUT] {OFF|ON}
+   LOGSOURCE [pathname]                     TI[ME] {OFF|ON}
+   LONG {80|n}                              TIMI[NG] {OFF|ON}
+   LONGC[HUNKSIZE] {80|n}                   TRIM[OUT] {OFF|ON}
+   MARK[UP] HTML [ON|OFF]                   TRIMS[POOL] {ON|OFF}
+     [HEAD text] [BODY text]                UND[ERLINE] {-|c|ON|OFF}
+     [ENTMAP {ON|OFF}]                      VER[IFY] {OFF|ON}
+     [SPOOL {ON|OFF}]                       WRA[P] {OFF|ON}
+     [PRE[FORMAT] {ON|OFF}]
+
+
+
+
+SQL> 
+SQL> help CONNECT
+
+ CONNECT
+ -------
+
+ Connects a given username to Oracle.
+
+ CONN[ECT] [logon] [AS [SYSOPER|SYSDBA]] | [INTERNAL]
+
+ where logon has the following syntax:
+     username[/password] [@net_service_name]  |  /
+
+
+SQL> 
+SQL> help PASSWORD
+
+ PASSWORD
+ --------
+
+ Allows you to change a password without echoing the password
+ on an input device.
+
+ PASSW[ORD] [username]
+
+
+SQL> 
+SQL> help SHOW
+
+ SHOW
+ ----
+
+ Shows the value of a SQL*Plus system variable, or the
+ current SQL*Plus environment.
+
+ SHO[W] option
+
+ where option is one of the following terms or clauses:
+     system_variable
+     ALL
+     BTI[TLE]
+     ERR[ORS] [{FUNCTION | PROCEDURE | PACKAGE | PACKAGE BODY |
+       TRIGGER | VIEW | TYPE | TYPE BODY} [schema.]name]
+     LNO
+     PARAMETERS [parameter_name]
+     PNO
+     REL[EASE]
+     REPF[OOTER]
+     REPH[EADER]
+     SGA
+     SPOO[L]
+     SQLCODE
+     TT[ITLE]
+     USER
+
+
+SQL> 
+SQL> spool of
